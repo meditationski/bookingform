@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
         /* === VARIABLES === */
         :root {
@@ -598,24 +599,58 @@
             display: block;
         }
 
-        .phone-input-container {
-            display: flex;
-            gap: 10px;
-        }
-
-        .country-code {
-            flex: 0 0 100px;
-        }
-
-        .phone-number {
-            flex: 1;
-        }
-
         .form-actions {
             display: flex;
             justify-content: space-between;
             gap: 15px;
             margin-top: 30px;
+        }
+
+        /* === PHONE INPUT STYLES === */
+        .iti {
+            width: 100%;
+        }
+
+        .iti__flag {
+            background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/img/flags.png");
+        }
+
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .iti__flag {
+                background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/img/flags@2x.png");
+            }
+        }
+
+        .iti__selected-flag {
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--bg-tertiary);
+            padding: 0 12px;
+        }
+
+        .iti__selected-flag:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .iti__country-list {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .iti__country {
+            padding: 8px 10px;
+        }
+
+        .iti__country:hover, .iti__country.iti__highlight {
+            background-color: var(--bg-tertiary);
+        }
+
+        .iti__dial-code {
+            color: var(--text-secondary);
+        }
+
+        .iti__divider {
+            border-bottom-color: var(--bg-tertiary);
         }
 
         /* === RESPONSIVE DESIGN === */
@@ -681,12 +716,8 @@
                 min-width: 160px;
             }
 
-            .phone-input-container {
+            .form-actions {
                 flex-direction: column;
-            }
-
-            .country-code {
-                flex: 1;
             }
         }
 
@@ -710,10 +741,6 @@
             .calendar-nav button {
                 width: 28px;
                 height: 28px;
-            }
-            
-            .form-actions {
-                flex-direction: column;
             }
         }
 
@@ -864,23 +891,7 @@
 
                     <div class="form-row">
                         <div class="form-field">
-                            <div class="phone-input-container">
-                                <div class="select-container">
-                                    <select id="countryCode" class="custom-select country-code">
-                                        <option value="+1">+1 (US)</option>
-                                        <option value="+44">+44 (UK)</option>
-                                        <option value="+61">+61 (AU)</option>
-                                        <option value="+49">+49 (DE)</option>
-                                        <option value="+33">+33 (FR)</option>
-                                        <option value="+39">+39 (IT)</option>
-                                        <option value="+34">+34 (ES)</option>
-                                        <option value="+41">+41 (CH)</option>
-                                        <option value="+43">+43 (AT)</option>
-                                        <option value="+31">+31 (NL)</option>
-                                    </select>
-                                </div>
-                                <input type="tel" id="phone" class="form-input phone-number" required placeholder="Phone (WhatsApp) *">
-                            </div>
+                            <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
                             <div class="error-message" id="phoneError">Please enter a valid phone number</div>
                         </div>
                         <div class="form-field">
@@ -948,7 +959,45 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script>
+        // ===== PHONE INPUT INITIALIZATION =====
+        let phoneInput;
+
+        function initPhoneInput() {
+            const phoneElement = document.getElementById('phone');
+            
+            phoneInput = window.intlTelInput(phoneElement, {
+                initialCountry: "auto",
+                geoIpLookup: function(callback) {
+                    fetch('https://ipapi.co/json/')
+                        .then(response => response.json())
+                        .then(data => callback(data.country_code))
+                        .catch(() => callback('us'));
+                },
+                preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
+                separateDialCode: false,
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+                    return "Phone number";
+                }
+            });
+            
+            // Добавляем валидацию при изменении
+            phoneElement.addEventListener('input', function() {
+                Booking.validateField('phone');
+            });
+            
+            phoneElement.addEventListener('blur', function() {
+                Booking.validateField('phone');
+            });
+            
+            // При изменении страны
+            phoneElement.addEventListener('countrychange', function() {
+                Booking.validateField('phone');
+            });
+        }
+
         // ===== CONFIGURATION =====
         const CONFIG = {
             prices: {'2': 100, '3': 140, 'full': 250},
@@ -1024,7 +1073,6 @@
             bookButton: document.getElementById('bookButton'),
             fullNameInput: document.getElementById('fullName'),
             ageInput: document.getElementById('age'),
-            countryCodeSelect: document.getElementById('countryCode'),
             phoneInput: document.getElementById('phone'),
             emailInput: document.getElementById('email'),
             skillLevelSelect: document.getElementById('skillLevel'),
@@ -1265,7 +1313,6 @@
             updateSelectedDateTime() {
                 if (State.selectedDate && State.selectedTime) {
                     const dateStr = Utils.formatDate(State.selectedDate);
-                    // Removed duration from display as requested
                     Elements.selectedDateTimeEl.textContent = `${dateStr} at ${State.selectedTime}`;
                 } else if (State.selectedDate) {
                     const dateStr = Utils.formatDate(State.selectedDate);
@@ -1324,10 +1371,17 @@
                         errorMessage = 'Please enter a valid age (5-90)';
                         break;
                     case 'phone':
-                        const phone = Elements.phoneInput.value.trim();
-                        const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/;
-                        isValid = phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= 10;
-                        errorMessage = 'Please enter a valid phone number (min 10 digits)';
+                        const phoneValue = Elements.phoneInput.value.trim();
+                        
+                        if (!phoneValue) {
+                            isValid = false;
+                            errorMessage = 'Please enter a phone number';
+                        } else if (!phoneInput.isValidNumber()) {
+                            isValid = false;
+                            errorMessage = 'Please enter a valid phone number';
+                        } else {
+                            isValid = true;
+                        }
                         break;
                     case 'email':
                         const email = Elements.emailInput.value.trim();
@@ -1512,6 +1566,9 @@
             TimeSlots.update();
             Pricing.calculate();
             Navigation.updateNextButtonState();
+            
+            // Initialize phone input
+            initPhoneInput();
             
             // Initialize event handlers
             EventHandlers.init();
