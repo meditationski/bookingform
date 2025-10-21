@@ -336,7 +336,7 @@
         .total-price { 
             font-size: 24px; 
             font-weight: 700; 
-            color: #00ff88;
+            color: #ffffff;
         }
         .deposit-price {
             color: #00A3FF;
@@ -413,24 +413,38 @@
         }
 
         .summary-section {
-            background: #222529;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid #3a3f45;
+            margin-bottom: 30px;
         }
 
         .summary-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             color: #00A3FF;
             margin-bottom: 15px;
+            text-align: center;
         }
 
-        .summary-grid {
+        .summary-main {
+            background: #254d63;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #3a3f45;
+            margin-bottom: 20px;
+        }
+
+        .summary-main-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .summary-details {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
+            margin-top: 15px;
         }
 
         .summary-item {
@@ -478,7 +492,7 @@
             padding: 12px 16px;
             border: 1px solid #3a3f45;
             border-radius: 8px;
-            background: #222529;
+            background: #2a2e33;
             color: #ffffff;
             font-size: 14px;
             font-family: 'Inter', sans-serif;
@@ -512,7 +526,7 @@
         }
 
         .country-code {
-            flex: 0 0 80px;
+            flex: 0 0 100px;
         }
 
         .phone-number {
@@ -544,7 +558,7 @@
         }
 
         .book-button {
-            background: #00cc66;
+            background: #00A3FF;
             color: #ffffff;
             border: none;
             border-radius: 8px;
@@ -557,9 +571,9 @@
         }
 
         .book-button:hover {
-            background: #00b359;
+            background: #0088cc;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 204, 102, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 163, 255, 0.3);
         }
 
         .book-button:disabled {
@@ -621,7 +635,7 @@
                 gap: 15px;
             }
             
-            .summary-grid {
+            .summary-details {
                 grid-template-columns: 1fr;
             }
             
@@ -629,6 +643,14 @@
                 padding: 12px 30px;
                 font-size: 15px;
                 min-width: 160px;
+            }
+
+            .phone-input-container {
+                flex-direction: column;
+            }
+
+            .country-code {
+                flex: 1;
             }
         }
 
@@ -792,8 +814,32 @@
                 <!-- Summary Section -->
                 <div class="summary-section">
                     <h3 class="summary-title">Booking Summary</h3>
-                    <div class="summary-grid" id="bookingSummary">
-                        <!-- Summary will be populated by JavaScript -->
+                    
+                    <!-- Main Booking Info -->
+                    <div class="summary-main">
+                        <div class="summary-main-title" id="mainBookingTitle">2 Hours Ski Lesson</div>
+                        
+                        <!-- Price Display (same as first step) -->
+                        <div class="price-display">
+                            <div class="price-row">
+                                <span>Total amount:</span>
+                                <span id="summaryTotalPrice" class="total-price">$100</span>
+                            </div>
+                            <div class="price-row">
+                                <span>20% deposit:</span>
+                                <span id="summaryDepositPrice" class="deposit-price">$20</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Remaining balance:</span>
+                                <span id="summaryRemainingPrice" class="remaining-price">$80</span>
+                            </div>
+                            <div id="summaryDiscountInfo" class="discount-info"></div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Details -->
+                    <div class="summary-details" id="bookingSummary">
+                        <!-- Additional details will be populated by JavaScript -->
                     </div>
                 </div>
 
@@ -816,19 +862,21 @@
                         <div class="form-field">
                             <label class="form-label" for="phone">Phone (WhatsApp) *</label>
                             <div class="phone-input-container">
-                                <select id="countryCode" class="form-input country-code">
-                                    <option value="+1">+1 (US)</option>
-                                    <option value="+44">+44 (UK)</option>
-                                    <option value="+61">+61 (AU)</option>
-                                    <option value="+49">+49 (DE)</option>
-                                    <option value="+33">+33 (FR)</option>
-                                    <option value="+39">+39 (IT)</option>
-                                    <option value="+34">+34 (ES)</option>
-                                    <option value="+41">+41 (CH)</option>
-                                    <option value="+43">+43 (AT)</option>
-                                    <option value="+31">+31 (NL)</option>
-                                </select>
-                                <input type="tel" id="phone" class="form-input phone-number" required>
+                                <div class="select-container">
+                                    <select id="countryCode" class="custom-select country-code">
+                                        <option value="+1">+1 (US)</option>
+                                        <option value="+44">+44 (UK)</option>
+                                        <option value="+61">+61 (AU)</option>
+                                        <option value="+49">+49 (DE)</option>
+                                        <option value="+33">+33 (FR)</option>
+                                        <option value="+39">+39 (IT)</option>
+                                        <option value="+34">+34 (ES)</option>
+                                        <option value="+41">+41 (CH)</option>
+                                        <option value="+43">+43 (AT)</option>
+                                        <option value="+31">+31 (NL)</option>
+                                    </select>
+                                </div>
+                                <input type="tel" id="phone" class="form-input phone-number" required placeholder="Phone number">
                             </div>
                             <div class="error-message" id="phoneError">Please enter a valid phone number</div>
                         </div>
@@ -842,24 +890,28 @@
                     <div class="form-row">
                         <div class="form-field">
                             <label class="form-label" for="skillLevel">Skill Level *</label>
-                            <select id="skillLevel" class="form-input" required>
-                                <option value="">Select your level</option>
-                                <option value="first-time">First Time</option>
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
-                            </select>
+                            <div class="select-container">
+                                <select id="skillLevel" class="custom-select" required>
+                                    <option value="">Select your level</option>
+                                    <option value="first-time">First Time</option>
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                </select>
+                            </div>
                             <div class="error-message" id="skillLevelError">Please select your skill level</div>
                         </div>
                         <div class="form-field">
                             <label class="form-label" for="spokenLanguage">Spoken Language *</label>
-                            <select id="spokenLanguage" class="form-input" required>
-                                <option value="">Select language</option>
-                                <option value="english">English</option>
-                                <option value="russian">Russian</option>
-                                <option value="spanish">Spanish</option>
-                                <option value="georgian">Georgian</option>
-                            </select>
+                            <div class="select-container">
+                                <select id="spokenLanguage" class="custom-select" required>
+                                    <option value="">Select language</option>
+                                    <option value="english">English</option>
+                                    <option value="russian">Russian</option>
+                                    <option value="spanish">Spanish</option>
+                                    <option value="georgian">Georgian</option>
+                                </select>
+                            </div>
                             <div class="error-message" id="spokenLanguageError">Please select your spoken language</div>
                         </div>
                     </div>
@@ -908,6 +960,13 @@
             const depositPrice = document.getElementById('depositPrice');
             const remainingPrice = document.getElementById('remainingPrice');
             const discountInfo = document.getElementById('discountInfo');
+            
+            // Summary Elements
+            const mainBookingTitle = document.getElementById('mainBookingTitle');
+            const summaryTotalPrice = document.getElementById('summaryTotalPrice');
+            const summaryDepositPrice = document.getElementById('summaryDepositPrice');
+            const summaryRemainingPrice = document.getElementById('summaryRemainingPrice');
+            const summaryDiscountInfo = document.getElementById('summaryDiscountInfo');
             
             // Calendar Elements
             const prevMonthBtn = document.getElementById('prevMonth');
@@ -1253,8 +1312,16 @@
                 depositPrice.textContent = `$${deposit}`;
                 remainingPrice.textContent = `$${remaining}`;
                 
-                discountInfo.textContent = maxDiscount > 0 ? 
+                // Update summary prices
+                summaryTotalPrice.textContent = `$${total}`;
+                summaryDepositPrice.textContent = `$${deposit}`;
+                summaryRemainingPrice.textContent = `$${remaining}`;
+                
+                const discountText = maxDiscount > 0 ? 
                     `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+                
+                discountInfo.textContent = discountText;
+                summaryDiscountInfo.textContent = discountText;
             }
 
             function updateNextButtonState() {
@@ -1290,25 +1357,20 @@
                 const duration = durationSelect.value;
                 const participants = parseInt(participantsSlider.value);
                 const days = parseInt(daysSlider.value);
-                const total = totalPrice.textContent;
-                const deposit = depositPrice.textContent;
-                const remaining = remainingPrice.textContent;
                 
                 const durationText = {
-                    '2': '2 hours',
-                    '3': '3 hours',
-                    'full': 'Full day'
+                    '2': '2 Hours',
+                    '3': '3 Hours', 
+                    'full': 'Full Day'
                 }[duration];
 
+                const sportText = activeSport.charAt(0).toUpperCase() + activeSport.slice(1);
+                
+                // Update main title
+                mainBookingTitle.textContent = `${durationText} ${sportText} Lesson`;
+
+                // Update additional details
                 const summaryHTML = `
-                    <div class="summary-item">
-                        <span class="summary-label">Sport</span>
-                        <span class="summary-value">${activeSport.charAt(0).toUpperCase() + activeSport.slice(1)}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Duration</span>
-                        <span class="summary-value">${durationText}</span>
-                    </div>
                     <div class="summary-item">
                         <span class="summary-label">Participants</span>
                         <span class="summary-value">${participants} ${participants === 1 ? 'person' : 'people'}</span>
@@ -1320,18 +1382,6 @@
                     <div class="summary-item">
                         <span class="summary-label">Date & Time</span>
                         <span class="summary-value">${selectedDateTimeEl.textContent}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Total Amount</span>
-                        <span class="summary-value" style="color: #00ff88;">${total}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">20% Deposit</span>
-                        <span class="summary-value">${deposit}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Remaining Balance</span>
-                        <span class="summary-value">${remaining}</span>
                     </div>
                 `;
                 
