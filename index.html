@@ -5,75 +5,331 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ski School Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-        background: #222529; 
-        font-family: 'Inter', sans-serif; 
-        color: #858e96; 
-        padding: 15px;
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
-    .calculator-container { 
-        max-width: 100%; 
-        margin: 0 auto; 
-        background: #222529; 
-        border-radius: 12px; 
-        padding: 20px;
-        min-height: 650px;
-    }
-    .form-header { text-align: center; margin-bottom: 20px; }
-    .form-title { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 5px; line-height: 1.2; }
-    .form-group { margin-bottom: 18px; }
-    .section-title { font-size: 14px; font-weight: 600; color: #ffffff; margin-bottom: 8px; display: block; }
-    
-    /* Tabs - исправляем отображение */
-    .tabs { display: flex; background: #2a2e33; border-radius: 8px; padding: 3px; gap: 3px; }
-    .tab { flex: 1; padding: 10px 5px; text-align: center; background: transparent; border: none; color: #858e96; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 13px; }
-    .tab.active { background: #00A3FF; color: #ffffff; }
-    
-    /* Select - исправляем отображение */
-    select, .date-input { 
-        width: 100%; 
-        padding: 12px; 
-        border: 1px solid #3a3f45; 
-        border-radius: 8px; 
-        font-size: 14px; 
-        background: #2a2e33; 
-        color: #ffffff; 
-        display: block;
-    }
-    
-    .slider-container { margin-top: 8px; }
-    .slider-value { text-align: center; font-weight: 600; color: #00A3FF; font-size: 13px; margin: 6px 0; }
-    input[type="range"] { width: 100%; height: 6px; background: #3a3f45; border-radius: 3px; margin: 8px 0; }
-    .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: #858e96; margin-top: 4px; }
-    
-    /* Time selection - делаем компактнее */
-    .time-selection { background: #2a2e33; border-radius: 8px; padding: 12px; border: 1px solid #3a3f45; margin-bottom: 10px; }
-    .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
-    .time-slot { padding: 8px 4px; background: #3a3f45; border: none; border-radius: 6px; color: #ffffff; font-size: 12px; cursor: pointer; text-align: center; }
-    .time-slot.selected { background: #00A3FF; }
-    .time-slot.disabled { opacity: 0.3; cursor: not-allowed; }
-    
-    .selected-info { text-align: center; margin-top: 10px; font-size: 12px; color: #00A3FF; font-weight: 600; }
-    
-    /* Price display - компактнее */
-    .price-display { background: #254d63; color: #ffffff; padding: 15px; border-radius: 12px; margin-top: 15px; }
-    .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-    .total-price { font-size: 24px; font-weight: 700; }
-    .discount-info { text-align: center; margin-top: 10px; font-size: 12px; color: #00A3FF; font-weight: 600; }
-    
-    /* Убираем лишние отступы */
-    html { overflow: hidden; }
-    body { overflow-y: auto; }
-</style>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        body { 
+            background: #222529; 
+            font-family: 'Inter', sans-serif; 
+            color: #858e96; 
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .calculator-container { 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: #222529; 
+            border-radius: 12px; 
+            padding: 24px;
+        }
+        .form-header { 
+            text-align: center; 
+            margin-bottom: 32px; 
+        }
+        .form-title { 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: #ffffff; 
+            margin-bottom: 8px; 
+        }
+        .form-group { 
+            margin-bottom: 24px; 
+        }
+        .section-title { 
+            font-size: 16px; 
+            font-weight: 600; 
+            color: #ffffff; 
+            margin-bottom: 12px; 
+            display: block;
+        }
+        
+        /* Tabs */
+        .tabs { 
+            display: flex; 
+            background: #2a2e33; 
+            border-radius: 8px; 
+            padding: 4px; 
+            gap: 4px;
+        }
+        .tab { 
+            flex: 1; 
+            padding: 12px; 
+            text-align: center; 
+            background: transparent; 
+            border: none; 
+            color: #858e96; 
+            font-weight: 600; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .tab.active { 
+            background: #00A3FF; 
+            color: #ffffff; 
+        }
+        .tab:hover:not(.active) {
+            background: #3a3f45;
+        }
+        
+        /* Select */
+        select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #3a3f45; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            background: #2a2e33; 
+            color: #ffffff; 
+            cursor: pointer;
+        }
+        
+        /* Sliders */
+        .slider-container { 
+            margin-top: 8px; 
+        }
+        .slider-value { 
+            text-align: center; 
+            font-weight: 600; 
+            color: #00A3FF; 
+            font-size: 14px; 
+            margin: 8px 0; 
+        }
+        input[type="range"] { 
+            width: 100%; 
+            height: 6px; 
+            background: #3a3f45; 
+            border-radius: 3px; 
+            margin: 12px 0; 
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00A3FF;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #222529;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .slider-labels { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 11px; 
+            color: #858e96; 
+            margin-top: 5px;
+        }
+        
+        /* Calendar Styles */
+        .calendar-container {
+            background: #2a2e33;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #3a3f45;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-month {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .calendar-nav button {
+            background: #3a3f45;
+            border: none;
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-nav button:hover:not(:disabled) {
+            background: #00A3FF;
+            transform: scale(1.05);
+        }
+        
+        .calendar-nav button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #858e96;
+            font-weight: 500;
+        }
+        
+        .weekday {
+            padding: 10px 0;
+        }
+        
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: #858e96;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .calendar-day:hover:not(.disabled):not(.selected) {
+            background: #3a3f45;
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+        
+        .calendar-day.selected {
+            background: #00A3FF;
+            color: #ffffff;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 163, 255, 0.3);
+        }
+        
+        .calendar-day.today {
+            border: 2px solid #00A3FF;
+        }
+        
+        .calendar-day.today:not(.selected) {
+            background: transparent;
+            color: #00A3FF;
+        }
+        
+        .calendar-day.disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+        
+        .calendar-day.other-month {
+            opacity: 0.3;
+        }
+        
+        /* Time Selection */
+        .time-selection { 
+            background: #2a2e33; 
+            border-radius: 8px; 
+            padding: 20px; 
+            border: 1px solid #3a3f45; 
+        }
+        .time-slots { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
+        }
+        .time-slot { 
+            padding: 12px; 
+            background: #3a3f45; 
+            border: none; 
+            border-radius: 8px; 
+            color: #ffffff; 
+            font-size: 14px; 
+            cursor: pointer; 
+            text-align: center; 
+            transition: all 0.3s ease;
+        }
+        .time-slot:hover:not(.disabled) {
+            background: #00A3FF;
+            transform: scale(1.05);
+        }
+        .time-slot.selected { 
+            background: #00A3FF; 
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 163, 255, 0.3);
+        }
+        .time-slot.disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed; 
+        }
+        
+        .selected-info { 
+            text-align: center; 
+            margin-top: 20px; 
+            font-size: 16px; 
+            color: #00A3FF; 
+            font-weight: 600; 
+            padding: 12px;
+            background: rgba(0, 163, 255, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 163, 255, 0.3);
+        }
+        
+        /* Price Display */
+        .price-display { 
+            background: #254d63; 
+            color: #ffffff; 
+            padding: 24px; 
+            border-radius: 12px; 
+            margin-top: 24px; 
+            border: 1px solid #3a3f45;
+        }
+        .price-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 16px; 
+            font-size: 16px; 
+        }
+        .total-price { 
+            font-size: 32px; 
+            font-weight: 700; 
+        }
+        .discount-info { 
+            text-align: center; 
+            margin-top: 16px; 
+            font-size: 14px; 
+            color: #00A3FF; 
+            font-weight: 600; 
+            padding: 8px;
+            background: rgba(0, 163, 255, 0.1);
+            border-radius: 6px;
+        }
+    </style>
 </head>
 <body>
     <div class="calculator-container">
-        <div class="form-header"><div class="form-title">Calculate Your Lesson</div></div>
+        <div class="form-header">
+            <div class="form-title">Calculate Your Lesson</div>
+        </div>
         
+        <!-- Equipment Type -->
         <div class="form-group">
             <div class="tabs">
                 <div class="tab active" data-sport="ski">Ski</div>
@@ -81,6 +337,7 @@
             </div>
         </div>
         
+        <!-- Lesson Duration -->
         <div class="form-group">
             <div class="section-title">Lesson Duration</div>
             <select id="duration">
@@ -90,6 +347,7 @@
             </select>
         </div>
         
+        <!-- Number of Participants -->
         <div class="form-group">
             <div class="section-title">Number of Participants</div>
             <div class="slider-container">
@@ -101,6 +359,7 @@
             </div>
         </div>
         
+        <!-- Number of Days -->
         <div class="form-group">
             <div class="section-title">Number of Days</div>
             <div class="slider-container">
@@ -113,23 +372,57 @@
             </div>
         </div>
         
+        <!-- Calendar -->
         <div class="form-group">
-            <div class="section-title">Start Date</div>
-            <input type="date" class="date-input" id="startDate" min="2025-12-15" max="2026-04-30">
+            <div class="section-title">Select Start Date</div>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button id="prevMonth">‹</button>
+                    </div>
+                    <div class="calendar-month" id="currentMonth">December 2025</div>
+                    <div class="calendar-nav">
+                        <button id="nextMonth">›</button>
+                    </div>
+                </div>
+                
+                <div class="calendar-weekdays">
+                    <div class="weekday">Mon</div>
+                    <div class="weekday">Tue</div>
+                    <div class="weekday">Wed</div>
+                    <div class="weekday">Thu</div>
+                    <div class="weekday">Fri</div>
+                    <div class="weekday">Sat</div>
+                    <div class="weekday">Sun</div>
+                </div>
+                
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
         </div>
         
+        <!-- Time Selection -->
         <div class="form-group">
-            <div class="section-title">Start Time</div>
+            <div class="section-title">Select Start Time</div>
             <div class="time-selection">
                 <div class="time-slots" id="timeSlots"></div>
             </div>
-            <div class="selected-info" id="selectedDateTime">No date selected</div>
+            <div class="selected-info" id="selectedDateTime">Please select a date first</div>
         </div>
         
+        <!-- Price Display -->
         <div class="price-display">
-            <div class="price-row"><span>Total amount:</span><span id="totalPrice">$100</span></div>
-            <div class="price-row"><span>20% deposit:</span><span id="depositPrice">$20</span></div>
-            <div class="price-row"><span>Remaining balance:</span><span id="remainingPrice">$80</span></div>
+            <div class="price-row">
+                <span>Total amount:</span>
+                <span id="totalPrice">$100</span>
+            </div>
+            <div class="price-row">
+                <span>20% deposit:</span>
+                <span id="depositPrice">$20</span>
+            </div>
+            <div class="price-row">
+                <span>Remaining balance:</span>
+                <span id="remainingPrice">$80</span>
+            </div>
             <div id="discountInfo" class="discount-info"></div>
         </div>
     </div>
@@ -137,13 +430,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const prices = {'2': 100, '3': 140, 'full': 250};
+            
+            // DOM Elements
             const tabs = document.querySelectorAll('.tab');
             const durationSelect = document.getElementById('duration');
             const participantsSlider = document.getElementById('participants');
             const participantsValue = document.getElementById('participantsValue');
             const daysSlider = document.getElementById('days');
             const daysValue = document.getElementById('daysValue');
-            const startDateInput = document.getElementById('startDate');
             const timeSlotsEl = document.getElementById('timeSlots');
             const selectedDateTimeEl = document.getElementById('selectedDateTime');
             const totalPrice = document.getElementById('totalPrice');
@@ -151,14 +445,26 @@
             const remainingPrice = document.getElementById('remainingPrice');
             const discountInfo = document.getElementById('discountInfo');
             
+            // Calendar Elements
+            const prevMonthBtn = document.getElementById('prevMonth');
+            const nextMonthBtn = document.getElementById('nextMonth');
+            const currentMonthEl = document.getElementById('currentMonth');
+            const calendarDaysEl = document.getElementById('calendarDays');
+            
+            // State
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const minDate = new Date(2025, 11, 15); // Dec 15, 2025
+            const maxDate = new Date(2026, 3, 30);  // Apr 30, 2026
+            
+            let currentMonth = new Date(Math.max(today, minDate));
+            currentMonth.setDate(1);
+            
+            let selectedDate = null;
             let selectedTime = null;
 
-            // Set min date to today or Dec 15, 2025
-            const today = new Date().toISOString().split('T')[0];
-            const minDate = "2025-12-15";
-            startDateInput.min = today > minDate ? today : minDate;
-            startDateInput.max = "2026-04-30";
-
+            // Initialize tabs
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
                     tabs.forEach(t => t.classList.remove('active'));
@@ -167,45 +473,142 @@
                 });
             });
 
+            // Initialize sliders
             participantsSlider.addEventListener('input', function() {
-                participantsValue.textContent = this.value + (this.value == 1 ? ' person' : ' people');
+                const value = this.value;
+                participantsValue.textContent = value + (value == 1 ? ' person' : ' people');
                 calculatePrice();
             });
 
             daysSlider.addEventListener('input', function() {
-                daysValue.textContent = this.value + (this.value == 1 ? ' day' : ' days');
+                const value = this.value;
+                daysValue.textContent = value + (value == 1 ? ' day' : ' days');
                 calculatePrice();
             });
 
+            // Initialize duration select
             durationSelect.addEventListener('change', function() {
                 calculatePrice();
                 updateTimeSlots();
             });
 
-            startDateInput.addEventListener('change', function() {
+            // Calendar functions
+            function renderCalendar() {
+                const year = currentMonth.getFullYear();
+                const month = currentMonth.getMonth();
+                
+                // Update month display
+                currentMonthEl.textContent = currentMonth.toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric'
+                });
+                
+                // Update navigation buttons
+                const prevMonthDate = new Date(year, month - 1, 1);
+                const nextMonthDate = new Date(year, month + 1, 1);
+                
+                prevMonthBtn.disabled = prevMonthDate < new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+                nextMonthBtn.disabled = nextMonthDate > new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+                
+                // Get first and last day of month
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                
+                // Calculate start day (Monday = 0)
+                const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+                
+                // Clear calendar
+                calendarDaysEl.innerHTML = '';
+                
+                // Previous month days
+                const prevMonthLastDay = new Date(year, month, 0).getDate();
+                for (let i = startDay - 1; i >= 0; i--) {
+                    const day = prevMonthLastDay - i;
+                    const button = document.createElement('button');
+                    button.className = 'calendar-day other-month disabled';
+                    button.textContent = day;
+                    button.disabled = true;
+                    calendarDaysEl.appendChild(button);
+                }
+                
+                // Current month days
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const date = new Date(year, month, day);
+                    const button = document.createElement('button');
+                    button.className = 'calendar-day';
+                    button.textContent = day;
+                    
+                    // Check if today
+                    if (date.toDateString() === today.toDateString()) {
+                        button.classList.add('today');
+                    }
+                    
+                    // Check if date is within allowed range
+                    if (date < minDate || date > maxDate || date < today) {
+                        button.classList.add('disabled');
+                        button.disabled = true;
+                    } else {
+                        // Check if selected
+                        if (selectedDate && selectedDate.toDateString() === date.toDateString()) {
+                            button.classList.add('selected');
+                        }
+                        
+                        button.addEventListener('click', () => selectDate(date));
+                    }
+                    
+                    calendarDaysEl.appendChild(button);
+                }
+                
+                // Next month days
+                const totalCells = 42; // 6 weeks
+                const daysSoFar = startDay + lastDay.getDate();
+                const nextMonthDays = totalCells - daysSoFar;
+                
+                for (let day = 1; day <= nextMonthDays; day++) {
+                    const button = document.createElement('button');
+                    button.className = 'calendar-day other-month disabled';
+                    button.textContent = day;
+                    button.disabled = true;
+                    calendarDaysEl.appendChild(button);
+                }
+            }
+            
+            function selectDate(date) {
+                selectedDate = date;
                 selectedTime = null;
+                renderCalendar();
                 updateTimeSlots();
                 updateSelectedDateTime();
                 calculatePrice();
-            });
-
+            }
+            
             function updateTimeSlots() {
                 timeSlotsEl.innerHTML = '';
-                if (!startDateInput.value) {
+                
+                if (!selectedDate) {
                     timeSlotsEl.innerHTML = '<div class="time-slot disabled">Select date first</div>';
                     return;
                 }
 
                 const duration = durationSelect.value === 'full' ? 8 : parseInt(durationSelect.value);
+                
+                // Generate time slots from 10:00 AM to 5:00 PM minus duration
                 for (let hour = 10; hour <= 17 - duration; hour++) {
                     const timeSlot = document.createElement('button');
                     const timeString = `${hour}:00`;
                     timeSlot.className = 'time-slot';
                     timeSlot.textContent = timeString;
-                    if (selectedTime === timeString) timeSlot.classList.add('selected');
+                    
+                    if (selectedTime === timeString) {
+                        timeSlot.classList.add('selected');
+                    }
                     
                     timeSlot.addEventListener('click', function() {
-                        document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                        // Remove selected class from all time slots
+                        document.querySelectorAll('.time-slot').forEach(slot => {
+                            slot.classList.remove('selected');
+                        });
+                        // Add selected class to clicked time slot
                         selectedTime = timeString;
                         this.classList.add('selected');
                         updateSelectedDateTime();
@@ -214,21 +617,44 @@
                     
                     timeSlotsEl.appendChild(timeSlot);
                 }
-            }
-
-            function updateSelectedDateTime() {
-                if (startDateInput.value && selectedTime) {
-                    const date = new Date(startDateInput.value);
-                    const dateStr = date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'});
-                    selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime}`;
-                } else if (startDateInput.value) {
-                    const date = new Date(startDateInput.value);
-                    const dateStr = date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'});
-                    selectedDateTimeEl.textContent = `${dateStr} - Select time`;
-                } else {
-                    selectedDateTimeEl.textContent = 'No date selected';
+                
+                if (timeSlotsEl.children.length === 0) {
+                    timeSlotsEl.innerHTML = '<div class="time-slot disabled">No available times for selected duration</div>';
                 }
             }
+            
+            function updateSelectedDateTime() {
+                if (selectedDate && selectedTime) {
+                    const dateStr = selectedDate.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime}`;
+                } else if (selectedDate) {
+                    const dateStr = selectedDate.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    selectedDateTimeEl.textContent = `${dateStr} - Please select a time`;
+                } else {
+                    selectedDateTimeEl.textContent = 'Please select a date first';
+                }
+            }
+            
+            // Calendar navigation
+            prevMonthBtn.addEventListener('click', () => {
+                currentMonth.setMonth(currentMonth.getMonth() - 1);
+                renderCalendar();
+            });
+            
+            nextMonthBtn.addEventListener('click', () => {
+                currentMonth.setMonth(currentMonth.getMonth() + 1);
+                renderCalendar();
+            });
 
             function calculatePrice() {
                 const duration = durationSelect.value;
@@ -261,9 +687,11 @@
                 remainingPrice.textContent = `$${remaining}`;
                 
                 discountInfo.textContent = maxDiscount > 0 ? 
-                    `You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+                    `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
             }
 
+            // Initialize everything
+            renderCalendar();
             updateTimeSlots();
             calculatePrice();
         });
