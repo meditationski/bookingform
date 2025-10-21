@@ -7,33 +7,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #222529; font-family: 'Inter', sans-serif; color: #858e96; padding: 15px; min-height: 100vh; }
-    .calculator-container { max-width: 100%; margin: 0 auto; background: #222529; border-radius: 12px; padding: 20px; }
-    .form-header { text-align: center; margin-bottom: 25px; }
-    .form-title { font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; line-height: 1.2; }
-    .form-group { margin-bottom: 20px; }
-    .section-title { font-size: 14px; font-weight: 600; color: #ffffff; margin-bottom: 8px; }
+    body { 
+        background: #222529; 
+        font-family: 'Inter', sans-serif; 
+        color: #858e96; 
+        padding: 15px;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    .calculator-container { 
+        max-width: 100%; 
+        margin: 0 auto; 
+        background: #222529; 
+        border-radius: 12px; 
+        padding: 20px;
+        min-height: 650px;
+    }
+    .form-header { text-align: center; margin-bottom: 20px; }
+    .form-title { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 5px; line-height: 1.2; }
+    .form-group { margin-bottom: 18px; }
+    .section-title { font-size: 14px; font-weight: 600; color: #ffffff; margin-bottom: 8px; display: block; }
+    
+    /* Tabs - исправляем отображение */
     .tabs { display: flex; background: #2a2e33; border-radius: 8px; padding: 3px; gap: 3px; }
-    .tab { flex: 1; padding: 10px; text-align: center; background: transparent; border: none; color: #858e96; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    .tab { flex: 1; padding: 10px 5px; text-align: center; background: transparent; border: none; color: #858e96; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 13px; }
     .tab.active { background: #00A3FF; color: #ffffff; }
-    select, .date-input { width: 100%; padding: 12px; border: 1px solid #3a3f45; border-radius: 8px; font-size: 14px; background: #2a2e33; color: #ffffff; }
+    
+    /* Select - исправляем отображение */
+    select, .date-input { 
+        width: 100%; 
+        padding: 12px; 
+        border: 1px solid #3a3f45; 
+        border-radius: 8px; 
+        font-size: 14px; 
+        background: #2a2e33; 
+        color: #ffffff; 
+        display: block;
+    }
+    
     .slider-container { margin-top: 8px; }
-    .slider-value { text-align: center; font-weight: 600; color: #00A3FF; font-size: 14px; margin: 6px 0; }
-    input[type="range"] { width: 100%; height: 6px; background: #3a3f45; border-radius: 3px; margin: 10px 0; }
-    .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: #858e96; }
-    .time-selection { background: #2a2e33; border-radius: 8px; padding: 15px; border: 1px solid #3a3f45; }
-    .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-    .time-slot { padding: 10px; background: #3a3f45; border: none; border-radius: 6px; color: #ffffff; font-size: 13px; cursor: pointer; text-align: center; }
+    .slider-value { text-align: center; font-weight: 600; color: #00A3FF; font-size: 13px; margin: 6px 0; }
+    input[type="range"] { width: 100%; height: 6px; background: #3a3f45; border-radius: 3px; margin: 8px 0; }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: #858e96; margin-top: 4px; }
+    
+    /* Time selection - делаем компактнее */
+    .time-selection { background: #2a2e33; border-radius: 8px; padding: 12px; border: 1px solid #3a3f45; margin-bottom: 10px; }
+    .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+    .time-slot { padding: 8px 4px; background: #3a3f45; border: none; border-radius: 6px; color: #ffffff; font-size: 12px; cursor: pointer; text-align: center; }
     .time-slot.selected { background: #00A3FF; }
     .time-slot.disabled { opacity: 0.3; cursor: not-allowed; }
-    .selected-info { text-align: center; margin-top: 12px; font-size: 13px; color: #00A3FF; font-weight: 600; }
-    .price-display { background: #254d63; color: #ffffff; padding: 20px; border-radius: 12px; margin-top: 20px; }
-    .price-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; }
-    .total-price { font-size: 28px; font-weight: 700; }
-    .discount-info { text-align: center; margin-top: 12px; font-size: 13px; color: #00A3FF; font-weight: 600; }
     
-    /* Убираем скролл для iframe */
-    html, body { overflow: hidden; }
+    .selected-info { text-align: center; margin-top: 10px; font-size: 12px; color: #00A3FF; font-weight: 600; }
+    
+    /* Price display - компактнее */
+    .price-display { background: #254d63; color: #ffffff; padding: 15px; border-radius: 12px; margin-top: 15px; }
+    .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+    .total-price { font-size: 24px; font-weight: 700; }
+    .discount-info { text-align: center; margin-top: 10px; font-size: 12px; color: #00A3FF; font-weight: 600; }
+    
+    /* Убираем лишние отступы */
+    html { overflow: hidden; }
+    body { overflow-y: auto; }
 </style>
 </head>
 <body>
