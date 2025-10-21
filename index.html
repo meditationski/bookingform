@@ -1,251 +1,235 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ski School Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #222529; font-family: 'Inter', sans-serif; color: #858e96; padding: 20px; }
+        .calculator-container { max-width: 500px; margin: 0 auto; background: #222529; border-radius: 12px; padding: 24px; }
+        .form-header { text-align: center; margin-bottom: 32px; }
+        .form-title { font-size: 28px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+        .form-group { margin-bottom: 24px; }
+        .section-title { font-size: 16px; font-weight: 600; color: #ffffff; margin-bottom: 8px; }
+        .tabs { display: flex; background: #2a2e33; border-radius: 8px; padding: 4px; }
+        .tab { flex: 1; padding: 12px; text-align: center; background: transparent; border: none; color: #858e96; font-weight: 600; border-radius: 6px; cursor: pointer; }
+        .tab.active { background: #00A3FF; color: #ffffff; }
+        select, .date-input { width: 100%; padding: 12px; border: 1px solid #3a3f45; border-radius: 8px; font-size: 14px; background: #2a2e33; color: #ffffff; }
+        .slider-container { margin-top: 8px; }
+        .slider-value { text-align: center; font-weight: 600; color: #00A3FF; font-size: 14px; margin: 8px 0; }
+        input[type="range"] { width: 100%; height: 6px; background: #3a3f45; border-radius: 3px; margin: 12px 0; }
+        .slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: #858e96; }
+        .time-selection { background: #2a2e33; border-radius: 8px; padding: 16px; border: 1px solid #3a3f45; }
+        .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .time-slot { padding: 12px; background: #3a3f45; border: none; border-radius: 6px; color: #ffffff; font-size: 14px; cursor: pointer; text-align: center; }
+        .time-slot.selected { background: #00A3FF; }
+        .time-slot.disabled { opacity: 0.3; cursor: not-allowed; }
+        .selected-info { text-align: center; margin-top: 16px; font-size: 14px; color: #00A3FF; font-weight: 600; }
+        .price-display { background: #254d63; color: #ffffff; padding: 24px; border-radius: 12px; margin-top: 24px; }
+        .price-row { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 16px; }
+        .total-price { font-size: 32px; font-weight: 700; }
+        .discount-info { text-align: center; margin-top: 16px; font-size: 14px; color: #00A3FF; font-weight: 600; }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Ski School Calculator&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>* { margin: 0; padding: 0; box-sizing: border-box; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body { background: #222529; font-family: 'Inter', sans-serif; color: #858e96; padding: 20px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calculator-container { max-width: 500px; margin: 0 auto; background: #222529; border-radius: 12px; padding: 24px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.form-header { text-align: center; margin-bottom: 32px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.form-title { font-size: 28px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.form-group { margin-bottom: 24px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.section-title { font-size: 16px; font-weight: 600; color: #ffffff; margin-bottom: 8px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tabs { display: flex; background: #2a2e33; border-radius: 8px; padding: 4px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tab { flex: 1; padding: 12px; text-align: center; background: transparent; border: none; color: #858e96; font-weight: 600; border-radius: 6px; cursor: pointer; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tab.active { background: #00A3FF; color: #ffffff; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>select, .date-input { width: 100%; padding: 12px; border: 1px solid #3a3f45; border-radius: 8px; font-size: 14px; background: #2a2e33; color: #ffffff; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.slider-container { margin-top: 8px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.slider-value { text-align: center; font-weight: 600; color: #00A3FF; font-size: 14px; margin: 8px 0; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>input[type="range"] { width: 100%; height: 6px; background: #3a3f45; border-radius: 3px; margin: 12px 0; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: #858e96; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.time-selection { background: #2a2e33; border-radius: 8px; padding: 16px; border: 1px solid #3a3f45; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.time-slot { padding: 12px; background: #3a3f45; border: none; border-radius: 6px; color: #ffffff; font-size: 14px; cursor: pointer; text-align: center; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.time-slot.selected { background: #00A3FF; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.time-slot.disabled { opacity: 0.3; cursor: not-allowed; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.selected-info { text-align: center; margin-top: 16px; font-size: 14px; color: #00A3FF; font-weight: 600; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.price-display { background: #254d63; color: #ffffff; padding: 24px; border-radius: 12px; margin-top: 24px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.price-row { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 16px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.total-price { font-size: 32px; font-weight: 700; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.discount-info { text-align: center; margin-top: 16px; font-size: 14px; color: #00A3FF; font-weight: 600; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="calculator-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="form-header"&gt;&lt;div class="form-title"&gt;Calculate Your Lesson&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="tabs"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="tab active" data-sport="ski"&gt;Ski&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="tab" data-sport="snowboard"&gt;Snowboard&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="section-title"&gt;Lesson Duration&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;select id="duration"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value="2"&gt;2 hours lesson - $100&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value="3"&gt;3 hours lesson - $140&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value="full"&gt;Full day lesson - $250&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="section-title"&gt;Number of Participants&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="slider-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="slider-value" id="participantsValue"&gt;1 person&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="participants" min="1" max="5" value="1" step="1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="slider-labels"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span&gt;1&lt;/span&gt;&lt;span&gt;2&lt;/span&gt;&lt;span&gt;3&lt;/span&gt;&lt;span&gt;4&lt;/span&gt;&lt;span&gt;5&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="section-title"&gt;Number of Days&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="slider-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="slider-value" id="daysValue"&gt;1 day&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="days" min="1" max="10" value="1" step="1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="slider-labels"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span&gt;1&lt;/span&gt;&lt;span&gt;2&lt;/span&gt;&lt;span&gt;3&lt;/span&gt;&lt;span&gt;4&lt;/span&gt;&lt;span&gt;5&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span&gt;6&lt;/span&gt;&lt;span&gt;7&lt;/span&gt;&lt;span&gt;8&lt;/span&gt;&lt;span&gt;9&lt;/span&gt;&lt;span&gt;10&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="section-title"&gt;Start Date&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="date" class="date-input" id="startDate" min="2025-12-15" max="2026-04-30"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="section-title"&gt;Start Time&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="time-selection"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="time-slots" id="timeSlots"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="selected-info" id="selectedDateTime"&gt;No date selected&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="price-display"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="price-row"&gt;&lt;span&gt;Total amount:&lt;/span&gt;&lt;span id="totalPrice"&gt;$100&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="price-row"&gt;&lt;span&gt;20% deposit:&lt;/span&gt;&lt;span id="depositPrice"&gt;$20&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="price-row"&gt;&lt;span&gt;Remaining balance:&lt;/span&gt;&lt;span id="remainingPrice"&gt;$80&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="discountInfo" class="discount-info"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.addEventListener('DOMContentLoaded', function() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const prices = {'2': 100, '3': 140, 'full': 250};</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const tabs = document.querySelectorAll('.tab');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const durationSelect = document.getElementById('duration');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const participantsSlider = document.getElementById('participants');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const participantsValue = document.getElementById('participantsValue');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const daysSlider = document.getElementById('days');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const daysValue = document.getElementById('daysValue');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const startDateInput = document.getElementById('startDate');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const timeSlotsEl = document.getElementById('timeSlots');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const selectedDateTimeEl = document.getElementById('selectedDateTime');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const totalPrice = document.getElementById('totalPrice');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const depositPrice = document.getElementById('depositPrice');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const remainingPrice = document.getElementById('remainingPrice');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const discountInfo = document.getElementById('discountInfo');</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>let selectedTime = null;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Set min date to today or Dec 15, 2025</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const today = new Date().toISOString().split('T')[0];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const minDate = "2025-12-15";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>startDateInput.min = today &gt; minDate ? today : minDate;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>startDateInput.max = "2026-04-30";</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>tabs.forEach(tab =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>tab.addEventListener('click', function() {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>tabs.forEach(t =&gt; t.classList.remove('active'));</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>this.classList.add('active');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>calculatePrice();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>});</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>participantsSlider.addEventListener('input', function() {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>participantsValue.textContent = this.value + (this.value == 1 ? ' person' : ' people');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>calculatePrice();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>daysSlider.addEventListener('input', function() {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>daysValue.textContent = this.value + (this.value == 1 ? ' day' : ' days');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>calculatePrice();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>durationSelect.addEventListener('change', function() {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>calculatePrice();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>updateTimeSlots();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>startDateInput.addEventListener('change', function() {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>selectedTime = null;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>updateTimeSlots();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>updateSelectedDateTime();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>calculatePrice();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>function updateTimeSlots() {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>timeSlotsEl.innerHTML = '';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (!startDateInput.value) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>timeSlotsEl.innerHTML = '&lt;div class="time-slot disabled"&gt;Select date first&lt;/div&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>const duration = durationSelect.value === 'full' ? 8 : parseInt(durationSelect.value);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>for (let hour = 10; hour &lt;= 17 - duration; hour++) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const timeSlot = document.createElement('button');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const timeString = `${hour}:00`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>timeSlot.className = 'time-slot';</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>timeSlot.textContent = timeString;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (selectedTime === timeString) timeSlot.classList.add('selected');</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>timeSlot.addEventListener('click', function() {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>document.querySelectorAll('.time-slot').forEach(s =&gt; s.classList.remove('selected'));</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>selectedTime = timeString;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>this.classList.add('selected');</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>updateSelectedDateTime();</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>calculatePrice();</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>});</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>timeSlotsEl.appendChild(timeSlot);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>function updateSelectedDateTime() {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (startDateInput.value &amp;&amp; selectedTime) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const date = new Date(startDateInput.value);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const dateStr = date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'});</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime}`;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else if (startDateInput.value) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const date = new Date(startDateInput.value);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const dateStr = date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'});</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>selectedDateTimeEl.textContent = `${dateStr} - Select time`;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>selectedDateTimeEl.textContent = 'No date selected';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>function calculatePrice() {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const duration = durationSelect.value;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const participants = parseInt(participantsSlider.value);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const days = parseInt(daysSlider.value);</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>let basePrice = prices[duration];</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const additionalPrice = (participants - 1) * 40;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const pricePerDay = basePrice + additionalPrice;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>let total = 0;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>let maxDiscount = 0;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>for (let day = 1; day &lt;= days; day++) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>let discount = 0;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (day &gt;= 8) discount = 0.20;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>else if (day &gt;= 6) discount = 0.15;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>else if (day &gt;= 4) discount = 0.10;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>total += pricePerDay * (1 - discount);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (discount &gt; maxDiscount) maxDiscount = discount;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>total = Math.round(total);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const deposit = Math.round(total * 0.20);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const remaining = total - deposit;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>totalPrice.textContent = `$${total}`;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>depositPrice.textContent = `$${deposit}`;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>remainingPrice.textContent = `$${remaining}`;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>discountInfo.textContent = maxDiscount &gt; 0 ?<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>`You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>updateTimeSlots();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>calculatePrice();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <div class="calculator-container">
+        <div class="form-header"><div class="form-title">Calculate Your Lesson</div></div>
+        
+        <div class="form-group">
+            <div class="tabs">
+                <div class="tab active" data-sport="ski">Ski</div>
+                <div class="tab" data-sport="snowboard">Snowboard</div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="section-title">Lesson Duration</div>
+            <select id="duration">
+                <option value="2">2 hours lesson - $100</option>
+                <option value="3">3 hours lesson - $140</option>
+                <option value="full">Full day lesson - $250</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <div class="section-title">Number of Participants</div>
+            <div class="slider-container">
+                <div class="slider-value" id="participantsValue">1 person</div>
+                <input type="range" id="participants" min="1" max="5" value="1" step="1">
+                <div class="slider-labels">
+                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="section-title">Number of Days</div>
+            <div class="slider-container">
+                <div class="slider-value" id="daysValue">1 day</div>
+                <input type="range" id="days" min="1" max="10" value="1" step="1">
+                <div class="slider-labels">
+                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="section-title">Start Date</div>
+            <input type="date" class="date-input" id="startDate" min="2025-12-15" max="2026-04-30">
+        </div>
+        
+        <div class="form-group">
+            <div class="section-title">Start Time</div>
+            <div class="time-selection">
+                <div class="time-slots" id="timeSlots"></div>
+            </div>
+            <div class="selected-info" id="selectedDateTime">No date selected</div>
+        </div>
+        
+        <div class="price-display">
+            <div class="price-row"><span>Total amount:</span><span id="totalPrice">$100</span></div>
+            <div class="price-row"><span>20% deposit:</span><span id="depositPrice">$20</span></div>
+            <div class="price-row"><span>Remaining balance:</span><span id="remainingPrice">$80</span></div>
+            <div id="discountInfo" class="discount-info"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const prices = {'2': 100, '3': 140, 'full': 250};
+            const tabs = document.querySelectorAll('.tab');
+            const durationSelect = document.getElementById('duration');
+            const participantsSlider = document.getElementById('participants');
+            const participantsValue = document.getElementById('participantsValue');
+            const daysSlider = document.getElementById('days');
+            const daysValue = document.getElementById('daysValue');
+            const startDateInput = document.getElementById('startDate');
+            const timeSlotsEl = document.getElementById('timeSlots');
+            const selectedDateTimeEl = document.getElementById('selectedDateTime');
+            const totalPrice = document.getElementById('totalPrice');
+            const depositPrice = document.getElementById('depositPrice');
+            const remainingPrice = document.getElementById('remainingPrice');
+            const discountInfo = document.getElementById('discountInfo');
+            
+            let selectedTime = null;
+
+            // Set min date to today or Dec 15, 2025
+            const today = new Date().toISOString().split('T')[0];
+            const minDate = "2025-12-15";
+            startDateInput.min = today > minDate ? today : minDate;
+            startDateInput.max = "2026-04-30";
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    calculatePrice();
+                });
+            });
+
+            participantsSlider.addEventListener('input', function() {
+                participantsValue.textContent = this.value + (this.value == 1 ? ' person' : ' people');
+                calculatePrice();
+            });
+
+            daysSlider.addEventListener('input', function() {
+                daysValue.textContent = this.value + (this.value == 1 ? ' day' : ' days');
+                calculatePrice();
+            });
+
+            durationSelect.addEventListener('change', function() {
+                calculatePrice();
+                updateTimeSlots();
+            });
+
+            startDateInput.addEventListener('change', function() {
+                selectedTime = null;
+                updateTimeSlots();
+                updateSelectedDateTime();
+                calculatePrice();
+            });
+
+            function updateTimeSlots() {
+                timeSlotsEl.innerHTML = '';
+                if (!startDateInput.value) {
+                    timeSlotsEl.innerHTML = '<div class="time-slot disabled">Select date first</div>';
+                    return;
+                }
+
+                const duration = durationSelect.value === 'full' ? 8 : parseInt(durationSelect.value);
+                for (let hour = 10; hour <= 17 - duration; hour++) {
+                    const timeSlot = document.createElement('button');
+                    const timeString = `${hour}:00`;
+                    timeSlot.className = 'time-slot';
+                    timeSlot.textContent = timeString;
+                    if (selectedTime === timeString) timeSlot.classList.add('selected');
+                    
+                    timeSlot.addEventListener('click', function() {
+                        document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                        selectedTime = timeString;
+                        this.classList.add('selected');
+                        updateSelectedDateTime();
+                        calculatePrice();
+                    });
+                    
+                    timeSlotsEl.appendChild(timeSlot);
+                }
+            }
+
+            function updateSelectedDateTime() {
+                if (startDateInput.value && selectedTime) {
+                    const date = new Date(startDateInput.value);
+                    const dateStr = date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'});
+                    selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime}`;
+                } else if (startDateInput.value) {
+                    const date = new Date(startDateInput.value);
+                    const dateStr = date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'});
+                    selectedDateTimeEl.textContent = `${dateStr} - Select time`;
+                } else {
+                    selectedDateTimeEl.textContent = 'No date selected';
+                }
+            }
+
+            function calculatePrice() {
+                const duration = durationSelect.value;
+                const participants = parseInt(participantsSlider.value);
+                const days = parseInt(daysSlider.value);
+                
+                let basePrice = prices[duration];
+                const additionalPrice = (participants - 1) * 40;
+                const pricePerDay = basePrice + additionalPrice;
+                
+                let total = 0;
+                let maxDiscount = 0;
+                
+                for (let day = 1; day <= days; day++) {
+                    let discount = 0;
+                    if (day >= 8) discount = 0.20;
+                    else if (day >= 6) discount = 0.15;
+                    else if (day >= 4) discount = 0.10;
+                    
+                    total += pricePerDay * (1 - discount);
+                    if (discount > maxDiscount) maxDiscount = discount;
+                }
+                
+                total = Math.round(total);
+                const deposit = Math.round(total * 0.20);
+                const remaining = total - deposit;
+                
+                totalPrice.textContent = `$${total}`;
+                depositPrice.textContent = `$${deposit}`;
+                remainingPrice.textContent = `$${remaining}`;
+                
+                discountInfo.textContent = maxDiscount > 0 ? 
+                    `You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+            }
+
+            updateTimeSlots();
+            calculatePrice();
+        });
+    </script>
 </body>
 </html>
