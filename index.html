@@ -19,7 +19,7 @@
             min-height: 100vh;
         }
         .calculator-container { 
-            max-width: 500px; 
+            max-width: 900px; 
             margin: 0 auto; 
             background: #222529; 
             border-radius: 12px; 
@@ -35,8 +35,22 @@
             color: #ffffff; 
             margin-bottom: 8px; 
         }
+        
+        .form-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+        }
+        
         .form-group { 
             margin-bottom: 24px; 
+            width: 100%;
         }
         .section-title { 
             font-size: 16px; 
@@ -75,16 +89,25 @@
             background: #3a3f45;
         }
         
-        /* Select */
+        /* Select - исправляем стили */
         select { 
             width: 100%; 
-            padding: 12px; 
-            border: 1px solid #3a3f45; 
-            border-radius: 8px; 
+            padding: 12px 16px; 
+            border: 1px solid #3a3f45 !important; 
+            border-radius: 8px !important; 
             font-size: 14px; 
-            background: #2a2e33; 
-            color: #ffffff; 
+            background: #2a2e33 !important; 
+            color: #ffffff !important; 
             cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            -webkit-appearance: menulist;
+            -moz-appearance: menulist;
+            appearance: menulist;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #00A3FF !important;
         }
         
         /* Sliders */
@@ -251,7 +274,7 @@
         }
         .time-slots { 
             display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
+            grid-template-columns: repeat(2, 1fr); 
             gap: 10px; 
         }
         .time-slot { 
@@ -299,6 +322,7 @@
             border-radius: 12px; 
             margin-top: 24px; 
             border: 1px solid #3a3f45;
+            grid-column: 1 / -1;
         }
         .price-row { 
             display: flex; 
@@ -321,6 +345,37 @@
             background: rgba(0, 163, 255, 0.1);
             border-radius: 6px;
         }
+
+        /* Мобильная версия */
+        @media (max-width: 768px) {
+            .form-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .calculator-container {
+                padding: 16px;
+            }
+            
+            .calendar-container,
+            .time-selection {
+                padding: 15px;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .form-title {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -329,101 +384,109 @@
             <div class="form-title">Calculate Your Lesson</div>
         </div>
         
-        <!-- Equipment Type -->
-        <div class="form-group">
-            <div class="tabs">
-                <div class="tab active" data-sport="ski">Ski</div>
-                <div class="tab" data-sport="snowboard">Snowboard</div>
-            </div>
-        </div>
-        
-        <!-- Lesson Duration -->
-        <div class="form-group">
-            <div class="section-title">Lesson Duration</div>
-            <select id="duration">
-                <option value="2">2 hours lesson - $100</option>
-                <option value="3">3 hours lesson - $140</option>
-                <option value="full">Full day lesson - $250</option>
-            </select>
-        </div>
-        
-        <!-- Number of Participants -->
-        <div class="form-group">
-            <div class="section-title">Number of Participants</div>
-            <div class="slider-container">
-                <div class="slider-value" id="participantsValue">1 person</div>
-                <input type="range" id="participants" min="1" max="5" value="1" step="1">
-                <div class="slider-labels">
-                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Number of Days -->
-        <div class="form-group">
-            <div class="section-title">Number of Days</div>
-            <div class="slider-container">
-                <div class="slider-value" id="daysValue">1 day</div>
-                <input type="range" id="days" min="1" max="10" value="1" step="1">
-                <div class="slider-labels">
-                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Calendar -->
-        <div class="form-group">
-            <div class="section-title">Select Start Date</div>
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <div class="calendar-nav">
-                        <button id="prevMonth">‹</button>
-                    </div>
-                    <div class="calendar-month" id="currentMonth">December 2025</div>
-                    <div class="calendar-nav">
-                        <button id="nextMonth">›</button>
+        <div class="form-content">
+            <!-- Левая колонка -->
+            <div class="left-column">
+                <!-- Equipment Type -->
+                <div class="form-group">
+                    <div class="tabs">
+                        <div class="tab active" data-sport="ski">Ski</div>
+                        <div class="tab" data-sport="snowboard">Snowboard</div>
                     </div>
                 </div>
                 
-                <div class="calendar-weekdays">
-                    <div class="weekday">Mon</div>
-                    <div class="weekday">Tue</div>
-                    <div class="weekday">Wed</div>
-                    <div class="weekday">Thu</div>
-                    <div class="weekday">Fri</div>
-                    <div class="weekday">Sat</div>
-                    <div class="weekday">Sun</div>
+                <!-- Lesson Duration -->
+                <div class="form-group">
+                    <div class="section-title">Lesson Duration</div>
+                    <select id="duration">
+                        <option value="2">2 hours lesson - $100</option>
+                        <option value="3">3 hours lesson - $140</option>
+                        <option value="full">Full day lesson - $250</option>
+                    </select>
                 </div>
                 
-                <div class="calendar-days" id="calendarDays"></div>
+                <!-- Number of Participants -->
+                <div class="form-group">
+                    <div class="section-title">Number of Participants</div>
+                    <div class="slider-container">
+                        <div class="slider-value" id="participantsValue">1 person</div>
+                        <input type="range" id="participants" min="1" max="5" value="1" step="1">
+                        <div class="slider-labels">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Number of Days -->
+                <div class="form-group">
+                    <div class="section-title">Number of Days</div>
+                    <div class="slider-container">
+                        <div class="slider-value" id="daysValue">1 day</div>
+                        <input type="range" id="days" min="1" max="10" value="1" step="1">
+                        <div class="slider-labels">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <!-- Time Selection -->
-        <div class="form-group">
-            <div class="section-title">Select Start Time</div>
-            <div class="time-selection">
-                <div class="time-slots" id="timeSlots"></div>
+            
+            <!-- Правая колонка -->
+            <div class="right-column">
+                <!-- Calendar -->
+                <div class="form-group">
+                    <div class="section-title">Select Start Date</div>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <div class="calendar-nav">
+                                <button id="prevMonth">‹</button>
+                            </div>
+                            <div class="calendar-month" id="currentMonth">December 2025</div>
+                            <div class="calendar-nav">
+                                <button id="nextMonth">›</button>
+                            </div>
+                        </div>
+                        
+                        <div class="calendar-weekdays">
+                            <div class="weekday">Mon</div>
+                            <div class="weekday">Tue</div>
+                            <div class="weekday">Wed</div>
+                            <div class="weekday">Thu</div>
+                            <div class="weekday">Fri</div>
+                            <div class="weekday">Sat</div>
+                            <div class="weekday">Sun</div>
+                        </div>
+                        
+                        <div class="calendar-days" id="calendarDays"></div>
+                    </div>
+                </div>
+                
+                <!-- Time Selection -->
+                <div class="form-group">
+                    <div class="section-title">Select Start Time</div>
+                    <div class="time-selection">
+                        <div class="time-slots" id="timeSlots"></div>
+                    </div>
+                    <div class="selected-info" id="selectedDateTime">Please select a date first</div>
+                </div>
             </div>
-            <div class="selected-info" id="selectedDateTime">Please select a date first</div>
-        </div>
-        
-        <!-- Price Display -->
-        <div class="price-display">
-            <div class="price-row">
-                <span>Total amount:</span>
-                <span id="totalPrice">$100</span>
+            
+            <!-- Price Display -->
+            <div class="price-display">
+                <div class="price-row">
+                    <span>Total amount:</span>
+                    <span id="totalPrice">$100</span>
+                </div>
+                <div class="price-row">
+                    <span>20% deposit:</span>
+                    <span id="depositPrice">$20</span>
+                </div>
+                <div class="price-row">
+                    <span>Remaining balance:</span>
+                    <span id="remainingPrice">$80</span>
+                </div>
+                <div id="discountInfo" class="discount-info"></div>
             </div>
-            <div class="price-row">
-                <span>20% deposit:</span>
-                <span id="depositPrice">$20</span>
-            </div>
-            <div class="price-row">
-                <span>Remaining balance:</span>
-                <span id="remainingPrice">$80</span>
-            </div>
-            <div id="discountInfo" class="discount-info"></div>
         </div>
     </div>
 
@@ -590,25 +653,23 @@
                     return;
                 }
 
-                const duration = durationSelect.value === 'full' ? 8 : parseInt(durationSelect.value);
+                const duration = durationSelect.value;
                 
-                // Generate time slots from 10:00 AM to 5:00 PM minus duration
-                for (let hour = 10; hour <= 17 - duration; hour++) {
+                // For full day lessons, show times from 10:00 to 10:00 (just one slot at 10:00)
+                if (duration === 'full') {
                     const timeSlot = document.createElement('button');
-                    const timeString = `${hour}:00`;
+                    const timeString = '10:00';
                     timeSlot.className = 'time-slot';
-                    timeSlot.textContent = timeString;
+                    timeSlot.textContent = timeString + ' (Full day)';
                     
                     if (selectedTime === timeString) {
                         timeSlot.classList.add('selected');
                     }
                     
                     timeSlot.addEventListener('click', function() {
-                        // Remove selected class from all time slots
                         document.querySelectorAll('.time-slot').forEach(slot => {
                             slot.classList.remove('selected');
                         });
-                        // Add selected class to clicked time slot
                         selectedTime = timeString;
                         this.classList.add('selected');
                         updateSelectedDateTime();
@@ -616,10 +677,37 @@
                     });
                     
                     timeSlotsEl.appendChild(timeSlot);
+                } else {
+                    // For 2-hour and 3-hour lessons, show multiple time slots
+                    const lessonHours = parseInt(duration);
+                    const resortClose = 17; // 5 PM
+                    
+                    for (let hour = 10; hour <= resortClose - lessonHours; hour++) {
+                        const timeSlot = document.createElement('button');
+                        const timeString = `${hour}:00`;
+                        timeSlot.className = 'time-slot';
+                        timeSlot.textContent = timeString;
+                        
+                        if (selectedTime === timeString) {
+                            timeSlot.classList.add('selected');
+                        }
+                        
+                        timeSlot.addEventListener('click', function() {
+                            document.querySelectorAll('.time-slot').forEach(slot => {
+                                slot.classList.remove('selected');
+                            });
+                            selectedTime = timeString;
+                            this.classList.add('selected');
+                            updateSelectedDateTime();
+                            calculatePrice();
+                        });
+                        
+                        timeSlotsEl.appendChild(timeSlot);
+                    }
                 }
                 
                 if (timeSlotsEl.children.length === 0) {
-                    timeSlotsEl.innerHTML = '<div class="time-slot disabled">No available times for selected duration</div>';
+                    timeSlotsEl.innerHTML = '<div class="time-slot disabled">No available times</div>';
                 }
             }
             
@@ -631,7 +719,12 @@
                         day: 'numeric',
                         year: 'numeric'
                     });
-                    selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime}`;
+                    const duration = durationSelect.value;
+                    if (duration === 'full') {
+                        selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime} (Full day)`;
+                    } else {
+                        selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime} (${duration} hours)`;
+                    }
                 } else if (selectedDate) {
                     const dateStr = selectedDate.toLocaleDateString('en-US', {
                         weekday: 'long',
