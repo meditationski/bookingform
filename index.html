@@ -499,14 +499,6 @@
             margin-bottom: 30px;
         }
 
-        .summary-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-accent);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
         .summary-main-title {
             font-size: 20px;
             font-weight: 700;
@@ -579,6 +571,10 @@
             font-size: 14px;
             font-family: 'Inter', sans-serif;
             transition: var(--transition);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
         }
 
         .form-input:focus {
@@ -845,37 +841,29 @@
 
             <!-- Booking Form Section -->
             <div class="booking-form-section" id="bookingFormSection">
-                <!-- Summary Section -->
-                <div class="summary-section">
-                    <h3 class="summary-title">Booking Summary</h3>
-                    
-                    <!-- Main Booking Title -->
-                    <div class="summary-main-title" id="mainBookingTitle">2 Hours Ski Lesson with 1 Person</div>
-                    
-                    <!-- Additional Details -->
-                    <div class="summary-details" id="bookingSummary">
-                        <!-- Additional details will be populated by JavaScript -->
-                    </div>
+                <!-- Main Booking Title -->
+                <div class="summary-main-title" id="mainBookingTitle">2 Hours Ski Lesson with 1 Person</div>
+                
+                <!-- Additional Details -->
+                <div class="summary-details" id="bookingSummary">
+                    <!-- Additional details will be populated by JavaScript -->
                 </div>
 
                 <!-- Personal Information Form -->
                 <form id="personalInfoForm">
                     <div class="form-row">
                         <div class="form-field">
-                            <label class="form-label" for="fullName">Full Name *</label>
-                            <input type="text" id="fullName" class="form-input" required>
+                            <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
                             <div class="error-message" id="fullNameError">Please enter your full name</div>
                         </div>
                         <div class="form-field">
-                            <label class="form-label" for="age">Age *</label>
-                            <input type="number" id="age" class="form-input" min="5" max="90" required>
+                            <input type="number" id="age" class="form-input" placeholder="Age *" min="5" max="90" required>
                             <div class="error-message" id="ageError">Please enter a valid age (5-90)</div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-field">
-                            <label class="form-label" for="phone">Phone (WhatsApp) *</label>
                             <div class="phone-input-container">
                                 <div class="select-container">
                                     <select id="countryCode" class="custom-select country-code">
@@ -891,23 +879,21 @@
                                         <option value="+31">+31 (NL)</option>
                                     </select>
                                 </div>
-                                <input type="tel" id="phone" class="form-input phone-number" required placeholder="Phone number">
+                                <input type="tel" id="phone" class="form-input phone-number" required placeholder="Phone (WhatsApp) *">
                             </div>
                             <div class="error-message" id="phoneError">Please enter a valid phone number</div>
                         </div>
                         <div class="form-field">
-                            <label class="form-label" for="email">Email *</label>
-                            <input type="email" id="email" class="form-input" required>
+                            <input type="email" id="email" class="form-input" placeholder="Email *" required>
                             <div class="error-message" id="emailError">Please enter a valid email address</div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-field">
-                            <label class="form-label" for="skillLevel">Skill Level *</label>
                             <div class="select-container">
                                 <select id="skillLevel" class="custom-select" required>
-                                    <option value="">Select your level</option>
+                                    <option value="">Skill Level *</option>
                                     <option value="first-time">First Time</option>
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
@@ -917,10 +903,9 @@
                             <div class="error-message" id="skillLevelError">Please select your skill level</div>
                         </div>
                         <div class="form-field">
-                            <label class="form-label" for="spokenLanguage">Spoken Language *</label>
                             <div class="select-container">
                                 <select id="spokenLanguage" class="custom-select" required>
-                                    <option value="">Select language</option>
+                                    <option value="">Spoken Language *</option>
                                     <option value="english">English</option>
                                     <option value="russian">Russian</option>
                                     <option value="spanish">Spanish</option>
@@ -933,12 +918,11 @@
 
                     <div class="form-row">
                         <div class="form-field full-width">
-                            <label class="form-label" for="additionalInfo">Additional Information</label>
-                            <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Any special requirements or notes..."></textarea>
+                            <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Additional Information"></textarea>
                         </div>
                     </div>
 
-                    <!-- Price Display moved here -->
+                    <!-- Price Display -->
                     <div class="price-display">
                         <div class="price-row">
                             <span>Total amount:</span>
@@ -1312,14 +1296,6 @@
 
                 // Update additional details with beautiful styling
                 const summaryHTML = `
-                    <div class="summary-item">
-                        <span class="summary-label">Lesson Type</span>
-                        <span class="summary-value">${durationText} ${sportText}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Participants</span>
-                        <span class="summary-value">${participantsText}</span>
-                    </div>
                     <div class="summary-item">
                         <span class="summary-label">Duration</span>
                         <span class="summary-value">${daysText}</span>
