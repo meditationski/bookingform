@@ -515,23 +515,15 @@
             font-size: 18px;
             font-weight: 600;
             color: var(--text-accent);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
-        }
-
-        .summary-main {
-            background: var(--bg-accent);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-xl);
-            border: 1px solid var(--bg-tertiary);
-            margin-bottom: var(--spacing-xl);
         }
 
         .summary-main-title {
             font-size: 18px;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
             line-height: 1.4;
         }
@@ -540,7 +532,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            margin-top: 15px;
+            margin-bottom: 20px;
         }
 
         .summary-item {
@@ -868,26 +860,24 @@
                 <div class="summary-section">
                     <h3 class="summary-title">Booking Summary</h3>
                     
-                    <!-- Main Booking Info -->
-                    <div class="summary-main">
-                        <div class="summary-main-title" id="mainBookingTitle">2 Hours Ski Lesson with 1 person</div>
-                        
-                        <!-- Price Display (same as first step) -->
-                        <div class="price-display">
-                            <div class="price-row">
-                                <span>Total amount:</span>
-                                <span id="summaryTotalPrice" class="total-price">$100</span>
-                            </div>
-                            <div class="price-row">
-                                <span>20% deposit:</span>
-                                <span id="summaryDepositPrice" class="deposit-price">$20</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Remaining balance:</span>
-                                <span id="summaryRemainingPrice" class="remaining-price">$80</span>
-                            </div>
-                            <div id="summaryDiscountInfo" class="discount-info"></div>
+                    <!-- Main Booking Title -->
+                    <div class="summary-main-title" id="mainBookingTitle">2 Hours Ski Lesson with 1 person</div>
+                    
+                    <!-- Price Display (same style as first step) -->
+                    <div class="price-display">
+                        <div class="price-row">
+                            <span>Total amount:</span>
+                            <span id="summaryTotalPrice" class="total-price">$100</span>
                         </div>
+                        <div class="price-row">
+                            <span>20% deposit:</span>
+                            <span id="summaryDepositPrice" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Remaining balance:</span>
+                            <span id="summaryRemainingPrice" class="remaining-price">$80</span>
+                        </div>
+                        <div id="summaryDiscountInfo" class="discount-info"></div>
                     </div>
 
                     <!-- Additional Details -->
