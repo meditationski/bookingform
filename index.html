@@ -318,27 +318,26 @@
         .price-display { 
             background: #254d63; 
             color: #ffffff; 
-            padding: 24px; 
+            padding: 20px; 
             border-radius: 12px; 
-            margin-top: 24px; 
             border: 1px solid #3a3f45;
-            grid-column: 1 / -1;
+            margin-top: 10px;
         }
         .price-row { 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            margin-bottom: 16px; 
-            font-size: 16px; 
+            margin-bottom: 12px; 
+            font-size: 15px; 
         }
         .total-price { 
-            font-size: 32px; 
+            font-size: 28px; 
             font-weight: 700; 
         }
         .discount-info { 
             text-align: center; 
-            margin-top: 16px; 
-            font-size: 14px; 
+            margin-top: 12px; 
+            font-size: 13px; 
             color: #00A3FF; 
             font-weight: 600; 
             padding: 8px;
@@ -429,6 +428,23 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Price Display -->
+                <div class="price-display">
+                    <div class="price-row">
+                        <span>Total amount:</span>
+                        <span id="totalPrice">$100</span>
+                    </div>
+                    <div class="price-row">
+                        <span>20% deposit:</span>
+                        <span id="depositPrice">$20</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Remaining balance:</span>
+                        <span id="remainingPrice">$80</span>
+                    </div>
+                    <div id="discountInfo" class="discount-info"></div>
+                </div>
             </div>
             
             <!-- Правая колонка -->
@@ -469,23 +485,6 @@
                     </div>
                     <div class="selected-info" id="selectedDateTime">Please select a date first</div>
                 </div>
-            </div>
-            
-            <!-- Price Display -->
-            <div class="price-display">
-                <div class="price-row">
-                    <span>Total amount:</span>
-                    <span id="totalPrice">$100</span>
-                </div>
-                <div class="price-row">
-                    <span>20% deposit:</span>
-                    <span id="depositPrice">$20</span>
-                </div>
-                <div class="price-row">
-                    <span>Remaining balance:</span>
-                    <span id="remainingPrice">$80</span>
-                </div>
-                <div id="discountInfo" class="discount-info"></div>
             </div>
         </div>
     </div>
