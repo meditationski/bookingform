@@ -6,32 +6,67 @@
     <title>Booking Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* === VARIABLES === */
+        :root {
+            /* Colors */
+            --bg-primary: #222529;
+            --bg-secondary: #2a2e33;
+            --bg-tertiary: #3a3f45;
+            --bg-accent: #254d63;
+            --text-primary: #ffffff;
+            --text-secondary: #858e96;
+            --text-accent: #00A3FF;
+            --text-success: #00ff88;
+            --text-error: #ff4757;
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 20px;
+            --spacing-xxl: 25px;
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 10px;
+            --radius-xl: 12px;
+            
+            /* Transitions */
+            --transition: all 0.3s ease;
+        }
+
+        /* === BASE STYLES === */
         * { 
             margin: 0; 
             padding: 0; 
             box-sizing: border-box; 
         }
+        
         body { 
-            background: #222529; 
+            background: var(--bg-primary); 
             font-family: 'Inter', sans-serif; 
-            color: #858e96; 
+            color: var(--text-secondary); 
             padding: 15px;
             min-height: 100vh;
             overflow-x: hidden;
         }
+        
         .calculator-container { 
             max-width: 900px; 
             margin: 0 auto; 
-            background: #222529; 
-            border-radius: 12px; 
-            padding: 20px;
+            background: var(--bg-primary); 
+            border-radius: var(--radius-xl); 
+            padding: var(--spacing-xl);
             position: relative;
         }
         
+        /* === LAYOUT === */
         .form-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            gap: var(--spacing-xxl);
             align-items: start;
         }
         
@@ -49,40 +84,43 @@
         }
         
         .form-group { 
-            margin-bottom: 20px; 
+            margin-bottom: var(--spacing-xl); 
             width: 100%;
         }
         
-        /* Tabs */
+        /* === TABS === */
         .tabs { 
             display: flex; 
-            background: #2a2e33; 
-            border-radius: 8px; 
-            padding: 4px; 
-            gap: 4px;
+            background: var(--bg-secondary); 
+            border-radius: var(--radius-md); 
+            padding: var(--spacing-xs); 
+            gap: var(--spacing-xs);
         }
+        
         .tab { 
             flex: 1; 
-            padding: 12px; 
+            padding: var(--spacing-md); 
             text-align: center; 
             background: transparent; 
             border: none; 
-            color: #858e96; 
+            color: var(--text-secondary); 
             font-weight: 600; 
-            border-radius: 6px; 
+            border-radius: var(--radius-sm); 
             cursor: pointer; 
             font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        .tab.active { 
-            background: #00A3FF; 
-            color: #ffffff; 
-        }
-        .tab:hover:not(.active) {
-            background: #3a3f45;
+            transition: var(--transition);
         }
         
-        /* Красивое выпадающее меню */
+        .tab.active { 
+            background: var(--text-accent); 
+            color: var(--text-primary); 
+        }
+        
+        .tab:hover:not(.active) {
+            background: var(--bg-tertiary);
+        }
+        
+        /* === FORM ELEMENTS === */
         .select-container {
             position: relative;
             width: 100%;
@@ -91,11 +129,11 @@
         .custom-select {
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid #3a3f45;
-            border-radius: 8px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--radius-md);
             font-size: 14px;
-            background: #2a2e33;
-            color: #ffffff;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             appearance: none;
@@ -106,63 +144,67 @@
             background-position: right 16px center;
             background-size: 12px;
             padding-right: 40px;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
         
         .custom-select:focus {
             outline: none;
-            border-color: #00A3FF;
+            border-color: var(--text-accent);
             box-shadow: 0 0 0 2px rgba(0, 163, 255, 0.2);
         }
         
         .custom-select:hover {
-            border-color: #00A3FF;
+            border-color: var(--text-accent);
         }
         
-        /* Sliders */
+        /* === SLIDERS === */
         .slider-container { 
-            margin-top: 8px; 
+            margin-top: var(--spacing-sm); 
         }
+        
         .slider-value { 
             text-align: center; 
             font-weight: 600; 
-            color: #00A3FF; 
+            color: var(--text-accent); 
             font-size: 14px; 
-            margin: 8px 0; 
+            margin: var(--spacing-sm) 0; 
         }
+        
         input[type="range"] { 
             width: 100%; 
             height: 6px; 
-            background: #3a3f45; 
+            background: var(--bg-tertiary); 
             border-radius: 3px; 
-            margin: 12px 0; 
+            margin: var(--spacing-md) 0; 
             -webkit-appearance: none;
             cursor: pointer;
         }
+        
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 20px;
             height: 20px;
-            background: #00A3FF;
+            background: var(--text-accent);
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid #222529;
+            border: 2px solid var(--bg-primary);
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+        
         .slider-labels { 
             display: flex; 
             justify-content: space-between; 
             font-size: 11px; 
-            color: #858e96; 
+            color: var(--text-secondary); 
             margin-top: 5px;
         }
         
-        /* Calendar Styles */
+        /* === CALENDAR === */
         .calendar-container {
-            background: #2a2e33;
-            border-radius: 12px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
             padding: 18px;
-            border: 1px solid #3a3f45;
+            border: 1px solid var(--bg-tertiary);
         }
         
         .calendar-header {
@@ -175,31 +217,31 @@
         .calendar-month {
             font-size: 16px;
             font-weight: 600;
-            color: #ffffff;
+            color: var(--text-primary);
         }
         
         .calendar-nav {
             display: flex;
-            gap: 8px;
+            gap: var(--spacing-sm);
         }
         
         .calendar-nav button {
-            background: #3a3f45;
+            background: var(--bg-tertiary);
             border: none;
-            color: #ffffff;
+            color: var(--text-primary);
             width: 32px;
             height: 32px;
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
         
         .calendar-nav button:hover:not(:disabled) {
-            background: #00A3FF;
+            background: var(--text-accent);
         }
         
         .calendar-nav button:disabled {
@@ -211,20 +253,20 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: var(--spacing-sm);
             font-size: 11px;
-            color: #858e96;
+            color: var(--text-secondary);
             font-weight: 500;
         }
         
         .weekday {
-            padding: 8px 0;
+            padding: var(--spacing-sm) 0;
         }
         
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
+            gap: var(--spacing-xs);
         }
         
         .calendar-day {
@@ -234,31 +276,31 @@
             justify-content: center;
             border: none;
             background: transparent;
-            color: #858e96;
+            color: var(--text-secondary);
             font-size: 13px;
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
         
         .calendar-day:hover:not(.disabled):not(.selected) {
-            background: #3a3f45;
-            color: #ffffff;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
         }
         
         .calendar-day.selected {
-            background: #00A3FF;
-            color: #ffffff;
+            background: var(--text-accent);
+            color: var(--text-primary);
             box-shadow: 0 2px 8px rgba(0, 163, 255, 0.3);
         }
         
         .calendar-day.today {
-            border: 1px solid #00A3FF;
+            border: 1px solid var(--text-accent);
         }
         
         .calendar-day.today:not(.selected) {
             background: transparent;
-            color: #00A3FF;
+            color: var(--text-accent);
         }
         
         .calendar-day.disabled {
@@ -270,36 +312,41 @@
             opacity: 0.3;
         }
         
-        /* Time Selection */
+        /* === TIME SELECTION === */
         .time-selection { 
-            background: #2a2e33; 
-            border-radius: 8px; 
+            background: var(--bg-secondary); 
+            border-radius: var(--radius-md); 
             padding: 18px; 
-            border: 1px solid #3a3f45; 
+            border: 1px solid var(--bg-tertiary); 
         }
+        
         .time-slots { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
-            gap: 8px; 
+            gap: var(--spacing-sm); 
         }
+        
         .time-slot { 
             padding: 10px; 
-            background: #3a3f45; 
+            background: var(--bg-tertiary); 
             border: none; 
-            border-radius: 6px; 
-            color: #ffffff; 
+            border-radius: var(--radius-sm); 
+            color: var(--text-primary); 
             font-size: 13px; 
             cursor: pointer; 
             text-align: center; 
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
+        
         .time-slot:hover:not(.disabled) {
-            background: #00A3FF;
+            background: var(--text-accent);
         }
+        
         .time-slot.selected { 
-            background: #00A3FF; 
+            background: var(--text-accent); 
             box-shadow: 0 2px 8px rgba(0, 163, 255, 0.3);
         }
+        
         .time-slot.disabled { 
             opacity: 0.3; 
             cursor: not-allowed; 
@@ -307,25 +354,26 @@
         
         .selected-info { 
             text-align: center; 
-            margin-top: 16px; 
+            margin-top: var(--spacing-lg); 
             font-size: 14px; 
-            color: #00A3FF; 
+            color: var(--text-accent); 
             font-weight: 600; 
             padding: 10px;
             background: rgba(0, 163, 255, 0.1);
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
             border: 1px solid rgba(0, 163, 255, 0.3);
         }
         
-        /* Price Display */
+        /* === PRICE DISPLAY === */
         .price-display { 
-            background: #254d63; 
-            color: #ffffff; 
+            background: var(--bg-accent); 
+            color: var(--text-primary); 
             padding: 18px; 
-            border-radius: 10px; 
-            border: 1px solid #3a3f45;
+            border-radius: var(--radius-lg); 
+            border: 1px solid var(--bg-tertiary);
             margin-top: 10px;
         }
+        
         .price-row { 
             display: flex; 
             justify-content: space-between; 
@@ -333,46 +381,50 @@
             margin-bottom: 10px; 
             font-size: 14px; 
         }
+        
         .total-price { 
             font-size: 24px; 
             font-weight: 700; 
-            color: #ffffff;
+            color: var(--text-primary);
         }
+        
         .deposit-price {
-            color: #00A3FF;
+            color: var(--text-accent);
         }
+        
         .remaining-price {
-            color: #ffffff;
+            color: var(--text-primary);
         }
+        
         .discount-info { 
             text-align: center; 
             margin-top: 10px; 
             font-size: 12px; 
-            color: #00A3FF; 
+            color: var(--text-accent); 
             font-weight: 600; 
             padding: 6px;
             background: rgba(0, 163, 255, 0.1);
             border-radius: 4px;
         }
 
-        /* Next Button */
+        /* === BUTTONS === */
         .next-button-container {
             display: flex;
             justify-content: center;
-            margin-top: 25px;
+            margin-top: var(--spacing-xxl);
             grid-column: 1 / -1;
         }
 
         .next-button {
-            background: #00A3FF;
-            color: #ffffff;
+            background: var(--text-accent);
+            color: var(--text-primary);
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             padding: 14px 40px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             min-width: 200px;
         }
 
@@ -383,21 +435,64 @@
         }
 
         .next-button:disabled {
-            background: #3a3f45;
+            background: var(--bg-tertiary);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
 
-        /* Booking Form Section */
+        .back-button {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 12px 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .back-button:hover {
+            background: #4a4f55;
+        }
+
+        .book-button {
+            background: var(--text-accent);
+            color: var(--text-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 12px 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .book-button:hover {
+            background: #0088cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 163, 255, 0.3);
+        }
+
+        .book-button:disabled {
+            background: var(--bg-tertiary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* === BOOKING FORM SECTION === */
         .booking-form-section {
             display: none;
             grid-column: 1 / -1;
-            background: #2a2e33;
-            border-radius: 12px;
-            padding: 25px;
-            border: 1px solid #3a3f45;
-            margin-top: 20px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xxl);
+            border: 1px solid var(--bg-tertiary);
+            margin-top: var(--spacing-xl);
         }
 
         .booking-form-section.active {
@@ -407,8 +502,8 @@
         .section-title {
             font-size: 20px;
             font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 25px;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xxl);
             text-align: center;
         }
 
@@ -419,23 +514,23 @@
         .summary-title {
             font-size: 18px;
             font-weight: 600;
-            color: #00A3FF;
+            color: var(--text-accent);
             margin-bottom: 15px;
             text-align: center;
         }
 
         .summary-main {
-            background: #254d63;
-            border-radius: 10px;
-            padding: 20px;
-            border: 1px solid #3a3f45;
-            margin-bottom: 20px;
+            background: var(--bg-accent);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            border: 1px solid var(--bg-tertiary);
+            margin-bottom: var(--spacing-xl);
         }
 
         .summary-main-title {
             font-size: 16px;
             font-weight: 600;
-            color: #ffffff;
+            color: var(--text-primary);
             margin-bottom: 15px;
             text-align: center;
         }
@@ -455,27 +550,27 @@
 
         .summary-label {
             font-size: 12px;
-            color: #858e96;
+            color: var(--text-secondary);
             font-weight: 500;
         }
 
         .summary-value {
             font-size: 14px;
-            color: #ffffff;
+            color: var(--text-primary);
             font-weight: 600;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
         }
 
         .form-field {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: var(--spacing-sm);
         }
 
         .form-field.full-width {
@@ -485,33 +580,33 @@
         .form-label {
             font-size: 14px;
             font-weight: 500;
-            color: #ffffff;
+            color: var(--text-primary);
         }
 
         .form-input {
             padding: 12px 16px;
-            border: 1px solid #3a3f45;
-            border-radius: 8px;
-            background: #2a2e33;
-            color: #ffffff;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             font-size: 14px;
             font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .form-input:focus {
             outline: none;
-            border-color: #00A3FF;
+            border-color: var(--text-accent);
             box-shadow: 0 0 0 2px rgba(0, 163, 255, 0.2);
         }
 
         .form-input.error {
-            border-color: #ff4757;
+            border-color: var(--text-error);
         }
 
         .error-message {
             font-size: 12px;
-            color: #ff4757;
+            color: var(--text-error);
             margin-top: 4px;
             display: none;
         }
@@ -540,50 +635,7 @@
             margin-top: 30px;
         }
 
-        .back-button {
-            background: #3a3f45;
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 30px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-        }
-
-        .back-button:hover {
-            background: #4a4f55;
-        }
-
-        .book-button {
-            background: #00A3FF;
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 30px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-        }
-
-        .book-button:hover {
-            background: #0088cc;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 163, 255, 0.3);
-        }
-
-        .book-button:disabled {
-            background: #3a3f45;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Мобильная версия */
+        /* === RESPONSIVE DESIGN === */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -591,7 +643,7 @@
             
             .calculator-container {
                 padding: 15px;
-                border-radius: 10px;
+                border-radius: var(--radius-lg);
             }
             
             .form-content {
@@ -701,7 +753,7 @@
         <div class="form-content">
             <!-- Booking Section -->
             <div class="booking-section" id="bookingSection">
-                <!-- Левая колонка -->
+                <!-- Left Column -->
                 <div class="left-column">
                     <!-- Equipment Type -->
                     <div class="form-group">
@@ -763,7 +815,7 @@
                     </div>
                 </div>
                 
-                <!-- Правая колонка -->
+                <!-- Right Column -->
                 <div class="right-column">
                     <!-- Calendar -->
                     <div class="form-group">
@@ -933,158 +985,123 @@
     </div>
 
     <script>
-        // Improved auto-resize system for iframe
-        function updateIframeHeight() {
-            const height = document.documentElement.scrollHeight;
-            if (window.parent !== window) {
-                window.parent.postMessage({
-                    type: 'resize',
-                    height: height
-                }, '*');
+        // ===== CONFIGURATION =====
+        const CONFIG = {
+            prices: {'2': 100, '3': 140, 'full': 250},
+            minDate: new Date(2025, 11, 15), // Dec 15, 2025
+            maxDate: new Date(2026, 3, 30),  // Apr 30, 2026
+            resortCloseHour: 17,
+            lessonStartHour: 10
+        };
+
+        // ===== STATE MANAGEMENT =====
+        const State = {
+            currentMonth: new Date(Math.max(new Date(), CONFIG.minDate)),
+            selectedDate: null,
+            selectedTime: null,
+            currentStep: 'booking',
+            
+            init() {
+                this.currentMonth.setDate(1);
+            },
+            
+            setSelectedDate(date) {
+                this.selectedDate = date;
+                this.selectedTime = null;
+            },
+            
+            setSelectedTime(time) {
+                this.selectedTime = time;
+            },
+            
+            setCurrentStep(step) {
+                this.currentStep = step;
             }
-        }
+        };
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const prices = {'2': 100, '3': 140, 'full': 250};
+        // ===== DOM ELEMENTS =====
+        const Elements = {
+            // Booking Section
+            tabs: document.querySelectorAll('.tab'),
+            durationSelect: document.getElementById('duration'),
+            participantsSlider: document.getElementById('participants'),
+            participantsValue: document.getElementById('participantsValue'),
+            daysSlider: document.getElementById('days'),
+            daysValue: document.getElementById('daysValue'),
+            timeSlotsEl: document.getElementById('timeSlots'),
+            selectedDateTimeEl: document.getElementById('selectedDateTime'),
+            totalPrice: document.getElementById('totalPrice'),
+            depositPrice: document.getElementById('depositPrice'),
+            remainingPrice: document.getElementById('remainingPrice'),
+            discountInfo: document.getElementById('discountInfo'),
             
-            // DOM Elements
-            const tabs = document.querySelectorAll('.tab');
-            const durationSelect = document.getElementById('duration');
-            const participantsSlider = document.getElementById('participants');
-            const participantsValue = document.getElementById('participantsValue');
-            const daysSlider = document.getElementById('days');
-            const daysValue = document.getElementById('daysValue');
-            const timeSlotsEl = document.getElementById('timeSlots');
-            const selectedDateTimeEl = document.getElementById('selectedDateTime');
-            const totalPrice = document.getElementById('totalPrice');
-            const depositPrice = document.getElementById('depositPrice');
-            const remainingPrice = document.getElementById('remainingPrice');
-            const discountInfo = document.getElementById('discountInfo');
+            // Calendar
+            prevMonthBtn: document.getElementById('prevMonth'),
+            nextMonthBtn: document.getElementById('nextMonth'),
+            currentMonthEl: document.getElementById('currentMonth'),
+            calendarDaysEl: document.getElementById('calendarDays'),
             
-            // Summary Elements
-            const mainBookingTitle = document.getElementById('mainBookingTitle');
-            const summaryTotalPrice = document.getElementById('summaryTotalPrice');
-            const summaryDepositPrice = document.getElementById('summaryDepositPrice');
-            const summaryRemainingPrice = document.getElementById('summaryRemainingPrice');
-            const summaryDiscountInfo = document.getElementById('summaryDiscountInfo');
+            // Summary
+            mainBookingTitle: document.getElementById('mainBookingTitle'),
+            summaryTotalPrice: document.getElementById('summaryTotalPrice'),
+            summaryDepositPrice: document.getElementById('summaryDepositPrice'),
+            summaryRemainingPrice: document.getElementById('summaryRemainingPrice'),
+            summaryDiscountInfo: document.getElementById('summaryDiscountInfo'),
+            bookingSummary: document.getElementById('bookingSummary'),
             
-            // Calendar Elements
-            const prevMonthBtn = document.getElementById('prevMonth');
-            const nextMonthBtn = document.getElementById('nextMonth');
-            const currentMonthEl = document.getElementById('currentMonth');
-            const calendarDaysEl = document.getElementById('calendarDays');
+            // Navigation
+            bookingSection: document.getElementById('bookingSection'),
+            nextButton: document.getElementById('nextButton'),
+            bookingFormSection: document.getElementById('bookingFormSection'),
+            backButton: document.getElementById('backButton'),
             
-            // New Elements
-            const bookingSection = document.getElementById('bookingSection');
-            const nextButton = document.getElementById('nextButton');
-            const bookingFormSection = document.getElementById('bookingFormSection');
-            const bookingSummary = document.getElementById('bookingSummary');
-            const personalInfoForm = document.getElementById('personalInfoForm');
-            const backButton = document.getElementById('backButton');
-            const bookButton = document.getElementById('bookButton');
-            
-            // Form Elements
-            const fullNameInput = document.getElementById('fullName');
-            const ageInput = document.getElementById('age');
-            const countryCodeSelect = document.getElementById('countryCode');
-            const phoneInput = document.getElementById('phone');
-            const emailInput = document.getElementById('email');
-            const skillLevelSelect = document.getElementById('skillLevel');
-            const spokenLanguageSelect = document.getElementById('spokenLanguage');
-            const additionalInfoInput = document.getElementById('additionalInfo');
-            
-            // Error Elements
-            const fullNameError = document.getElementById('fullNameError');
-            const ageError = document.getElementById('ageError');
-            const phoneError = document.getElementById('phoneError');
-            const emailError = document.getElementById('emailError');
-            const skillLevelError = document.getElementById('skillLevelError');
-            const spokenLanguageError = document.getElementById('spokenLanguageError');
-            
-            // State
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            const minDate = new Date(2025, 11, 15); // Dec 15, 2025
-            const maxDate = new Date(2026, 3, 30);  // Apr 30, 2026
-            
-            let currentMonth = new Date(Math.max(today, minDate));
-            currentMonth.setDate(1);
-            
-            let selectedDate = null;
-            let selectedTime = null;
-            let currentStep = 'booking'; // 'booking' or 'form'
+            // Form
+            personalInfoForm: document.getElementById('personalInfoForm'),
+            bookButton: document.getElementById('bookButton'),
+            fullNameInput: document.getElementById('fullName'),
+            ageInput: document.getElementById('age'),
+            countryCodeSelect: document.getElementById('countryCode'),
+            phoneInput: document.getElementById('phone'),
+            emailInput: document.getElementById('email'),
+            skillLevelSelect: document.getElementById('skillLevel'),
+            spokenLanguageSelect: document.getElementById('spokenLanguage'),
+            additionalInfoInput: document.getElementById('additionalInfo')
+        };
 
-            // Initialize tabs
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    calculatePrice();
-                    updateNextButtonState();
-                    updateIframeHeight();
-                });
-            });
-
-            // Initialize sliders
-            participantsSlider.addEventListener('input', function() {
-                const value = this.value;
-                participantsValue.textContent = value + (value == 1 ? ' person' : ' people');
-                calculatePrice();
-                updateNextButtonState();
-                updateIframeHeight();
-            });
-
-            daysSlider.addEventListener('input', function() {
-                const value = this.value;
-                daysValue.textContent = value + (value == 1 ? ' day' : ' days');
-                calculatePrice();
-                updateNextButtonState();
-                updateIframeHeight();
-            });
-
-            // Initialize duration select
-            durationSelect.addEventListener('change', function() {
-                calculatePrice();
-                updateTimeSlots();
-                updateNextButtonState();
-                updateIframeHeight();
-            });
-
-            // Next button handler
-            nextButton.addEventListener('click', function() {
-                if (currentStep === 'booking' && isBookingValid()) {
-                    showBookingForm();
+        // ===== UTILITIES =====
+        const Utils = {
+            updateIframeHeight() {
+                const height = document.documentElement.scrollHeight;
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'resize',
+                        height: height
+                    }, '*');
                 }
-            });
-
-            // Back button handler
-            backButton.addEventListener('click', function() {
-                showBookingSection();
-            });
-
-            // Form submission handler
-            personalInfoForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (validateForm()) {
-                    submitBooking();
-                }
-            });
-
-            // Form validation on input
-            [fullNameInput, ageInput, phoneInput, emailInput, skillLevelSelect, spokenLanguageSelect].forEach(element => {
-                element.addEventListener('input', function() {
-                    validateField(this.id);
+            },
+            
+            formatDate(date) {
+                return date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
                 });
-            });
+            },
+            
+            formatTime(time) {
+                return time;
+            }
+        };
 
-            // Calendar functions
-            function renderCalendar() {
-                const year = currentMonth.getFullYear();
-                const month = currentMonth.getMonth();
+        // ===== CALENDAR MODULE =====
+        const Calendar = {
+            render() {
+                const year = State.currentMonth.getFullYear();
+                const month = State.currentMonth.getMonth();
                 
                 // Update month display
-                currentMonthEl.textContent = currentMonth.toLocaleDateString('en-US', {
+                Elements.currentMonthEl.textContent = State.currentMonth.toLocaleDateString('en-US', {
                     month: 'long',
                     year: 'numeric'
                 });
@@ -1093,8 +1110,8 @@
                 const prevMonthDate = new Date(year, month - 1, 1);
                 const nextMonthDate = new Date(year, month + 1, 1);
                 
-                prevMonthBtn.disabled = prevMonthDate < new Date(minDate.getFullYear(), minDate.getMonth(), 1);
-                nextMonthBtn.disabled = nextMonthDate > new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+                Elements.prevMonthBtn.disabled = prevMonthDate < new Date(CONFIG.minDate.getFullYear(), CONFIG.minDate.getMonth(), 1);
+                Elements.nextMonthBtn.disabled = nextMonthDate > new Date(CONFIG.maxDate.getFullYear(), CONFIG.maxDate.getMonth(), 1);
                 
                 // Get first and last day of month
                 const firstDay = new Date(year, month, 1);
@@ -1104,49 +1121,40 @@
                 const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
                 
                 // Clear calendar
-                calendarDaysEl.innerHTML = '';
+                Elements.calendarDaysEl.innerHTML = '';
                 
                 // Previous month days
                 const prevMonthLastDay = new Date(year, month, 0).getDate();
                 for (let i = startDay - 1; i >= 0; i--) {
                     const day = prevMonthLastDay - i;
-                    const button = document.createElement('button');
-                    button.className = 'calendar-day other-month disabled';
-                    button.textContent = day;
-                    button.disabled = true;
-                    calendarDaysEl.appendChild(button);
+                    this.createCalendarDay(day, 'other-month disabled', true);
                 }
                 
                 // Current month days
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
                 for (let day = 1; day <= lastDay.getDate(); day++) {
                     const date = new Date(year, month, day);
-                    const button = document.createElement('button');
-                    button.className = 'calendar-day';
-                    button.textContent = day;
+                    let className = 'calendar-day';
                     
                     // Check if today
                     if (date.toDateString() === today.toDateString()) {
-                        button.classList.add('today');
+                        className += ' today';
                     }
                     
                     // Check if date is within allowed range
-                    if (date < minDate || date > maxDate || date < today) {
-                        button.classList.add('disabled');
-                        button.disabled = true;
+                    if (date < CONFIG.minDate || date > CONFIG.maxDate || date < today) {
+                        className += ' disabled';
+                        this.createCalendarDay(day, className, true);
                     } else {
                         // Check if selected
-                        if (selectedDate && selectedDate.toDateString() === date.toDateString()) {
-                            button.classList.add('selected');
+                        if (State.selectedDate && State.selectedDate.toDateString() === date.toDateString()) {
+                            className += ' selected';
                         }
                         
-                        button.addEventListener('click', () => {
-                            selectDate(date);
-                            updateNextButtonState();
-                            updateIframeHeight();
-                        });
+                        this.createCalendarDay(day, className, false, date);
                     }
-                    
-                    calendarDaysEl.appendChild(button);
                 }
                 
                 // Next month days
@@ -1155,139 +1163,98 @@
                 const nextMonthDays = totalCells - daysSoFar;
                 
                 for (let day = 1; day <= nextMonthDays; day++) {
-                    const button = document.createElement('button');
-                    button.className = 'calendar-day other-month disabled';
-                    button.textContent = day;
-                    button.disabled = true;
-                    calendarDaysEl.appendChild(button);
+                    this.createCalendarDay(day, 'other-month disabled', true);
                 }
-            }
+            },
             
-            function selectDate(date) {
-                selectedDate = date;
-                selectedTime = null;
-                renderCalendar();
-                updateTimeSlots();
-                updateSelectedDateTime();
-                calculatePrice();
-                updateNextButtonState();
-                updateIframeHeight();
-            }
-            
-            function updateTimeSlots() {
-                timeSlotsEl.innerHTML = '';
+            createCalendarDay(day, className, disabled, date = null) {
+                const button = document.createElement('button');
+                button.className = className;
+                button.textContent = day;
+                button.disabled = disabled;
                 
-                if (!selectedDate) {
-                    timeSlotsEl.innerHTML = '<div class="time-slot disabled">Select date first</div>';
+                if (!disabled && date) {
+                    button.addEventListener('click', () => {
+                        State.setSelectedDate(date);
+                        Calendar.render();
+                        TimeSlots.update();
+                        Booking.updateSelectedDateTime();
+                        Pricing.calculate();
+                        Navigation.updateNextButtonState();
+                        Utils.updateIframeHeight();
+                    });
+                }
+                
+                Elements.calendarDaysEl.appendChild(button);
+            },
+            
+            navigate(direction) {
+                State.currentMonth.setMonth(State.currentMonth.getMonth() + direction);
+                this.render();
+                Utils.updateIframeHeight();
+            }
+        };
+
+        // ===== TIME SLOTS MODULE =====
+        const TimeSlots = {
+            update() {
+                Elements.timeSlotsEl.innerHTML = '';
+                
+                if (!State.selectedDate) {
+                    Elements.timeSlotsEl.innerHTML = '<div class="time-slot disabled">Select date first</div>';
                     return;
                 }
 
-                const duration = durationSelect.value;
+                const duration = Elements.durationSelect.value;
                 
                 if (duration === 'full') {
-                    const timeSlot = document.createElement('button');
-                    const timeString = '10:00';
-                    timeSlot.className = 'time-slot';
-                    timeSlot.textContent = timeString + ' (Full day)';
-                    
-                    if (selectedTime === timeString) {
-                        timeSlot.classList.add('selected');
-                    }
-                    
-                    timeSlot.addEventListener('click', function() {
-                        document.querySelectorAll('.time-slot').forEach(slot => {
-                            slot.classList.remove('selected');
-                        });
-                        selectedTime = timeString;
-                        this.classList.add('selected');
-                        updateSelectedDateTime();
-                        calculatePrice();
-                        updateNextButtonState();
-                        updateIframeHeight();
-                    });
-                    
-                    timeSlotsEl.appendChild(timeSlot);
+                    this.createTimeSlot('10:00', '10:00 (Full day)');
                 } else {
                     const lessonHours = parseInt(duration);
-                    const resortClose = 17;
                     
-                    for (let hour = 10; hour <= resortClose - lessonHours; hour++) {
-                        const timeSlot = document.createElement('button');
-                        const timeString = `${hour}:00`;
-                        timeSlot.className = 'time-slot';
-                        timeSlot.textContent = timeString;
-                        
-                        if (selectedTime === timeString) {
-                            timeSlot.classList.add('selected');
-                        }
-                        
-                        timeSlot.addEventListener('click', function() {
-                            document.querySelectorAll('.time-slot').forEach(slot => {
-                                slot.classList.remove('selected');
-                            });
-                            selectedTime = timeString;
-                            this.classList.add('selected');
-                            updateSelectedDateTime();
-                            calculatePrice();
-                            updateNextButtonState();
-                            updateIframeHeight();
-                        });
-                        
-                        timeSlotsEl.appendChild(timeSlot);
+                    for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - lessonHours; hour++) {
+                        this.createTimeSlot(`${hour}:00`);
                     }
                 }
                 
-                if (timeSlotsEl.children.length === 0) {
-                    timeSlotsEl.innerHTML = '<div class="time-slot disabled">No available times</div>';
+                if (Elements.timeSlotsEl.children.length === 0) {
+                    Elements.timeSlotsEl.innerHTML = '<div class="time-slot disabled">No available times</div>';
                 }
-            }
+            },
             
-            function updateSelectedDateTime() {
-                if (selectedDate && selectedTime) {
-                    const dateStr = selectedDate.toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                    });
-                    const duration = durationSelect.value;
-                    if (duration === 'full') {
-                        selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime} (Full day)`;
-                    } else {
-                        selectedDateTimeEl.textContent = `${dateStr} at ${selectedTime} (${duration} hours)`;
-                    }
-                } else if (selectedDate) {
-                    const dateStr = selectedDate.toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                    });
-                    selectedDateTimeEl.textContent = `${dateStr} - Please select a time`;
-                } else {
-                    selectedDateTimeEl.textContent = 'Please select a date first';
+            createTimeSlot(timeString, displayText = null) {
+                const timeSlot = document.createElement('button');
+                timeSlot.className = 'time-slot';
+                timeSlot.textContent = displayText || timeString;
+                
+                if (State.selectedTime === timeString) {
+                    timeSlot.classList.add('selected');
                 }
+                
+                timeSlot.addEventListener('click', function() {
+                    document.querySelectorAll('.time-slot').forEach(slot => {
+                        slot.classList.remove('selected');
+                    });
+                    State.setSelectedTime(timeString);
+                    this.classList.add('selected');
+                    Booking.updateSelectedDateTime();
+                    Pricing.calculate();
+                    Navigation.updateNextButtonState();
+                    Utils.updateIframeHeight();
+                });
+                
+                Elements.timeSlotsEl.appendChild(timeSlot);
             }
-            
-            // Calendar navigation
-            prevMonthBtn.addEventListener('click', () => {
-                currentMonth.setMonth(currentMonth.getMonth() - 1);
-                renderCalendar();
-                updateIframeHeight();
-            });
-            
-            nextMonthBtn.addEventListener('click', () => {
-                currentMonth.setMonth(currentMonth.getMonth() + 1);
-                renderCalendar();
-                updateIframeHeight();
-            });
+        };
 
-            function calculatePrice() {
-                const duration = durationSelect.value;
-                const participants = parseInt(participantsSlider.value);
-                const days = parseInt(daysSlider.value);
+        // ===== PRICING MODULE =====
+        const Pricing = {
+            calculate() {
+                const duration = Elements.durationSelect.value;
+                const participants = parseInt(Elements.participantsSlider.value);
+                const days = parseInt(Elements.daysSlider.value);
                 
-                let basePrice = prices[duration];
+                let basePrice = CONFIG.prices[duration];
                 const additionalPrice = (participants - 1) * 40;
                 const pricePerDay = basePrice + additionalPrice;
                 
@@ -1308,55 +1275,47 @@
                 const deposit = Math.round(total * 0.20);
                 const remaining = total - deposit;
                 
-                totalPrice.textContent = `$${total}`;
-                depositPrice.textContent = `$${deposit}`;
-                remainingPrice.textContent = `$${remaining}`;
+                // Update prices in both sections
+                this.updatePriceDisplay(Elements.totalPrice, total);
+                this.updatePriceDisplay(Elements.depositPrice, deposit);
+                this.updatePriceDisplay(Elements.remainingPrice, remaining);
+                this.updatePriceDisplay(Elements.summaryTotalPrice, total);
+                this.updatePriceDisplay(Elements.summaryDepositPrice, deposit);
+                this.updatePriceDisplay(Elements.summaryRemainingPrice, remaining);
                 
-                // Update summary prices
-                summaryTotalPrice.textContent = `$${total}`;
-                summaryDepositPrice.textContent = `$${deposit}`;
-                summaryRemainingPrice.textContent = `$${remaining}`;
-                
+                // Update discount info
                 const discountText = maxDiscount > 0 ? 
                     `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
                 
-                discountInfo.textContent = discountText;
-                summaryDiscountInfo.textContent = discountText;
+                Elements.discountInfo.textContent = discountText;
+                Elements.summaryDiscountInfo.textContent = discountText;
+            },
+            
+            updatePriceDisplay(element, amount) {
+                element.textContent = `$${amount}`;
             }
+        };
 
-            function updateNextButtonState() {
-                nextButton.disabled = !isBookingValid();
-            }
-
-            function isBookingValid() {
+        // ===== BOOKING MODULE =====
+        const Booking = {
+            updateSelectedDateTime() {
+                if (State.selectedDate && State.selectedTime) {
+                    const dateStr = Utils.formatDate(State.selectedDate);
+                    // Removed duration from display as requested
+                    Elements.selectedDateTimeEl.textContent = `${dateStr} at ${State.selectedTime}`;
+                } else if (State.selectedDate) {
+                    const dateStr = Utils.formatDate(State.selectedDate);
+                    Elements.selectedDateTimeEl.textContent = `${dateStr} - Please select a time`;
+                } else {
+                    Elements.selectedDateTimeEl.textContent = 'Please select a date first';
+                }
+            },
+            
+            updateSummary() {
                 const activeSport = document.querySelector('.tab.active').dataset.sport;
-                const duration = durationSelect.value;
-                const participants = parseInt(participantsSlider.value);
-                const days = parseInt(daysSlider.value);
-                
-                return activeSport && duration && participants > 0 && days > 0 && selectedDate && selectedTime;
-            }
-
-            function showBookingForm() {
-                currentStep = 'form';
-                bookingSection.classList.add('hidden');
-                bookingFormSection.classList.add('active');
-                updateBookingSummary();
-                updateIframeHeight();
-            }
-
-            function showBookingSection() {
-                currentStep = 'booking';
-                bookingFormSection.classList.remove('active');
-                bookingSection.classList.remove('hidden');
-                updateIframeHeight();
-            }
-
-            function updateBookingSummary() {
-                const activeSport = document.querySelector('.tab.active').dataset.sport;
-                const duration = durationSelect.value;
-                const participants = parseInt(participantsSlider.value);
-                const days = parseInt(daysSlider.value);
+                const duration = Elements.durationSelect.value;
+                const participants = parseInt(Elements.participantsSlider.value);
+                const days = parseInt(Elements.daysSlider.value);
                 
                 const durationText = {
                     '2': '2 Hours',
@@ -1367,7 +1326,7 @@
                 const sportText = activeSport.charAt(0).toUpperCase() + activeSport.slice(1);
                 
                 // Update main title
-                mainBookingTitle.textContent = `${durationText} ${sportText} Lesson`;
+                Elements.mainBookingTitle.textContent = `${durationText} ${sportText} Lesson`;
 
                 // Update additional details
                 const summaryHTML = `
@@ -1381,45 +1340,45 @@
                     </div>
                     <div class="summary-item">
                         <span class="summary-label">Date & Time</span>
-                        <span class="summary-value">${selectedDateTimeEl.textContent}</span>
+                        <span class="summary-value">${Elements.selectedDateTimeEl.textContent}</span>
                     </div>
                 `;
                 
-                bookingSummary.innerHTML = summaryHTML;
-            }
-
-            function validateField(fieldId) {
+                Elements.bookingSummary.innerHTML = summaryHTML;
+            },
+            
+            validateField(fieldId) {
                 let isValid = true;
                 let errorMessage = '';
 
                 switch (fieldId) {
                     case 'fullName':
-                        isValid = fullNameInput.value.trim().length >= 2;
+                        isValid = Elements.fullNameInput.value.trim().length >= 2;
                         errorMessage = 'Please enter your full name (min 2 characters)';
                         break;
                     case 'age':
-                        const age = parseInt(ageInput.value);
+                        const age = parseInt(Elements.ageInput.value);
                         isValid = !isNaN(age) && age >= 5 && age <= 90;
                         errorMessage = 'Please enter a valid age (5-90)';
                         break;
                     case 'phone':
-                        const phone = phoneInput.value.trim();
+                        const phone = Elements.phoneInput.value.trim();
                         const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/;
                         isValid = phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= 10;
                         errorMessage = 'Please enter a valid phone number (min 10 digits)';
                         break;
                     case 'email':
-                        const email = emailInput.value.trim();
+                        const email = Elements.emailInput.value.trim();
                         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         isValid = emailRegex.test(email);
                         errorMessage = 'Please enter a valid email address';
                         break;
                     case 'skillLevel':
-                        isValid = skillLevelSelect.value !== '';
+                        isValid = Elements.skillLevelSelect.value !== '';
                         errorMessage = 'Please select your skill level';
                         break;
                     case 'spokenLanguage':
-                        isValid = spokenLanguageSelect.value !== '';
+                        isValid = Elements.spokenLanguageSelect.value !== '';
                         errorMessage = 'Please select your spoken language';
                         break;
                 }
@@ -1437,60 +1396,176 @@
                 }
 
                 return isValid;
-            }
-
-            function validateForm() {
+            },
+            
+            validateForm() {
                 const fields = ['fullName', 'age', 'phone', 'email', 'skillLevel', 'spokenLanguage'];
                 let isValid = true;
 
                 fields.forEach(field => {
-                    if (!validateField(field)) {
+                    if (!this.validateField(field)) {
                         isValid = false;
                     }
                 });
 
-                bookButton.disabled = !isValid;
+                Elements.bookButton.disabled = !isValid;
                 return isValid;
-            }
-
-            function submitBooking() {
+            },
+            
+            submit() {
                 // Show loading state
-                bookButton.disabled = true;
-                bookButton.textContent = 'Processing...';
+                Elements.bookButton.disabled = true;
+                Elements.bookButton.textContent = 'Processing...';
 
                 // Simulate API call
                 setTimeout(() => {
                     alert('Booking submitted successfully! We will contact you shortly to confirm your booking.');
                     
                     // Reset form
-                    personalInfoForm.reset();
-                    showBookingSection();
+                    Elements.personalInfoForm.reset();
+                    Navigation.showBookingSection();
                     
-                    bookButton.disabled = false;
-                    bookButton.textContent = 'BOOK NOW';
+                    Elements.bookButton.disabled = false;
+                    Elements.bookButton.textContent = 'BOOK NOW';
                 }, 2000);
             }
+        };
 
-            // Initialize everything
-            renderCalendar();
-            updateTimeSlots();
-            calculatePrice();
-            updateNextButtonState();
+        // ===== NAVIGATION MODULE =====
+        const Navigation = {
+            updateNextButtonState() {
+                Elements.nextButton.disabled = !this.isBookingValid();
+            },
+            
+            isBookingValid() {
+                const activeSport = document.querySelector('.tab.active').dataset.sport;
+                const duration = Elements.durationSelect.value;
+                const participants = parseInt(Elements.participantsSlider.value);
+                const days = parseInt(Elements.daysSlider.value);
+                
+                return activeSport && duration && participants > 0 && days > 0 && State.selectedDate && State.selectedTime;
+            },
+            
+            showBookingForm() {
+                State.setCurrentStep('form');
+                Elements.bookingSection.classList.add('hidden');
+                Elements.bookingFormSection.classList.add('active');
+                Booking.updateSummary();
+                Utils.updateIframeHeight();
+            },
+            
+            showBookingSection() {
+                State.setCurrentStep('booking');
+                Elements.bookingFormSection.classList.remove('active');
+                Elements.bookingSection.classList.remove('hidden');
+                Utils.updateIframeHeight();
+            }
+        };
+
+        // ===== EVENT HANDLERS =====
+        const EventHandlers = {
+            init() {
+                // Tabs
+                Elements.tabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        Elements.tabs.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        Pricing.calculate();
+                        Navigation.updateNextButtonState();
+                        Utils.updateIframeHeight();
+                    });
+                });
+
+                // Sliders
+                Elements.participantsSlider.addEventListener('input', function() {
+                    const value = this.value;
+                    Elements.participantsValue.textContent = value + (value == 1 ? ' person' : ' people');
+                    Pricing.calculate();
+                    Navigation.updateNextButtonState();
+                    Utils.updateIframeHeight();
+                });
+
+                Elements.daysSlider.addEventListener('input', function() {
+                    const value = this.value;
+                    Elements.daysValue.textContent = value + (value == 1 ? ' day' : ' days');
+                    Pricing.calculate();
+                    Navigation.updateNextButtonState();
+                    Utils.updateIframeHeight();
+                });
+
+                // Duration select
+                Elements.durationSelect.addEventListener('change', function() {
+                    Pricing.calculate();
+                    TimeSlots.update();
+                    Navigation.updateNextButtonState();
+                    Utils.updateIframeHeight();
+                });
+
+                // Navigation buttons
+                Elements.nextButton.addEventListener('click', function() {
+                    if (State.currentStep === 'booking' && Navigation.isBookingValid()) {
+                        Navigation.showBookingForm();
+                    }
+                });
+
+                Elements.backButton.addEventListener('click', function() {
+                    Navigation.showBookingSection();
+                });
+
+                // Form submission
+                Elements.personalInfoForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (Booking.validateForm()) {
+                        Booking.submit();
+                    }
+                });
+
+                // Form validation
+                [Elements.fullNameInput, Elements.ageInput, Elements.phoneInput, Elements.emailInput, Elements.skillLevelSelect, Elements.spokenLanguageSelect].forEach(element => {
+                    element.addEventListener('input', function() {
+                        Booking.validateField(this.id);
+                    });
+                });
+
+                // Calendar navigation
+                Elements.prevMonthBtn.addEventListener('click', () => {
+                    Calendar.navigate(-1);
+                });
+                
+                Elements.nextMonthBtn.addEventListener('click', () => {
+                    Calendar.navigate(1);
+                });
+            }
+        };
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize state
+            State.init();
+            
+            // Initialize modules
+            Calendar.render();
+            TimeSlots.update();
+            Pricing.calculate();
+            Navigation.updateNextButtonState();
+            
+            // Initialize event handlers
+            EventHandlers.init();
             
             // Initial resize
-            setTimeout(updateIframeHeight, 100);
+            setTimeout(Utils.updateIframeHeight, 100);
             
             // Listen for window resize
-            window.addEventListener('resize', updateIframeHeight);
+            window.addEventListener('resize', Utils.updateIframeHeight);
             
             // Send initial height
-            window.addEventListener('load', updateIframeHeight);
+            window.addEventListener('load', Utils.updateIframeHeight);
         });
 
         // Handle messages from parent window
         window.addEventListener('message', function(event) {
             if (event.data && event.data.type === 'getHeight') {
-                updateIframeHeight();
+                Utils.updateIframeHeight();
             }
         });
     </script>
