@@ -572,6 +572,7 @@
             font-size: 14px;
             font-family: 'Inter', sans-serif;
             transition: var(--transition);
+            width: 100%;
         }
 
         .form-input::placeholder {
@@ -625,6 +626,7 @@
             background-color: var(--bg-secondary);
             border-right: 1px solid var(--bg-tertiary);
             padding: 0 12px;
+            width: 70px;
         }
 
         .iti__selected-flag:hover {
@@ -635,6 +637,7 @@
             background-color: var(--bg-secondary);
             border: 1px solid var(--bg-tertiary);
             color: var(--text-primary);
+            width: 300px;
         }
 
         .iti__country {
@@ -651,6 +654,16 @@
 
         .iti__divider {
             border-bottom-color: var(--bg-tertiary);
+        }
+
+        /* FIX: Добавляем отступ для номера телефона */
+        #phone {
+            padding-left: 80px !important;
+        }
+
+        /* FIX: Убираем красную обводку при первом показе */
+        .phone-input-init .form-input {
+            border-color: var(--bg-tertiary) !important;
         }
 
         /* === RESPONSIVE DESIGN === */
@@ -719,6 +732,21 @@
             .form-actions {
                 flex-direction: column;
             }
+
+            /* Responsive phone input */
+            #phone {
+                padding-left: 70px !important;
+            }
+
+            .iti__selected-flag {
+                width: 60px;
+            }
+
+            .iti__country-list {
+                width: 280px;
+                left: 0 !important;
+                right: auto !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -742,6 +770,15 @@
                 width: 28px;
                 height: 28px;
             }
+
+            #phone {
+                padding-left: 65px !important;
+            }
+
+            .iti__selected-flag {
+                width: 55px;
+                padding: 0 8px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -751,6 +788,10 @@
             
             .calculator-container {
                 padding: 10px;
+            }
+
+            .iti__country-list {
+                width: 260px;
             }
         }
     </style>
@@ -891,7 +932,7 @@
 
                     <div class="form-row">
                         <div class="form-field">
-                            <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
+                            <input type="tel" id="phone" class="form-input phone-input-init" placeholder="Phone (WhatsApp) *" required>
                             <div class="error-message" id="phoneError">Please enter a valid phone number</div>
                         </div>
                         <div class="form-field">
@@ -983,8 +1024,13 @@
                 }
             });
             
-            // Добавляем валидацию при изменении
+            // FIX: Убираем класс инициализации после первого взаимодействия
+            phoneElement.addEventListener('focus', function() {
+                this.classList.remove('phone-input-init');
+            });
+            
             phoneElement.addEventListener('input', function() {
+                this.classList.remove('phone-input-init');
                 Booking.validateField('phone');
             });
             
@@ -1373,7 +1419,10 @@
                     case 'phone':
                         const phoneValue = Elements.phoneInput.value.trim();
                         
-                        if (!phoneValue) {
+                        // FIX: Не показываем ошибку если поле пустое и не было взаимодействия
+                        if (!phoneValue && Elements.phoneInput.classList.contains('phone-input-init')) {
+                            isValid = true; // Показываем как валидное до первого взаимодействия
+                        } else if (!phoneValue) {
                             isValid = false;
                             errorMessage = 'Please enter a phone number';
                         } else if (!phoneInput.isValidNumber()) {
@@ -1440,6 +1489,9 @@
                     // Reset form
                     Elements.personalInfoForm.reset();
                     Navigation.showBookingSection();
+                    
+                    // Reset phone input state
+                    Elements.phoneInput.classList.add('phone-input-init');
                     
                     Elements.bookButton.disabled = false;
                     Elements.bookButton.textContent = 'BOOK NOW';
