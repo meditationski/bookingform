@@ -17,6 +17,7 @@
             color: #858e96; 
             padding: 15px;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         .calculator-container { 
             max-width: 900px; 
@@ -522,7 +523,7 @@
     </div>
 
     <script>
-        // Auto-resize for iframe
+        // Improved auto-resize system for iframe
         function updateIframeHeight() {
             const height = document.documentElement.scrollHeight;
             if (window.parent !== window) {
@@ -530,6 +531,24 @@
                     type: 'resize',
                     height: height
                 }, '*');
+            }
+        }
+
+        // Initialize resize observer for dynamic content changes
+        function initResizeObserver() {
+            if ('ResizeObserver' in window) {
+                const resizeObserver = new ResizeObserver(() => {
+                    updateIframeHeight();
+                });
+                
+                // Observe body for size changes
+                resizeObserver.observe(document.body);
+                
+                // Observe main container
+                const container = document.querySelector('.calculator-container');
+                if (container) {
+                    resizeObserver.observe(container);
+                }
             }
         }
 
@@ -575,7 +594,7 @@
                     tabs.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     calculatePrice();
-                    setTimeout(updateIframeHeight, 100);
+                    updateIframeHeight();
                 });
             });
 
@@ -584,21 +603,21 @@
                 const value = this.value;
                 participantsValue.textContent = value + (value == 1 ? ' person' : ' people');
                 calculatePrice();
-                setTimeout(updateIframeHeight, 100);
+                updateIframeHeight();
             });
 
             daysSlider.addEventListener('input', function() {
                 const value = this.value;
                 daysValue.textContent = value + (value == 1 ? ' day' : ' days');
                 calculatePrice();
-                setTimeout(updateIframeHeight, 100);
+                updateIframeHeight();
             });
 
             // Initialize duration select
             durationSelect.addEventListener('change', function() {
                 calculatePrice();
                 updateTimeSlots();
-                setTimeout(updateIframeHeight, 100);
+                updateIframeHeight();
             });
 
             // Calendar functions
@@ -664,7 +683,7 @@
                         
                         button.addEventListener('click', () => {
                             selectDate(date);
-                            setTimeout(updateIframeHeight, 100);
+                            updateIframeHeight();
                         });
                     }
                     
@@ -692,6 +711,7 @@
                 updateTimeSlots();
                 updateSelectedDateTime();
                 calculatePrice();
+                updateIframeHeight();
             }
             
             function updateTimeSlots() {
@@ -722,7 +742,7 @@
                         this.classList.add('selected');
                         updateSelectedDateTime();
                         calculatePrice();
-                        setTimeout(updateIframeHeight, 100);
+                        updateIframeHeight();
                     });
                     
                     timeSlotsEl.appendChild(timeSlot);
@@ -748,7 +768,7 @@
                             this.classList.add('selected');
                             updateSelectedDateTime();
                             calculatePrice();
-                            setTimeout(updateIframeHeight, 100);
+                            updateIframeHeight();
                         });
                         
                         timeSlotsEl.appendChild(timeSlot);
@@ -791,13 +811,13 @@
             prevMonthBtn.addEventListener('click', () => {
                 currentMonth.setMonth(currentMonth.getMonth() - 1);
                 renderCalendar();
-                setTimeout(updateIframeHeight, 100);
+                updateIframeHeight();
             });
             
             nextMonthBtn.addEventListener('click', () => {
                 currentMonth.setMonth(currentMonth.getMonth() + 1);
                 renderCalendar();
-                setTimeout(updateIframeHeight, 100);
+                updateIframeHeight();
             });
 
             function calculatePrice() {
@@ -839,9 +859,24 @@
             updateTimeSlots();
             calculatePrice();
             
+            // Initialize resize observer
+            initResizeObserver();
+            
             // Initial resize
-            setTimeout(updateIframeHeight, 500);
+            setTimeout(updateIframeHeight, 100);
+            
+            // Listen for window resize
             window.addEventListener('resize', updateIframeHeight);
+            
+            // Send initial height
+            window.addEventListener('load', updateIframeHeight);
+        });
+
+        // Handle messages from parent window
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'getHeight') {
+                updateIframeHeight();
+            }
         });
     </script>
 </body>
