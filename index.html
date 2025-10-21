@@ -1149,6 +1149,13 @@
             
             capitalizeFirst(str) {
                 return str.charAt(0).toUpperCase() + str.slice(1);
+            },
+
+            scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             }
         };
 
@@ -1387,15 +1394,15 @@
                 // Update main title with participants included
                 Elements.mainBookingTitle.textContent = `${durationText} ${sportText} Lesson with ${participantsText}`;
 
-                // Update additional details with beautiful styling
+                // Update additional details - ПОМЕНЯЛИ МЕСТАМИ Duration и Date & Time
                 const summaryHTML = `
-                    <div class="summary-item">
-                        <span class="summary-label">Duration</span>
-                        <span class="summary-value">${daysText}</span>
-                    </div>
                     <div class="summary-item">
                         <span class="summary-label">Date & Time</span>
                         <span class="summary-value">${Elements.selectedDateTimeEl.textContent}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Duration</span>
+                        <span class="summary-value">${daysText}</span>
                     </div>
                 `;
                 
@@ -1520,6 +1527,11 @@
                 Elements.bookingFormSection.classList.add('active');
                 Booking.updateSummary();
                 Utils.updateIframeHeight();
+                
+                // FIX: Скроллим наверх при переходе на второй шаг
+                setTimeout(() => {
+                    Utils.scrollToTop();
+                }, 100);
             },
             
             showBookingSection() {
@@ -1527,6 +1539,11 @@
                 Elements.bookingFormSection.classList.remove('active');
                 Elements.bookingSection.classList.remove('hidden');
                 Utils.updateIframeHeight();
+                
+                // FIX: Скроллим наверх при возврате на первый шаг
+                setTimeout(() => {
+                    Utils.scrollToTop();
+                }, 100);
             }
         };
 
