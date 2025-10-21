@@ -488,23 +488,11 @@
         .booking-form-section {
             display: none;
             grid-column: 1 / -1;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-xxl);
-            border: 1px solid var(--bg-tertiary);
             margin-top: var(--spacing-xl);
         }
 
         .booking-form-section.active {
             display: block;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-xxl);
-            text-align: center;
         }
 
         .summary-section {
@@ -672,7 +660,7 @@
             }
             
             .booking-form-section {
-                padding: 20px;
+                padding: 0;
             }
             
             .form-row {
@@ -719,10 +707,6 @@
             .calendar-nav button {
                 width: 28px;
                 height: 28px;
-            }
-            
-            .booking-form-section {
-                padding: 15px;
             }
             
             .form-actions {
@@ -854,8 +838,6 @@
 
             <!-- Booking Form Section -->
             <div class="booking-form-section" id="bookingFormSection">
-                <h2 class="section-title">Complete Your Booking</h2>
-                
                 <!-- Summary Section -->
                 <div class="summary-section">
                     <h3 class="summary-title">Booking Summary</h3>
