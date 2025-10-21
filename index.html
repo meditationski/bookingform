@@ -528,11 +528,12 @@
         }
 
         .summary-main-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 15px;
             text-align: center;
+            line-height: 1.4;
         }
 
         .summary-details {
@@ -869,7 +870,7 @@
                     
                     <!-- Main Booking Info -->
                     <div class="summary-main">
-                        <div class="summary-main-title" id="mainBookingTitle">2 Hours Ski Lesson</div>
+                        <div class="summary-main-title" id="mainBookingTitle">2 Hours Ski Lesson with 1 person</div>
                         
                         <!-- Price Display (same as first step) -->
                         <div class="price-display">
@@ -1087,10 +1088,6 @@
                     day: 'numeric',
                     year: 'numeric'
                 });
-            },
-            
-            formatTime(time) {
-                return time;
             }
         };
 
@@ -1324,16 +1321,13 @@
                 }[duration];
 
                 const sportText = activeSport.charAt(0).toUpperCase() + activeSport.slice(1);
+                const participantsText = participants === 1 ? '1 person' : `${participants} persons`;
                 
-                // Update main title
-                Elements.mainBookingTitle.textContent = `${durationText} ${sportText} Lesson`;
+                // Update main title with participants included
+                Elements.mainBookingTitle.textContent = `${durationText} ${sportText} Lesson with ${participantsText}`;
 
-                // Update additional details
+                // Update additional details (removed participants as requested)
                 const summaryHTML = `
-                    <div class="summary-item">
-                        <span class="summary-label">Participants</span>
-                        <span class="summary-value">${participants} ${participants === 1 ? 'person' : 'people'}</span>
-                    </div>
                     <div class="summary-item">
                         <span class="summary-label">Days</span>
                         <span class="summary-value">${days} ${days === 1 ? 'day' : 'days'}</span>
