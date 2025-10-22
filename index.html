@@ -85,18 +85,6 @@
             margin-bottom: var(--spacing-xl); 
         }
         
-        .form-header {
-            margin-bottom: 30px;
-        }
-        
-        .main-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.4;
-            text-align: center;
-        }
-        
         .tabs { 
             display: flex; 
             background: var(--bg-secondary); 
@@ -207,67 +195,12 @@
                 flex: 1;
                 min-width: 0;
             }
-            
-            .calendar-container {
-                padding: 20px;
-            }
-            
-            .calendar-day {
-                font-size: 13px;
-                padding: 6px;
-            }
-            
-            .calendar-month {
-                font-size: 16px;
-            }
-
-            /* Desktop layout for step 1 */
-            .step1-desktop-layout {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 25px;
-                align-items: start;
-            }
-
-            .step1-main-content {
-                display: flex;
-                flex-direction: column;
-                gap: var(--spacing-xl);
-            }
-
-            .step1-price-sidebar {
-                margin-top: 0;
-            }
-
-            /* Desktop layout for step 3 */
-            .step3-desktop-layout {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 25px;
-                align-items: start;
-            }
-
-            .step3-form-content {
-                display: flex;
-                flex-direction: column;
-                gap: var(--spacing-xl);
-            }
-
-            .step3-price-sidebar {
-                margin-top: 0;
-            }
         }
         
         .calendar-container {
             background: var(--bg-secondary);
             border-radius: var(--radius-xl);
             padding: 18px;
-        }
-        
-        @media (min-width: 768px) {
-            .calendar-container {
-                padding: 20px;
-            }
         }
         
         .calendar-header {
@@ -334,12 +267,6 @@
             min-height: 36px;
         }
         
-        @media (min-width: 768px) {
-            .calendar-day {
-                min-height: 40px;
-            }
-        }
-        
         .calendar-day:hover:not(.disabled):not(.selected) {
             background: var(--bg-tertiary);
             color: var(--text-primary);
@@ -355,13 +282,13 @@
         }
         
         .calendar-day.disabled {
-            opacity: 0.3;
+            opacity: 0.2;
             cursor: not-allowed;
             background: transparent !important;
         }
         
         .calendar-day.other-month {
-            opacity: 0.3;
+            opacity: 0.2;
             cursor: not-allowed;
             background: transparent !important;
             color: var(--text-secondary) !important;
@@ -371,12 +298,6 @@
             background: var(--bg-secondary); 
             border-radius: var(--radius-md); 
             padding: 18px; 
-        }
-        
-        @media (min-width: 768px) {
-            .time-selection {
-                padding: 20px;
-            }
         }
         
         .time-slots { 
@@ -427,14 +348,6 @@
             color: var(--text-primary); 
             padding: 20px; 
             border-radius: var(--radius-lg); 
-            margin-top: 25px;
-        }
-        
-        @media (min-width: 768px) {
-            .price-display {
-                padding: 18px;
-                margin-top: 0;
-            }
         }
         
         .price-row { 
@@ -463,7 +376,7 @@
 
         .button-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             gap: 15px;
             margin-top: var(--spacing-xxl);
         }
@@ -600,10 +513,6 @@
                 padding: 15px;
             }
             
-            .main-title {
-                font-size: 18px;
-            }
-            
             .price-display {
                 padding: 15px;
             }
@@ -626,6 +535,26 @@
                 font-size: 15px;
             }
         }
+
+        /* Step 3 Desktop Layout */
+        @media (min-width: 768px) {
+            .step3-desktop-layout {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 25px;
+                align-items: start;
+            }
+            
+            .step3-form-content {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xl);
+            }
+            
+            .step3-price-sidebar {
+                margin-top: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -633,69 +562,59 @@
         <div class="form-content">
             <!-- Step 1: Lesson Details -->
             <div class="form-section active" id="step1">
-                <div class="form-header">
-                    <div class="main-title" id="step1Title"></div>
+                <div class="form-group">
+                    <div class="tabs">
+                        <div class="tab active" data-sport="ski">Ski</div>
+                        <div class="tab" data-sport="snowboard">Snowboard</div>
+                    </div>
                 </div>
                 
-                <div class="step1-desktop-layout">
-                    <div class="step1-main-content">
-                        <div class="form-group">
-                            <div class="tabs">
-                                <div class="tab active" data-sport="ski">Ski</div>
-                                <div class="tab" data-sport="snowboard">Snowboard</div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <div class="select-container">
-                                <select class="custom-select" id="duration">
-                                    <option value="2">2 hours lesson - $100</option>
-                                    <option value="3">3 hours lesson - $140</option>
-                                    <option value="full">Full day lesson - $250</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <div class="slider-container">
-                                <div class="slider-value" id="participantsValue">1 Person</div>
-                                <input type="range" id="participants" min="1" max="5" value="1" step="1">
-                                <div class="slider-labels">
-                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <div class="slider-container">
-                                <div class="slider-value" id="daysValue">1 Day</div>
-                                <input type="range" id="days" min="1" max="10" value="1" step="1">
-                                <div class="slider-labels">
-                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
-                                </div>
-                            </div>
+                <div class="form-group">
+                    <div class="select-container">
+                        <select class="custom-select" id="duration">
+                            <option value="2">2 hours lesson - $100</option>
+                            <option value="3">3 hours lesson - $140</option>
+                            <option value="full">Full day lesson - $250</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="slider-container">
+                        <div class="slider-value" id="participantsValue">1 Person</div>
+                        <input type="range" id="participants" min="1" max="5" value="1" step="1">
+                        <div class="slider-labels">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
                         </div>
                     </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="slider-container">
+                        <div class="slider-value" id="daysValue">1 Day</div>
+                        <input type="range" id="days" min="1" max="10" value="1" step="1">
+                        <div class="slider-labels">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="step1-price-sidebar">
-                        <!-- Price Display -->
-                        <div class="price-display">
-                            <div class="price-row">
-                                <span>Total amount:</span>
-                                <span id="totalPrice" class="total-price">$100</span>
-                            </div>
-                            <div class="price-row">
-                                <span>20% deposit:</span>
-                                <span id="depositPrice" class="deposit-price">$20</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Remaining balance:</span>
-                                <span id="remainingPrice" class="remaining-price">$80</span>
-                            </div>
-                            <div id="discountInfo" class="discount-info"></div>
-                        </div>
+                <!-- Price Display -->
+                <div class="price-display">
+                    <div class="price-row">
+                        <span>Total amount:</span>
+                        <span id="totalPrice" class="total-price">$100</span>
                     </div>
+                    <div class="price-row">
+                        <span>20% deposit:</span>
+                        <span id="depositPrice" class="deposit-price">$20</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Remaining balance:</span>
+                        <span id="remainingPrice" class="remaining-price">$80</span>
+                    </div>
+                    <div id="discountInfo" class="discount-info"></div>
                 </div>
 
                 <div class="button-container">
@@ -705,10 +624,6 @@
 
             <!-- Step 2: Date & Time -->
             <div class="form-section" id="step2">
-                <div class="form-header">
-                    <div class="main-title" id="step2Title"></div>
-                </div>
-                
                 <div class="calendar-time-container">
                     <div class="calendar-section">
                         <div class="form-group">
@@ -752,14 +667,10 @@
 
             <!-- Step 3: Personal Information -->
             <div class="form-section" id="step3">
-                <div class="form-header">
-                    <div class="main-title" id="step3Title"></div>
-                    <div class="selected-info" id="step3DateTime"></div>
-                </div>
-
                 <div class="step3-desktop-layout">
                     <div class="step3-form-content">
                         <form id="personalInfoForm">
+                            <!-- Row 1: Name - Phone -->
                             <div class="form-row">
                                 <div class="form-field">
                                     <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
@@ -771,6 +682,7 @@
                                 </div>
                             </div>
 
+                            <!-- Row 2: Email - Skill Level -->
                             <div class="form-row">
                                 <div class="form-field">
                                     <input type="email" id="email" class="form-input" placeholder="Email *" required>
@@ -790,6 +702,7 @@
                                 </div>
                             </div>
 
+                            <!-- Row 3: Additional Info -->
                             <div class="form-row">
                                 <div class="form-field full-width">
                                     <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Additional Information (optional)"></textarea>
@@ -894,7 +807,6 @@
             setupEventListeners();
             renderCalendar();
             updateAllPrices();
-            updateTitles();
             
             // Notify parent about initial height
             setTimeout(notifyParentAboutHeight, 100);
@@ -918,7 +830,6 @@
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     updateAllPrices();
-                    updateTitles();
                     notifyParentAboutHeight();
                 });
             });
@@ -933,7 +844,6 @@
                         getEl('daysValue').textContent = getEl('days').value + ' Day' + (getEl('days').value > 1 ? 's' : '');
                     }
                     updateAllPrices();
-                    updateTitles();
                     notifyParentAboutHeight();
                 });
             });
@@ -956,11 +866,6 @@
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             getEl(`step${step}`).classList.add('active');
             State.currentStep = step;
-            updateTitles();
-            
-            if (step === 2) {
-                getEl('step3DateTime').textContent = getEl('selectedDateTime').textContent;
-            }
             
             // Scroll to top when changing steps
             setTimeout(scrollToTop, 100);
@@ -969,18 +874,11 @@
             setTimeout(notifyParentAboutHeight, 300);
         }
 
-        function updateTitles() {
-            const title = State.getBookingTitle();
-            getEl('step1Title').textContent = title;
-            getEl('step2Title').textContent = title;
-            getEl('step3Title').textContent = title;
-        }
-
         function updateAllPrices() {
             const priceData = calculatePrice();
             
             // Update all price displays
-            ['', 'Step2', 'Step3'].forEach(suffix => {
+            ['', 'Step3'].forEach(suffix => {
                 getEl(`totalPrice${suffix}`).textContent = `$${priceData.total}`;
                 getEl(`depositPrice${suffix}`).textContent = `$${priceData.deposit}`;
                 getEl(`remainingPrice${suffix}`).textContent = `$${priceData.remaining}`;
@@ -1121,7 +1019,6 @@
                 this.classList.add('selected');
                 updateSelectedDateTime();
                 getEl('nextToStep3').disabled = false;
-                getEl('step3DateTime').textContent = getEl('selectedDateTime').textContent;
                 
                 // Scroll to top when time is selected
                 setTimeout(scrollToTop, 300);
