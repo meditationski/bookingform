@@ -658,7 +658,7 @@
                 </div>
 
                 <div class="button-container">
-                    <button class="next-button" id="nextToStep2">Next</button>
+                    <button class="next-button" id="nextToStep2" disabled>Next</button>
                 </div>
             </div>
 
@@ -791,6 +791,17 @@
             });
         }
 
+        // Scroll to button function
+        function scrollToButton() {
+            const button = getEl('nextToStep2');
+            if (button) {
+                button.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+
         // Initialize EmailJS
         emailjs.init('gb9ZTULk6-ghDtZuV');
 
@@ -843,8 +854,14 @@
             });
 
             // Navigation
-            getEl('nextToStep2').addEventListener('click', () => showStep(2));
-            getEl('backToStep1').addEventListener('click', () => showStep(1));
+            getEl('nextToStep2').addEventListener('click', () => {
+                scrollToTop();
+                setTimeout(() => showStep(2), 300);
+            });
+            getEl('backToStep1').addEventListener('click', () => {
+                scrollToTop();
+                setTimeout(() => showStep(1), 300);
+            });
 
             // Calendar
             getEl('prevMonth').addEventListener('click', () => navigateMonth(-1));
@@ -863,9 +880,6 @@
                 getEl('step2Title').textContent = State.getBookingTitle();
                 getEl('step2DateTime').textContent = getEl('selectedDateTime').textContent;
             }
-            
-            // Scroll to top when changing steps
-            setTimeout(scrollToTop, 100);
             
             // Notify parent about height change
             setTimeout(notifyParentAboutHeight, 300);
@@ -1018,8 +1032,8 @@
                 updateSelectedDateTime();
                 getEl('nextToStep2').disabled = false;
                 
-                // Scroll to top when time is selected
-                setTimeout(scrollToTop, 300);
+                // Scroll to Next button when time is selected
+                setTimeout(scrollToButton, 300);
                 notifyParentAboutHeight();
             });
             
@@ -1216,18 +1230,33 @@ Remaining balance: $${formData.remaining}
             if (window.parent && window.parent !== window) {
                 window.parent.postMessage({
                     type: 'resize',
-                    height: height
+                    height: height + 50 // Add some extra space
                 }, '*');
             }
         }
 
+        // Enhanced notification system for Carrd
+        function enhancedNotifyParent() {
+            notifyParentAboutHeight();
+            // Additional notification for better Carrd compatibility
+            setTimeout(() => {
+                const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'resize',
+                        height: height + 100
+                    }, '*');
+                }
+            }, 500);
+        }
+
         // Notify on various events
-        window.addEventListener('load', notifyParentAboutHeight);
-        window.addEventListener('resize', notifyParentAboutHeight);
+        window.addEventListener('load', enhancedNotifyParent);
+        window.addEventListener('resize', enhancedNotifyParent);
 
         // Notify when steps change or content updates
         const observer = new MutationObserver(function(mutations) {
-            notifyParentAboutHeight();
+            enhancedNotifyParent();
         });
         
         observer.observe(document.body, {
@@ -1238,11 +1267,11 @@ Remaining balance: $${formData.remaining}
         });
 
         // Also notify after transitions and animations
-        document.addEventListener('transitionend', notifyParentAboutHeight);
-        document.addEventListener('animationend', notifyParentAboutHeight);
+        document.addEventListener('transitionend', enhancedNotifyParent);
+        document.addEventListener('animationend', enhancedNotifyParent);
 
         // Periodic check as fallback
-        setInterval(notifyParentAboutHeight, 1000);
+        setInterval(enhancedNotifyParent, 1000);
     </script>
 </body>
 </html>
