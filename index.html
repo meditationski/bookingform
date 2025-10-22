@@ -203,7 +203,7 @@
         .calendar-time-container {
             display: flex;
             flex-direction: column;
-            gap: var(--spacing-xl);
+            gap: var(--spacing-lg); /* Уменьшено с var(--spacing-xl) */
         }
         
         .calendar-container {
@@ -793,19 +793,11 @@
         // DOM Elements
         const getEl = id => document.getElementById(id);
 
-        // Scroll to top function
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        // Scroll to button function
-        function scrollToButton() {
-            const button = getEl('nextToStep2');
-            if (button) {
-                button.scrollIntoView({ 
+        // Scroll to element function
+        function scrollToElement(elementId) {
+            const element = getEl(elementId);
+            if (element) {
+                element.scrollIntoView({ 
                     behavior: 'smooth',
                     block: 'center'
                 });
@@ -865,11 +857,11 @@
 
             // Navigation
             getEl('nextToStep2').addEventListener('click', () => {
-                scrollToTop();
+                scrollToElement('step2');
                 setTimeout(() => showStep(2), 100);
             });
             getEl('backToStep1').addEventListener('click', () => {
-                scrollToTop();
+                scrollToElement('step1');
                 setTimeout(() => showStep(1), 100);
             });
 
@@ -995,6 +987,12 @@
                     updateTimeSlots();
                     updateSelectedDateTime();
                     getEl('nextToStep2').disabled = !State.selectedTime;
+                    
+                    // Scroll to time selection after date is selected
+                    setTimeout(() => {
+                        scrollToElement('timeSlots');
+                    }, 300);
+                    
                     notifyParentAboutHeight();
                 });
             }
@@ -1043,7 +1041,9 @@
                 getEl('nextToStep2').disabled = false;
                 
                 // Scroll to Next button when time is selected
-                setTimeout(scrollToButton, 300);
+                setTimeout(() => {
+                    scrollToElement('nextToStep2');
+                }, 300);
                 notifyParentAboutHeight();
             });
             
@@ -1230,7 +1230,7 @@ Remaining balance: $${formData.remaining}
         function showSuccessScreen() {
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             getEl('successScreen').classList.add('active');
-            scrollToTop();
+            scrollToElement('successScreen');
             notifyParentAboutHeight();
         }
 
@@ -1280,38 +1280,6 @@ Remaining balance: $${formData.remaining}
             attributes: true,
             attributeFilter: ['class', 'style']
         });
-// Функция для прокрутки родительской страницы наверх
-function scrollParentToTop() {
-    if (window.parent && window.parent !== window) {
-        window.parent.postMessage({
-            type: 'scrollToTop'
-        }, '*');
-    }
-}
-
-// Обнови функции навигации чтобы прокручивать родительскую страницу
-function overrideNavigation() {
-    // Переопределяем функцию showStep
-    const originalShowStep = window.showStep;
-    window.showStep = function(step) {
-        originalShowStep(step);
-        scrollParentToTop();
-    };
-    
-    // Перехватываем клики по кнопкам навигации
-    document.addEventListener('click', function(e) {
-        if (e.target.matches('.next-button, .book-button, .nav-button')) {
-            setTimeout(scrollParentToTop, 100);
-        }
-    });
-}
-
-// Инициализируем после загрузки DOM
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', overrideNavigation);
-} else {
-    overrideNavigation();
-}
     </script>
 </body>
 </html>
