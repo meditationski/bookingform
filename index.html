@@ -183,14 +183,30 @@
         @media (min-width: 768px) {
             .calendar-time-container {
                 flex-direction: row;
+                align-items: flex-start;
             }
             
             .calendar-section {
-                flex: 2;
+                flex: 1;
+                min-width: 0;
             }
             
             .time-section {
                 flex: 1;
+                min-width: 0;
+            }
+            
+            .calendar-container {
+                padding: 12px;
+            }
+            
+            .calendar-day {
+                font-size: 12px;
+                padding: 4px;
+            }
+            
+            .calendar-month {
+                font-size: 14px;
             }
         }
         
@@ -204,7 +220,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
+            margin-bottom: 12px;
         }
         
         .calendar-month {
@@ -222,29 +238,31 @@
             background: var(--bg-tertiary);
             border: none;
             color: var(--text-primary);
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: var(--radius-sm);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 12px;
         }
         
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             text-align: center;
-            margin-bottom: var(--spacing-sm);
-            font-size: 11px;
+            margin-bottom: 8px;
+            font-size: 10px;
             color: var(--text-secondary);
             font-weight: 500;
+            gap: 2px;
         }
         
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: var(--spacing-xs);
+            gap: 2px;
         }
         
         .calendar-day {
@@ -258,6 +276,13 @@
             font-size: 13px;
             border-radius: var(--radius-sm);
             cursor: pointer;
+            transition: var(--transition);
+            min-height: 32px;
+        }
+        
+        .calendar-day:hover:not(.disabled):not(.selected) {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
         }
         
         .calendar-day.selected {
@@ -272,6 +297,10 @@
         .calendar-day.disabled {
             opacity: 0.2;
             cursor: not-allowed;
+        }
+        
+        .calendar-day.other-month {
+            opacity: 0.3;
         }
         
         .time-selection { 
@@ -301,6 +330,11 @@
             font-size: 13px; 
             cursor: pointer; 
             text-align: center; 
+            transition: var(--transition);
+        }
+        
+        .time-slot:hover:not(.disabled):not(.selected) {
+            background: var(--text-accent);
         }
         
         .time-slot.selected { 
@@ -367,6 +401,11 @@
             font-weight: 600;
             cursor: pointer;
             flex: 1;
+            transition: var(--transition);
+        }
+
+        .nav-button:hover {
+            background: #4a4f55;
         }
 
         .next-button, .book-button {
@@ -379,11 +418,18 @@
             font-weight: 600;
             cursor: pointer;
             flex: 1;
+            transition: var(--transition);
+        }
+
+        .next-button:hover, .book-button:hover {
+            background: #0088cc;
+            transform: translateY(-2px);
         }
 
         .next-button:disabled {
             background: var(--bg-tertiary);
             cursor: not-allowed;
+            transform: none;
         }
 
         .form-row {
@@ -418,11 +464,17 @@
             font-size: 14px;
             font-family: 'Inter', sans-serif;
             width: 100%;
+            transition: var(--transition);
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--text-accent);
+            box-shadow: 0 0 0 2px rgba(0, 163, 255, 0.2);
+        }
+
+        .form-input.error {
+            border-color: var(--text-error);
         }
 
         .error-message {
@@ -523,7 +575,7 @@
                     </div>
                 </div>
 
-                <!-- Price Display - всегда виден -->
+                <!-- Price Display -->
                 <div class="price-display">
                     <div class="price-row">
                         <span>Total amount:</span>
@@ -587,7 +639,7 @@
                     </div>
                 </div>
 
-                <!-- Price Display - всегда виден -->
+                <!-- Price Display -->
                 <div class="price-display">
                     <div class="price-row">
                         <span>Total amount:</span>
@@ -658,7 +710,7 @@
                         </div>
                     </div>
 
-                    <!-- Price Display - всегда виден -->
+                    <!-- Price Display -->
                     <div class="price-display">
                         <div class="price-row">
                             <span>Total amount:</span>
@@ -733,6 +785,42 @@
         // DOM Elements
         const getEl = id => document.getElementById(id);
 
+        // Scroll Manager
+        const ScrollManager = {
+            scrollToElement(elementId) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Также уведомляем родительское окно для Carrd
+                    if (window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'booking-form-scroll',
+                            elementId: elementId
+                        }, '*');
+                    }
+                }
+            },
+            
+            scrollToStep(stepNumber) {
+                this.scrollToElement(`step${stepNumber}-anchor`);
+            },
+            
+            scrollToNextButton() {
+                const activeSection = document.querySelector('.form-section.active');
+                const nextButton = activeSection.querySelector('.next-button, .book-button');
+                if (nextButton) {
+                    nextButton.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }
+        };
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             State.init();
@@ -762,6 +850,11 @@
                     this.classList.add('active');
                     updateAllPrices();
                     updateTitles();
+                    
+                    // Скроллим к следующему элементу
+                    setTimeout(() => {
+                        ScrollManager.scrollToElement('duration');
+                    }, 100);
                 });
             });
 
@@ -776,6 +869,11 @@
                     }
                     updateAllPrices();
                     updateTitles();
+                    
+                    // Скроллим к следующему элементу
+                    if (id === 'duration') ScrollManager.scrollToElement('participants');
+                    if (id === 'participants') ScrollManager.scrollToElement('days');
+                    if (id === 'days') ScrollManager.scrollToElement('price-display');
                 });
             });
 
@@ -803,7 +901,10 @@
                 getEl('step3DateTime').textContent = getEl('selectedDateTime').textContent;
             }
             
-            scrollToTop();
+            // Скроллим наверх при смене шага
+            setTimeout(() => {
+                ScrollManager.scrollToStep(step);
+            }, 100);
         }
 
         function updateTitles() {
@@ -911,6 +1012,11 @@
                     updateTimeSlots();
                     updateSelectedDateTime();
                     getEl('nextToStep3').disabled = !State.selectedTime;
+                    
+                    // Скроллим к выбору времени
+                    setTimeout(() => {
+                        ScrollManager.scrollToElement('timeSlots');
+                    }, 300);
                 });
             }
             
@@ -956,6 +1062,11 @@
                 updateSelectedDateTime();
                 getEl('nextToStep3').disabled = false;
                 getEl('step3DateTime').textContent = getEl('selectedDateTime').textContent;
+                
+                // Скроллим к кнопке Next после выбора времени
+                setTimeout(() => {
+                    ScrollManager.scrollToNextButton();
+                }, 300);
             });
             
             getEl('timeSlots').appendChild(timeSlot);
@@ -968,10 +1079,6 @@
                 });
                 getEl('selectedDateTime').textContent = `${dateStr} at ${State.selectedTime}`;
             }
-        }
-
-        function scrollToTop() {
-            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function handleSubmit(e) {
@@ -1076,18 +1183,21 @@ Remaining balance: $${formData.remaining}
 Google Calendar Link: ${generateGoogleCalendarLink(formData)}
             `.trim();
 
-            // Using Formspree or similar service
-            fetch('https://formspree.io/f/xjvnzzvz', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    _subject: formData.subject,
-                    _replyto: formData.email,
-                    message: emailBody,
-                    name: formData.fullName,
-                    phone: formData.phone,
-                    email: formData.email
-                })
+            // EmailJS configuration - ЗАМЕНИТЕ НА ВАШИ ДАННЫЕ
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+                to_email: 'info@skischool.ge',
+                subject: formData.subject,
+                message: emailBody,
+                from_name: formData.fullName,
+                from_email: formData.email,
+                phone: formData.phone
+            }).then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+            }, function(error) {
+                console.log('FAILED...', error);
+                // Fallback: открываем почтовый клиент
+                const mailtoLink = `mailto:info@skischool.ge?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(emailBody)}`;
+                window.open(mailtoLink, '_blank');
             });
         }
 
@@ -1130,8 +1240,14 @@ Remaining balance: $${formData.remaining}
         function showSuccessScreen() {
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             getEl('successScreen').classList.add('active');
-            scrollToTop();
+            ScrollManager.scrollToStep('success');
         }
+    </script>
+    <!-- Добавьте EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        // Инициализация EmailJS - ЗАМЕНИТЕ НА ВАШ PUBLIC KEY
+        emailjs.init('YOUR_PUBLIC_KEY');
     </script>
 </body>
 </html>
