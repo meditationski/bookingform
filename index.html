@@ -525,6 +525,27 @@ Remaining: $${data.remaining}
                 window.open(mailto, '_blank');
             });
         }
+        // Автоматическая подстройка высоты для iframe
+function updateIframeHeight() {
+    const height = document.documentElement.scrollHeight;
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'resize',
+            height: height
+        }, '*');
+    }
+}
+
+// Обновляем высоту при изменениях
+new MutationObserver(updateIframeHeight).observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true
+});
+
+// И при загрузке
+window.addEventListener('load', updateIframeHeight);
+setTimeout(updateIframeHeight, 1000);
     </script>
 </body>
 </html>
