@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,31 +57,17 @@
         }
         
         .form-content {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             gap: var(--spacing-xxl);
         }
         
-        @media (min-width: 1024px) {
-            .form-content {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .desktop-sidebar {
-                display: block !important;
-            }
-        }
-
         .form-section {
             display: none;
         }
         
         .form-section.active {
             display: block;
-        }
-        
-        .desktop-sidebar {
-            display: none;
         }
         
         .form-group { 
@@ -93,19 +78,12 @@
             margin-bottom: 30px;
         }
         
-        .step-title {
-            font-size: 14px;
-            color: var(--text-accent);
-            font-weight: 600;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-        
         .main-title {
             font-size: 20px;
             font-weight: 700;
             color: var(--text-primary);
             line-height: 1.4;
+            text-align: center;
         }
         
         .tabs { 
@@ -196,11 +174,30 @@
             margin-top: 5px;
         }
         
+        .calendar-time-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+        
+        @media (min-width: 768px) {
+            .calendar-time-container {
+                flex-direction: row;
+            }
+            
+            .calendar-section {
+                flex: 2;
+            }
+            
+            .time-section {
+                flex: 1;
+            }
+        }
+        
         .calendar-container {
             background: var(--bg-secondary);
             border-radius: var(--radius-xl);
             padding: 18px;
-            border: 1px solid var(--bg-tertiary);
         }
         
         .calendar-header {
@@ -281,13 +278,18 @@
             background: var(--bg-secondary); 
             border-radius: var(--radius-md); 
             padding: 18px; 
-            border: 1px solid var(--bg-tertiary); 
         }
         
         .time-slots { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
             gap: var(--spacing-sm); 
+        }
+        
+        @media (min-width: 480px) {
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
         
         .time-slot { 
@@ -314,7 +316,6 @@
             padding: 10px;
             background: rgba(0, 163, 255, 0.1);
             border-radius: var(--radius-sm);
-            border: 1px solid rgba(0, 163, 255, 0.3);
         }
         
         .price-display { 
@@ -322,7 +323,7 @@
             color: var(--text-primary); 
             padding: 18px; 
             border-radius: var(--radius-lg); 
-            border: 1px solid var(--bg-tertiary);
+            margin-top: 20px;
         }
         
         .price-row { 
@@ -387,9 +388,15 @@
 
         .form-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: var(--spacing-xl);
             margin-bottom: var(--spacing-xl);
+        }
+
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         .form-field {
@@ -464,17 +471,9 @@
             top: -100px;
         }
 
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
+        @media (max-width: 767px) {
             .button-container {
                 flex-direction: column;
-            }
-            
-            .time-slots {
-                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -485,9 +484,6 @@
             <!-- Step 1: Lesson Details -->
             <div class="form-section active" id="step1">
                 <div class="scroll-anchor" id="step1-anchor"></div>
-                <div class="form-header">
-                    <div class="step-title">Step 1</div>
-                </div>
                 
                 <div class="form-group">
                     <div class="tabs">
@@ -527,6 +523,23 @@
                     </div>
                 </div>
 
+                <!-- Price Display - всегда виден -->
+                <div class="price-display">
+                    <div class="price-row">
+                        <span>Total amount:</span>
+                        <span id="totalPrice" class="total-price">$100</span>
+                    </div>
+                    <div class="price-row">
+                        <span>20% deposit:</span>
+                        <span id="depositPrice" class="deposit-price">$20</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Remaining balance:</span>
+                        <span id="remainingPrice" class="remaining-price">$80</span>
+                    </div>
+                    <div id="discountInfo" class="discount-info"></div>
+                </div>
+
                 <div class="button-container">
                     <button class="next-button" id="nextToStep2">Continue to Date & Time</button>
                 </div>
@@ -536,37 +549,59 @@
             <div class="form-section" id="step2">
                 <div class="scroll-anchor" id="step2-anchor"></div>
                 <div class="form-header">
-                    <div class="step-title">Step 2</div>
                     <div class="main-title" id="step2Title"></div>
                 </div>
                 
-                <div class="form-group">
-                    <div class="calendar-container">
-                        <div class="calendar-header">
-                            <div class="calendar-nav">
-                                <button id="prevMonth">‹</button>
-                            </div>
-                            <div class="calendar-month" id="currentMonth">December 2025</div>
-                            <div class="calendar-nav">
-                                <button id="nextMonth">›</button>
+                <div class="calendar-time-container">
+                    <div class="calendar-section">
+                        <div class="form-group">
+                            <div class="calendar-container">
+                                <div class="calendar-header">
+                                    <div class="calendar-nav">
+                                        <button id="prevMonth">‹</button>
+                                    </div>
+                                    <div class="calendar-month" id="currentMonth">December 2025</div>
+                                    <div class="calendar-nav">
+                                        <button id="nextMonth">›</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="calendar-weekdays">
+                                    <div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div>
+                                    <div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+                                    <div class="weekday">Sun</div>
+                                </div>
+                                
+                                <div class="calendar-days" id="calendarDays"></div>
                             </div>
                         </div>
-                        
-                        <div class="calendar-weekdays">
-                            <div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div>
-                            <div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
-                            <div class="weekday">Sun</div>
+                    </div>
+                    
+                    <div class="time-section">
+                        <div class="form-group">
+                            <div class="time-selection">
+                                <div class="time-slots" id="timeSlots"></div>
+                            </div>
+                            <div class="selected-info" id="selectedDateTime">Please select a date first</div>
                         </div>
-                        
-                        <div class="calendar-days" id="calendarDays"></div>
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <div class="time-selection">
-                        <div class="time-slots" id="timeSlots"></div>
+
+                <!-- Price Display - всегда виден -->
+                <div class="price-display">
+                    <div class="price-row">
+                        <span>Total amount:</span>
+                        <span id="totalPriceStep2" class="total-price">$100</span>
                     </div>
-                    <div class="selected-info" id="selectedDateTime">Please select a date first</div>
+                    <div class="price-row">
+                        <span>20% deposit:</span>
+                        <span id="depositPriceStep2" class="deposit-price">$20</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Remaining balance:</span>
+                        <span id="remainingPriceStep2" class="remaining-price">$80</span>
+                    </div>
+                    <div id="discountInfoStep2" class="discount-info"></div>
                 </div>
 
                 <div class="button-container">
@@ -579,7 +614,6 @@
             <div class="form-section" id="step3">
                 <div class="scroll-anchor" id="step3-anchor"></div>
                 <div class="form-header">
-                    <div class="step-title">Step 3</div>
                     <div class="main-title" id="step3Title"></div>
                     <div class="selected-info" id="step3DateTime"></div>
                 </div>
@@ -624,6 +658,23 @@
                         </div>
                     </div>
 
+                    <!-- Price Display - всегда виден -->
+                    <div class="price-display">
+                        <div class="price-row">
+                            <span>Total amount:</span>
+                            <span id="totalPriceStep3" class="total-price">$100</span>
+                        </div>
+                        <div class="price-row">
+                            <span>20% deposit:</span>
+                            <span id="depositPriceStep3" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Remaining balance:</span>
+                            <span id="remainingPriceStep3" class="remaining-price">$80</span>
+                        </div>
+                        <div id="discountInfoStep3" class="discount-info"></div>
+                    </div>
+
                     <div class="button-container">
                         <button type="button" class="nav-button" id="backToStep2">Back</button>
                         <button type="submit" class="book-button" id="bookButton">BOOK NOW</button>
@@ -637,25 +688,6 @@
                     <div class="success-icon">✅</div>
                     <h1 class="success-title">Thank you!</h1>
                     <p class="success-message">Your booking has been submitted successfully. We will contact you shortly to confirm your lesson.</p>
-                </div>
-            </div>
-
-            <!-- Desktop Sidebar -->
-            <div class="desktop-sidebar">
-                <div class="price-display">
-                    <div class="price-row">
-                        <span>Total amount:</span>
-                        <span id="totalPrice" class="total-price">$100</span>
-                    </div>
-                    <div class="price-row">
-                        <span>20% deposit:</span>
-                        <span id="depositPrice" class="deposit-price">$20</span>
-                    </div>
-                    <div class="price-row">
-                        <span>Remaining balance:</span>
-                        <span id="remainingPrice" class="remaining-price">$80</span>
-                    </div>
-                    <div id="discountInfo" class="discount-info"></div>
                 </div>
             </div>
         </div>
@@ -707,7 +739,7 @@
             initPhoneInput();
             setupEventListeners();
             renderCalendar();
-            updatePrices();
+            updateAllPrices();
             updateTitles();
         });
 
@@ -728,7 +760,7 @@
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
-                    updatePrices();
+                    updateAllPrices();
                     updateTitles();
                 });
             });
@@ -742,7 +774,7 @@
                     if (id === 'days') {
                         getEl('daysValue').textContent = getEl('days').value + ' Day' + (getEl('days').value > 1 ? 's' : '');
                     }
-                    updatePrices();
+                    updateAllPrices();
                     updateTitles();
                 });
             });
@@ -780,7 +812,19 @@
             getEl('step3Title').textContent = title;
         }
 
-        function updatePrices() {
+        function updateAllPrices() {
+            const priceData = calculatePrice();
+            
+            // Update all price displays
+            ['', 'Step2', 'Step3'].forEach(suffix => {
+                getEl(`totalPrice${suffix}`).textContent = `$${priceData.total}`;
+                getEl(`depositPrice${suffix}`).textContent = `$${priceData.deposit}`;
+                getEl(`remainingPrice${suffix}`).textContent = `$${priceData.remaining}`;
+                getEl(`discountInfo${suffix}`).textContent = priceData.discountText;
+            });
+        }
+
+        function calculatePrice() {
             const duration = getEl('duration').value;
             const participants = parseInt(getEl('participants').value);
             const days = parseInt(getEl('days').value);
@@ -801,12 +845,9 @@
             const deposit = Math.round(total * 0.20);
             const remaining = total - deposit;
             
-            getEl('totalPrice').textContent = `$${total}`;
-            getEl('depositPrice').textContent = `$${deposit}`;
-            getEl('remainingPrice').textContent = `$${remaining}`;
-            
             const discountText = maxDiscount > 0 ? `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
-            getEl('discountInfo').textContent = discountText;
+            
+            return { total, deposit, remaining, discountText };
         }
 
         function renderCalendar() {
@@ -997,9 +1038,7 @@
             const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
             const participantsText = participants === 1 ? '1 Person' : `${participants} Persons`;
             
-            const total = getEl('totalPrice').textContent;
-            const deposit = getEl('depositPrice').textContent;
-            const remaining = getEl('remainingPrice').textContent;
+            const priceData = calculatePrice();
             
             return {
                 subject: `New Booking: ${durationText} ${sportText} Lesson with ${participantsText} x ${days} days`,
@@ -1013,9 +1052,9 @@
                 email: getEl('email').value,
                 skillLevel: getEl('skillLevel').options[getEl('skillLevel').selectedIndex].text,
                 additionalInfo: getEl('additionalInfo').value,
-                total,
-                deposit,
-                remaining
+                total: priceData.total,
+                deposit: priceData.deposit,
+                remaining: priceData.remaining
             };
         }
 
@@ -1030,14 +1069,14 @@ Email: ${formData.email}
 Skill level: ${formData.skillLevel}
 Additional information: ${formData.additionalInfo || 'None'}
 
-Total amount: ${formData.total}
-20% deposit: ${formData.deposit}
-Remaining balance: ${formData.remaining}
+Total amount: $${formData.total}
+20% deposit: $${formData.deposit}
+Remaining balance: $${formData.remaining}
 
 Google Calendar Link: ${generateGoogleCalendarLink(formData)}
             `.trim();
 
-            // Using Formspree or similar service - replace with your actual endpoint
+            // Using Formspree or similar service
             fetch('https://formspree.io/f/xjvnzzvz', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -1068,9 +1107,9 @@ Email: ${formData.email}
 Skill level: ${formData.skillLevel}
 Additional information: ${formData.additionalInfo || 'None'}
 
-Total amount: ${formData.total}
-20% deposit: ${formData.deposit}
-Remaining balance: ${formData.remaining}
+Total amount: $${formData.total}
+20% deposit: $${formData.deposit}
+Remaining balance: $${formData.remaining}
             `.trim();
 
             const params = new URLSearchParams({
