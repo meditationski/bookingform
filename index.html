@@ -97,31 +97,6 @@
             text-align: center;
         }
         
-        /* Step 1 Desktop Layout */
-        .step1-desktop-layout {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-xl);
-        }
-        
-        @media (min-width: 768px) {
-            .step1-desktop-layout {
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 25px;
-            }
-            
-            .step1-controls {
-                flex: 1;
-                min-width: 0;
-            }
-            
-            .step1-price {
-                flex: 0 0 300px;
-                min-width: 0;
-            }
-        }
-        
         .tabs { 
             display: flex; 
             background: var(--bg-secondary); 
@@ -210,7 +185,6 @@
             margin-top: 5px;
         }
         
-        /* Calendar & Time Layout */
         .calendar-time-container {
             display: flex;
             flex-direction: column;
@@ -245,6 +219,60 @@
             
             .calendar-month {
                 font-size: 16px;
+            }
+
+            /* Desktop layout for step 1 */
+            .step1-desktop-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+                align-items: start;
+            }
+
+            .step1-main-content {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xl);
+            }
+
+            .step1-price-sidebar {
+                margin-top: 0;
+            }
+
+            /* Desktop layout for step 2 */
+            .step2-desktop-layout {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 25px;
+                align-items: start;
+            }
+
+            .step2-main-content {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xl);
+            }
+
+            .step2-price-sidebar {
+                margin-top: 0;
+            }
+
+            /* Desktop layout for step 3 */
+            .step3-desktop-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+                align-items: start;
+            }
+
+            .step3-main-content {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xl);
+            }
+
+            .step3-price-sidebar {
+                margin-top: 0;
             }
         }
         
@@ -411,18 +439,17 @@
             border-radius: var(--radius-sm);
         }
         
-        /* Price Display Compact */
         .price-display { 
             background: var(--bg-accent); 
             color: var(--text-primary); 
             padding: 20px; 
             border-radius: var(--radius-lg); 
-            margin-top: 0;
+            margin-top: 25px;
         }
         
         @media (min-width: 768px) {
-            .price-display.compact {
-                padding: 15px;
+            .price-display {
+                padding: 18px;
                 margin-top: 0;
             }
         }
@@ -431,15 +458,8 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            margin-bottom: 8px; 
+            margin-bottom: 12px; 
             font-size: 14px; 
-        }
-        
-        @media (min-width: 768px) {
-            .price-row {
-                margin-bottom: 6px;
-                font-size: 13px;
-            }
         }
         
         .total-price { 
@@ -447,51 +467,15 @@
             font-weight: 700; 
         }
         
-        @media (min-width: 768px) {
-            .total-price {
-                font-size: 20px;
-            }
-        }
-        
         .discount-info { 
             text-align: center; 
-            margin-top: 8px; 
-            font-size: 11px; 
+            margin-top: 10px; 
+            font-size: 12px; 
             color: var(--text-accent); 
             font-weight: 600; 
-            padding: 6px;
+            padding: 8px;
             background: rgba(0, 163, 255, 0.1);
             border-radius: 4px;
-        }
-
-        /* Step 2 & 3 Desktop Layout */
-        .step2-desktop-layout,
-        .step3-desktop-layout {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-xl);
-        }
-        
-        @media (min-width: 768px) {
-            .step2-desktop-layout,
-            .step3-desktop-layout {
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 25px;
-            }
-            
-            .step2-main,
-            .step3-main {
-                flex: 1;
-                min-width: 0;
-            }
-            
-            .step2-price,
-            .step3-price {
-                flex: 0 0 280px;
-                min-width: 0;
-                align-self: stretch;
-            }
         }
 
         .button-container {
@@ -499,6 +483,12 @@
             justify-content: space-between;
             gap: 15px;
             margin-top: var(--spacing-xxl);
+        }
+
+        @media (min-width: 768px) {
+            .button-container {
+                grid-column: 1 / -1;
+            }
         }
 
         .nav-button {
@@ -672,8 +662,12 @@
         <div class="form-content">
             <!-- Step 1: Lesson Details -->
             <div class="form-section active" id="step1">
+                <div class="form-header">
+                    <div class="main-title">Book Your Ski Lesson</div>
+                </div>
+                
                 <div class="step1-desktop-layout">
-                    <div class="step1-controls">
+                    <div class="step1-main-content">
                         <div class="form-group">
                             <div class="tabs">
                                 <div class="tab active" data-sport="ski">Ski</div>
@@ -713,9 +707,9 @@
                         </div>
                     </div>
 
-                    <!-- Price Display -->
-                    <div class="step1-price">
-                        <div class="price-display compact">
+                    <div class="step1-price-sidebar">
+                        <!-- Price Display -->
+                        <div class="price-display">
                             <div class="price-row">
                                 <span>Total amount:</span>
                                 <span id="totalPrice" class="total-price">$100</span>
@@ -730,11 +724,11 @@
                             </div>
                             <div id="discountInfo" class="discount-info"></div>
                         </div>
-
-                        <div class="button-container">
-                            <button class="next-button" id="nextToStep2">Continue to Date & Time</button>
-                        </div>
                     </div>
+                </div>
+
+                <div class="button-container">
+                    <button class="next-button" id="nextToStep2">Continue to Date & Time</button>
                 </div>
             </div>
 
@@ -745,7 +739,7 @@
                 </div>
                 
                 <div class="step2-desktop-layout">
-                    <div class="step2-main">
+                    <div class="step2-main-content">
                         <div class="calendar-time-container">
                             <div class="calendar-section">
                                 <div class="form-group">
@@ -782,9 +776,9 @@
                         </div>
                     </div>
 
-                    <div class="step2-price">
+                    <div class="step2-price-sidebar">
                         <!-- Price Display -->
-                        <div class="price-display compact">
+                        <div class="price-display">
                             <div class="price-row">
                                 <span>Total amount:</span>
                                 <span id="totalPriceStep2" class="total-price">$100</span>
@@ -799,12 +793,12 @@
                             </div>
                             <div id="discountInfoStep2" class="discount-info"></div>
                         </div>
-
-                        <div class="button-container">
-                            <button class="nav-button" id="backToStep1">Back</button>
-                            <button class="next-button" id="nextToStep3" disabled>Continue to Personal Info</button>
-                        </div>
                     </div>
+                </div>
+
+                <div class="button-container">
+                    <button class="nav-button" id="backToStep1">Back</button>
+                    <button class="next-button" id="nextToStep3" disabled>Continue to Personal Info</button>
                 </div>
             </div>
 
@@ -816,7 +810,7 @@
                 </div>
 
                 <div class="step3-desktop-layout">
-                    <div class="step3-main">
+                    <div class="step3-main-content">
                         <form id="personalInfoForm">
                             <div class="form-row">
                                 <div class="form-field full-width">
@@ -859,9 +853,9 @@
                         </form>
                     </div>
 
-                    <div class="step3-price">
+                    <div class="step3-price-sidebar">
                         <!-- Price Display -->
-                        <div class="price-display compact">
+                        <div class="price-display">
                             <div class="price-row">
                                 <span>Total amount:</span>
                                 <span id="totalPriceStep3" class="total-price">$100</span>
@@ -876,12 +870,12 @@
                             </div>
                             <div id="discountInfoStep3" class="discount-info"></div>
                         </div>
-
-                        <div class="button-container">
-                            <button type="button" class="nav-button" id="backToStep2">Back</button>
-                            <button type="submit" class="book-button" id="bookButton">BOOK NOW</button>
-                        </div>
                     </div>
+                </div>
+
+                <div class="button-container">
+                    <button type="button" class="nav-button" id="backToStep2">Back</button>
+                    <button type="submit" class="book-button" id="bookButton">BOOK NOW</button>
                 </div>
             </div>
 
