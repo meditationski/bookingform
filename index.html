@@ -1280,6 +1280,38 @@ Remaining balance: $${formData.remaining}
             attributes: true,
             attributeFilter: ['class', 'style']
         });
+// Функция для прокрутки родительской страницы наверх
+function scrollParentToTop() {
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+            type: 'scrollToTop'
+        }, '*');
+    }
+}
+
+// Обнови функции навигации чтобы прокручивать родительскую страницу
+function overrideNavigation() {
+    // Переопределяем функцию showStep
+    const originalShowStep = window.showStep;
+    window.showStep = function(step) {
+        originalShowStep(step);
+        scrollParentToTop();
+    };
+    
+    // Перехватываем клики по кнопкам навигации
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('.next-button, .book-button, .nav-button')) {
+            setTimeout(scrollParentToTop, 100);
+        }
+    });
+}
+
+// Инициализируем после загрузки DOM
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', overrideNavigation);
+} else {
+    overrideNavigation();
+}
     </script>
 </body>
 </html>
