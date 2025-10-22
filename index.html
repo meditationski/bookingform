@@ -43,17 +43,13 @@
             background: var(--bg-primary); 
             font-family: 'Inter', sans-serif; 
             color: var(--text-secondary); 
-            padding: 15px;
             min-height: 100vh;
-            overflow-x: hidden;
         }
         
         .calculator-container { 
             max-width: 900px; 
             margin: 0 auto; 
             background: var(--bg-primary); 
-            border-radius: var(--radius-xl); 
-            padding: var(--spacing-xl);
         }
         
         .form-content {
@@ -518,11 +514,6 @@
             padding-left: 80px !important;
         }
 
-        .scroll-anchor {
-            position: absolute;
-            top: -100px;
-        }
-
         @media (max-width: 767px) {
             .button-container {
                 flex-direction: column;
@@ -535,8 +526,6 @@
         <div class="form-content">
             <!-- Step 1: Lesson Details -->
             <div class="form-section active" id="step1">
-                <div class="scroll-anchor" id="step1-anchor"></div>
-                
                 <div class="form-group">
                     <div class="tabs">
                         <div class="tab active" data-sport="ski">Ski</div>
@@ -599,7 +588,6 @@
 
             <!-- Step 2: Date & Time -->
             <div class="form-section" id="step2">
-                <div class="scroll-anchor" id="step2-anchor"></div>
                 <div class="form-header">
                     <div class="main-title" id="step2Title"></div>
                 </div>
@@ -664,7 +652,6 @@
 
             <!-- Step 3: Personal Information -->
             <div class="form-section" id="step3">
-                <div class="scroll-anchor" id="step3-anchor"></div>
                 <div class="form-header">
                     <div class="main-title" id="step3Title"></div>
                     <div class="selected-info" id="step3DateTime"></div>
@@ -746,6 +733,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         // Configuration
         const CONFIG = {
@@ -785,41 +773,16 @@
         // DOM Elements
         const getEl = id => document.getElementById(id);
 
-        // Scroll Manager
-        const ScrollManager = {
-            scrollToElement(elementId) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    element.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    
-                    // Также уведомляем родительское окно для Carrd
-                    if (window.parent !== window) {
-                        window.parent.postMessage({
-                            type: 'booking-form-scroll',
-                            elementId: elementId
-                        }, '*');
-                    }
-                }
-            },
-            
-            scrollToStep(stepNumber) {
-                this.scrollToElement(`step${stepNumber}-anchor`);
-            },
-            
-            scrollToNextButton() {
-                const activeSection = document.querySelector('.form-section.active');
-                const nextButton = activeSection.querySelector('.next-button, .book-button');
-                if (nextButton) {
-                    nextButton.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                }
-            }
-        };
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Initialize EmailJS
+        emailjs.init('gb9ZTULk6-ghDtZuV');
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -850,11 +813,6 @@
                     this.classList.add('active');
                     updateAllPrices();
                     updateTitles();
-                    
-                    // Скроллим к следующему элементу
-                    setTimeout(() => {
-                        ScrollManager.scrollToElement('duration');
-                    }, 100);
                 });
             });
 
@@ -869,11 +827,6 @@
                     }
                     updateAllPrices();
                     updateTitles();
-                    
-                    // Скроллим к следующему элементу
-                    if (id === 'duration') ScrollManager.scrollToElement('participants');
-                    if (id === 'participants') ScrollManager.scrollToElement('days');
-                    if (id === 'days') ScrollManager.scrollToElement('price-display');
                 });
             });
 
@@ -901,10 +854,8 @@
                 getEl('step3DateTime').textContent = getEl('selectedDateTime').textContent;
             }
             
-            // Скроллим наверх при смене шага
-            setTimeout(() => {
-                ScrollManager.scrollToStep(step);
-            }, 100);
+            // Scroll to top when changing steps
+            setTimeout(scrollToTop, 100);
         }
 
         function updateTitles() {
@@ -1012,11 +963,6 @@
                     updateTimeSlots();
                     updateSelectedDateTime();
                     getEl('nextToStep3').disabled = !State.selectedTime;
-                    
-                    // Скроллим к выбору времени
-                    setTimeout(() => {
-                        ScrollManager.scrollToElement('timeSlots');
-                    }, 300);
                 });
             }
             
@@ -1063,10 +1009,8 @@
                 getEl('nextToStep3').disabled = false;
                 getEl('step3DateTime').textContent = getEl('selectedDateTime').textContent;
                 
-                // Скроллим к кнопке Next после выбора времени
-                setTimeout(() => {
-                    ScrollManager.scrollToNextButton();
-                }, 300);
+                // Scroll to top when time is selected
+                setTimeout(scrollToTop, 300);
             });
             
             getEl('timeSlots').appendChild(timeSlot);
@@ -1183,8 +1127,8 @@ Remaining balance: $${formData.remaining}
 Google Calendar Link: ${generateGoogleCalendarLink(formData)}
             `.trim();
 
-            // EmailJS configuration - ЗАМЕНИТЕ НА ВАШИ ДАННЫЕ
-            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+            // Send email using EmailJS
+            emailjs.send('service_0tuoznd', 'template_5md8afc', {
                 to_email: 'info@skischool.ge',
                 subject: formData.subject,
                 message: emailBody,
@@ -1240,14 +1184,8 @@ Remaining balance: $${formData.remaining}
         function showSuccessScreen() {
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             getEl('successScreen').classList.add('active');
-            ScrollManager.scrollToStep('success');
+            scrollToTop();
         }
-    </script>
-    <!-- Добавьте EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-        // Инициализация EmailJS - ЗАМЕНИТЕ НА ВАШ PUBLIC KEY
-        emailjs.init('YOUR_PUBLIC_KEY');
     </script>
 </body>
 </html>
