@@ -6,194 +6,976 @@
     <title>Ski School Booking Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #222529;
+            --bg-secondary: #2a2e33;
+            --bg-tertiary: #3a3f45;
+            --bg-accent: #254d63;
+            --text-primary: #ffffff;
+            --text-secondary: #858e96;
+            --text-accent: #00A3FF;
+            --text-error: #ff4757;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            background: var(--bg-primary); 
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .calculator-container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 15px;
+        }
+        
+        .form-section {
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        .tabs { 
+            display: flex; 
+            background: var(--bg-secondary); 
+            border-radius: 8px; 
+            padding: 4px; 
+            gap: 4px;
+        }
+        
+        .tab { 
+            flex: 1; 
+            padding: 12px; 
+            text-align: center; 
+            background: transparent; 
+            border: none; 
+            color: var(--text-secondary); 
+            font-weight: 600; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 14px;
+        }
+        
+        .tab.active { 
+            background: var(--text-accent); 
+            color: var(--text-primary); 
+        }
+        
+        .custom-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%23858e96' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+        
+        .slider-value { 
+            text-align: center; 
+            font-weight: 600; 
+            color: var(--text-accent); 
+            font-size: 14px; 
+            margin: 8px 0; 
+        }
+        
+        input[type="range"] { 
+            width: 100%; 
+            height: 6px; 
+            background: var(--bg-tertiary); 
+            border-radius: 3px; 
+            margin: 12px 0; 
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--text-accent);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .slider-labels { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 11px; 
+            color: var(--text-secondary); 
+        }
+        
+        .two-step-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .two-step-layout {
+                flex-direction: row;
+            }
+            
+            .step-left, .step-right {
+                flex: 1;
+            }
+        }
+        
+        .calendar-time-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .calendar-container {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .calendar-month {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .calendar-nav button {
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            gap: 2px;
+        }
+        
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            min-height: 36px;
+        }
+        
+        .calendar-day:hover:not(.disabled):not(.selected) {
+            background: var(--bg-tertiary);
+        }
+        
+        .calendar-day.selected {
+            background: var(--text-accent);
+            color: var(--text-primary);
+        }
+        
+        .calendar-day.today {
+            border: 1px solid var(--text-accent);
+        }
+        
+        .calendar-day.disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+        
+        .calendar-day.other-month {
+            opacity: 0.2;
+        }
+        
+        .time-selection { 
+            background: var(--bg-secondary); 
+            border-radius: 8px; 
+            padding: 15px; 
+        }
+        
+        .time-slots { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 8px; 
+        }
+        
+        @media (min-width: 480px) {
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .time-slot { 
+            padding: 12px; 
+            background: var(--bg-tertiary); 
+            border: none; 
+            border-radius: 6px; 
+            color: var(--text-primary); 
+            font-size: 13px; 
+            cursor: pointer; 
+            text-align: center; 
+        }
+        
+        .time-slot.selected { 
+            background: var(--text-accent); 
+        }
+        
+        .selected-info { 
+            text-align: center; 
+            margin-top: 16px; 
+            font-size: 14px; 
+            color: var(--text-accent); 
+            font-weight: 600; 
+            padding: 12px;
+            background: rgba(0, 163, 255, 0.1);
+            border-radius: 6px;
+        }
+        
+        .price-display { 
+            background: var(--bg-accent); 
+            color: var(--text-primary); 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 20px;
+        }
+        
+        .price-row { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 12px; 
+            font-size: 14px; 
+        }
+        
+        .total-price { 
+            font-size: 24px; 
+            font-weight: 700; 
+        }
+        
+        .discount-info { 
+            text-align: center; 
+            margin-top: 10px; 
+            font-size: 12px; 
+            color: var(--text-accent); 
+            padding: 8px;
+            background: rgba(0, 163, 255, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .nav-button {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            padding: 16px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .next-button, .book-button {
+            background: var(--text-accent);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            padding: 16px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .next-button:disabled {
+            background: var(--bg-tertiary);
+            cursor: not-allowed;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .form-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-input {
+            padding: 14px 16px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--text-accent);
+        }
+
+        .error-message {
+            font-size: 12px;
+            color: var(--text-error);
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 25px;
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        #phone {
+            padding-left: 80px !important;
+        }
+
+        .main-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
     <div class="calculator-container">
-        <div class="form-content">
-            <!-- Step 1: Combined Lesson Details + Date & Time -->
-            <div class="form-section active" id="step1">
-                <div class="two-step-layout">
-                    <div class="step-left">
-                        <!-- Lesson Details -->
-                        <div class="form-group">
-                            <div class="tabs">
-                                <div class="tab active" data-sport="ski">Ski</div>
-                                <div class="tab" data-sport="snowboard">Snowboard</div>
-                            </div>
+        <!-- Step 1 -->
+        <div class="form-section active" id="step1">
+            <div class="two-step-layout">
+                <div class="step-left">
+                    <div class="form-group">
+                        <div class="tabs">
+                            <div class="tab active" data-sport="ski">Ski</div>
+                            <div class="tab" data-sport="snowboard">Snowboard</div>
                         </div>
-                        
-                        <div class="form-group">
-                            <div class="select-container">
-                                <select class="custom-select" id="duration">
-                                    <option value="2">2 hours lesson - $100</option>
-                                    <option value="3">3 hours lesson - $140</option>
-                                    <option value="full">Full day lesson - $250</option>
-                                </select>
-                            </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select class="custom-select" id="duration">
+                            <option value="2">2 hours lesson - $100</option>
+                            <option value="3">3 hours lesson - $140</option>
+                            <option value="full">Full day lesson - $250</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="slider-value" id="participantsValue">1 Person</div>
+                        <input type="range" id="participants" min="1" max="5" value="1" step="1">
+                        <div class="slider-labels">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
                         </div>
-                        
-                        <div class="form-group">
-                            <div class="slider-container">
-                                <div class="slider-value" id="participantsValue">1 Person</div>
-                                <input type="range" id="participants" min="1" max="5" value="1" step="1">
-                                <div class="slider-labels">
-                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <div class="slider-container">
-                                <div class="slider-value" id="daysValue">1 Day</div>
-                                <input type="range" id="days" min="1" max="10" value="1" step="1">
-                                <div class="slider-labels">
-                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Price Display -->
-                        <div class="price-display">
-                            <div class="price-row">
-                                <span>Total amount:</span>
-                                <span id="totalPrice" class="total-price">$100</span>
-                            </div>
-                            <div class="price-row">
-                                <span>20% deposit:</span>
-                                <span id="depositPrice" class="deposit-price">$20</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Remaining balance:</span>
-                                <span id="remainingPrice" class="remaining-price">$80</span>
-                            </div>
-                            <div id="discountInfo" class="discount-info"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="slider-value" id="daysValue">1 Day</div>
+                        <input type="range" id="days" min="1" max="10" value="1" step="1">
+                        <div class="slider-labels">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
                         </div>
                     </div>
 
-                    <div class="step-right">
-                        <!-- Date & Time Selection -->
-                        <div class="calendar-time-container">
-                            <div class="form-group">
-                                <div class="calendar-container">
-                                    <div class="calendar-header">
-                                        <div class="calendar-nav">
-                                            <button id="prevMonth">‹</button>
-                                        </div>
-                                        <div class="calendar-month" id="currentMonth">December 2025</div>
-                                        <div class="calendar-nav">
-                                            <button id="nextMonth">›</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="calendar-weekdays">
-                                        <div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div>
-                                        <div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
-                                        <div class="weekday">Sun</div>
-                                    </div>
-                                    
-                                    <div class="calendar-days" id="calendarDays"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group" id="timeSelectionContainer">
-                                <div class="time-selection">
-                                    <div class="time-slots" id="timeSlots"></div>
-                                </div>
-                                <div class="selected-info" id="selectedDateTime">Please select a date first</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="button-container">
-                    <button class="next-button" id="nextToStep2" disabled>Next</button>
-                </div>
-            </div>
-
-            <!-- Step 2: Personal Information -->
-            <div class="form-section" id="step2">
-                <div class="main-title" id="step2Title"></div>
-                <div class="selected-info" id="step2DateTime" style="margin-bottom: 30px;"></div>
-
-                <form id="personalInfoForm">
-                    <div class="form-row">
-                        <div class="form-field full-width">
-                            <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
-                            <div class="error-message" id="fullNameError">Please enter your full name</div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-field">
-                            <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
-                            <div class="error-message" id="phoneError">Please enter a valid phone number</div>
-                        </div>
-                        <div class="form-field">
-                            <input type="email" id="email" class="form-input" placeholder="Email *" required>
-                            <div class="error-message" id="emailError">Please enter a valid email address</div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-field full-width">
-                            <div class="select-container">
-                                <select id="skillLevel" class="custom-select" required>
-                                    <option value="">Skill Level *</option>
-                                    <option value="first-time">First Time</option>
-                                    <option value="beginner">Beginner</option>
-                                    <option value="intermediate">Intermediate</option>
-                                    <option value="advanced">Advanced</option>
-                                </select>
-                            </div>
-                            <div class="error-message" id="skillLevelError">Please select your skill level</div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-field full-width">
-                            <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Additional Information (optional)"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Price Display -->
                     <div class="price-display">
                         <div class="price-row">
                             <span>Total amount:</span>
-                            <span id="totalPriceStep2" class="total-price">$100</span>
+                            <span id="totalPrice" class="total-price">$100</span>
                         </div>
                         <div class="price-row">
                             <span>20% deposit:</span>
-                            <span id="depositPriceStep2" class="deposit-price">$20</span>
+                            <span id="depositPrice" class="deposit-price">$20</span>
                         </div>
                         <div class="price-row">
                             <span>Remaining balance:</span>
-                            <span id="remainingPriceStep2" class="remaining-price">$80</span>
+                            <span id="remainingPrice" class="remaining-price">$80</span>
                         </div>
-                        <div id="discountInfoStep2" class="discount-info"></div>
+                        <div id="discountInfo" class="discount-info"></div>
                     </div>
+                </div>
 
-                    <div class="button-container">
-                        <button type="button" class="nav-button" id="backToStep1">Back</button>
-                        <button type="submit" class="book-button" id="bookButton">BOOK NOW</button>
+                <div class="step-right">
+                    <div class="calendar-time-container">
+                        <div class="form-group">
+                            <div class="calendar-container">
+                                <div class="calendar-header">
+                                    <div class="calendar-nav">
+                                        <button id="prevMonth">‹</button>
+                                    </div>
+                                    <div class="calendar-month" id="currentMonth">December 2025</div>
+                                    <div class="calendar-nav">
+                                        <button id="nextMonth">›</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="calendar-weekdays">
+                                    <div>Mon</div><div>Tue</div><div>Wed</div>
+                                    <div>Thu</div><div>Fri</div><div>Sat</div>
+                                    <div>Sun</div>
+                                </div>
+                                
+                                <div class="calendar-days" id="calendarDays"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="timeSelectionContainer">
+                            <div class="time-selection">
+                                <div class="time-slots" id="timeSlots"></div>
+                            </div>
+                            <div class="selected-info" id="selectedDateTime">Please select a date first</div>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
 
-            <!-- Success Screen -->
-            <div class="form-section" id="successScreen">
-                <div class="success-screen">
-                    <div class="success-icon">✅</div>
-                    <h1 class="success-title">Thank you!</h1>
-                    <p class="success-message">Your booking has been submitted successfully. We will contact you shortly to confirm your lesson.</p>
+            <div class="button-container">
+                <button class="next-button" id="nextToStep2" disabled>Next</button>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="form-section" id="step2">
+            <div class="main-title" id="step2Title"></div>
+            <div class="selected-info" id="step2DateTime" style="margin-bottom: 30px;"></div>
+
+            <form id="personalInfoForm">
+                <div class="form-row">
+                    <div class="form-field full-width">
+                        <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
+                        <div class="error-message" id="fullNameError">Please enter your full name</div>
+                    </div>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
+                        <div class="error-message" id="phoneError">Please enter a valid phone number</div>
+                    </div>
+                    <div class="form-field">
+                        <input type="email" id="email" class="form-input" placeholder="Email *" required>
+                        <div class="error-message" id="emailError">Please enter a valid email address</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field full-width">
+                        <select id="skillLevel" class="custom-select" required>
+                            <option value="">Skill Level *</option>
+                            <option value="first-time">First Time</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                        <div class="error-message" id="skillLevelError">Please select your skill level</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field full-width">
+                        <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Additional Information (optional)"></textarea>
+                    </div>
+                </div>
+
+                <div class="price-display">
+                    <div class="price-row">
+                        <span>Total amount:</span>
+                        <span id="totalPriceStep2" class="total-price">$100</span>
+                    </div>
+                    <div class="price-row">
+                        <span>20% deposit:</span>
+                        <span id="depositPriceStep2" class="deposit-price">$20</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Remaining balance:</span>
+                        <span id="remainingPriceStep2" class="remaining-price">$80</span>
+                    </div>
+                    <div id="discountInfoStep2" class="discount-info"></div>
+                </div>
+
+                <div class="button-container">
+                    <button type="button" class="nav-button" id="backToStep1">Back</button>
+                    <button type="submit" class="book-button" id="bookButton">BOOK NOW</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Screen -->
+        <div class="form-section" id="successScreen">
+            <div class="success-screen">
+                <div class="success-icon">✅</div>
+                <h1 class="success-title">Thank you!</h1>
+                <p class="success-message">Your booking has been submitted successfully.</p>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // Configuration
+        const CONFIG = {
+            prices: {'2': 100, '3': 140, 'full': 250},
+            minDate: new Date(2025, 11, 15),
+            maxDate: new Date(2026, 3, 30),
+            resortCloseHour: 17,
+            lessonStartHour: 10
+        };
+
+        // State
+        const State = {
+            currentMonth: new Date(Math.max(new Date(), CONFIG.minDate)),
+            selectedDate: null,
+            selectedTime: null,
+            currentStep: 1,
+            
+            init() {
+                this.currentMonth.setDate(1);
+            },
+            
+            getBookingTitle() {
+                const activeSport = document.querySelector('.tab.active').dataset.sport;
+                const duration = document.getElementById('duration').value;
+                const participants = parseInt(document.getElementById('participants').value);
+                const days = parseInt(document.getElementById('days').value);
+                
+                const durationText = {'2': '2 Hours', '3': '3 Hours', 'full': 'Full Day'}[duration];
+                const sportText = activeSport.charAt(0).toUpperCase() + activeSport.slice(1);
+                const participantsText = participants === 1 ? '' : ` with ${participants} Persons`;
+                const daysText = days === 1 ? '' : ` x ${days} Days`;
+                
+                return `${durationText} ${sportText} Lesson${participantsText}${daysText}`;
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            State.init();
+            initPhoneInput();
+            setupEventListeners();
+            renderCalendar();
+            updateAllPrices();
+        });
+
+        function initPhoneInput() {
+            window.phoneInput = window.intlTelInput(document.getElementById('phone'), {
+                initialCountry: "auto",
+                preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+        }
+
+        function setupEventListeners() {
+            // Tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    updateAllPrices();
+                });
+            });
+
+            // Sliders and selects
+            ['duration', 'participants', 'days'].forEach(id => {
+                document.getElementById(id).addEventListener('input', () => {
+                    if (id === 'participants') {
+                        document.getElementById('participantsValue').textContent = 
+                            document.getElementById('participants').value + ' Person' + 
+                            (document.getElementById('participants').value > 1 ? 's' : '');
+                    }
+                    if (id === 'days') {
+                        document.getElementById('daysValue').textContent = 
+                            document.getElementById('days').value + ' Day' + 
+                            (document.getElementById('days').value > 1 ? 's' : '');
+                    }
+                    updateAllPrices();
+                });
+            });
+
+            // Navigation
+            document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
+            document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
+
+            // Calendar
+            document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
+
+            // Form submission
+            document.getElementById('personalInfoForm').addEventListener('submit', handleSubmit);
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            State.currentStep = step;
+            
+            if (step === 2) {
+                document.getElementById('step2Title').textContent = State.getBookingTitle();
+                document.getElementById('step2DateTime').textContent = document.getElementById('selectedDateTime').textContent;
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateAllPrices() {
+            const priceData = calculatePrice();
+            
+            ['', 'Step2'].forEach(suffix => {
+                document.getElementById(`totalPrice${suffix}`).textContent = `$${priceData.total}`;
+                document.getElementById(`depositPrice${suffix}`).textContent = `$${priceData.deposit}`;
+                document.getElementById(`remainingPrice${suffix}`).textContent = `$${priceData.remaining}`;
+                document.getElementById(`discountInfo${suffix}`).textContent = priceData.discountText;
+            });
+        }
+
+        function calculatePrice() {
+            const duration = document.getElementById('duration').value;
+            const participants = parseInt(document.getElementById('participants').value);
+            const days = parseInt(document.getElementById('days').value);
+            
+            let basePrice = CONFIG.prices[duration];
+            const pricePerDay = basePrice + (participants - 1) * 40;
+            
+            let total = 0;
+            let maxDiscount = 0;
+            
+            for (let day = 1; day <= days; day++) {
+                let discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                total += pricePerDay * (1 - discount);
+                if (discount > maxDiscount) maxDiscount = discount;
+            }
+            
+            total = Math.round(total);
+            const deposit = Math.round(total * 0.20);
+            const remaining = total - deposit;
+            
+            const discountText = maxDiscount > 0 ? `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+            
+            return { total, deposit, remaining, discountText };
+        }
+
+        function renderCalendar() {
+            const year = State.currentMonth.getFullYear();
+            const month = State.currentMonth.getMonth();
+            
+            document.getElementById('currentMonth').textContent = 
+                State.currentMonth.toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            
+            document.getElementById('calendarDays').innerHTML = '';
+            
+            // Previous month
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = startDay - 1; i >= 0; i--) {
+                createCalendarDay(prevMonthLastDay - i, 'other-month disabled', true);
+            }
+            
+            // Current month
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                let className = 'calendar-day';
+                
+                if (date.toDateString() === today.toDateString()) className += ' today';
+                
+                if (date < CONFIG.minDate || date > CONFIG.maxDate || date < today) {
+                    createCalendarDay(day, className + ' disabled', true);
+                } else {
+                    if (State.selectedDate && State.selectedDate.toDateString() === date.toDateString()) {
+                        className += ' selected';
+                    }
+                    createCalendarDay(day, className, false, date);
+                }
+            }
+            
+            // Next month
+            const totalCells = 42;
+            const nextMonthDays = totalCells - (startDay + lastDay.getDate());
+            for (let day = 1; day <= nextMonthDays; day++) {
+                createCalendarDay(day, 'other-month disabled', true);
+            }
+            
+            updateTimeSlots();
+        }
+
+        function createCalendarDay(day, className, disabled, date = null) {
+            const button = document.createElement('button');
+            button.className = className;
+            button.textContent = day;
+            button.disabled = disabled;
+            
+            if (!disabled && date) {
+                button.addEventListener('click', () => {
+                    State.selectedDate = date;
+                    renderCalendar();
+                    updateTimeSlots();
+                    updateSelectedDateTime();
+                    document.getElementById('nextToStep2').disabled = !State.selectedTime;
+                    
+                    setTimeout(() => {
+                        document.getElementById('timeSelectionContainer').scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'start' 
+                        });
+                    }, 300);
+                });
+            }
+            
+            document.getElementById('calendarDays').appendChild(button);
+        }
+
+        function navigateMonth(direction) {
+            State.currentMonth.setMonth(State.currentMonth.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function updateTimeSlots() {
+            document.getElementById('timeSlots').innerHTML = '';
+            
+            if (!State.selectedDate) {
+                document.getElementById('timeSlots').innerHTML = '<div class="time-slot disabled">Select date first</div>';
+                document.getElementById('nextToStep2').disabled = true;
+                return;
+            }
+
+            const duration = document.getElementById('duration').value;
+            
+            if (duration === 'full') {
+                createTimeSlot('10:00', '10:00 (Full day)');
+            } else {
+                const lessonHours = parseInt(duration);
+                for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - lessonHours; hour++) {
+                    createTimeSlot(`${hour}:00`);
+                }
+            }
+        }
+
+        function createTimeSlot(timeString, displayText = null) {
+            const timeSlot = document.createElement('button');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = displayText || timeString;
+            
+            if (State.selectedTime === timeString) timeSlot.classList.add('selected');
+            
+            timeSlot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+                State.selectedTime = timeString;
+                this.classList.add('selected');
+                updateSelectedDateTime();
+                document.getElementById('nextToStep2').disabled = false;
+            });
+            
+            document.getElementById('timeSlots').appendChild(timeSlot);
+        }
+
+        function updateSelectedDateTime() {
+            if (State.selectedDate && State.selectedTime) {
+                const dateStr = State.selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+                });
+                document.getElementById('selectedDateTime').textContent = `${dateStr} at ${State.selectedTime}`;
+            }
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) return;
+            
+            const formData = getFormData();
+            sendEmail(formData);
+            showSuccessScreen();
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            if (!document.getElementById('fullName').value.trim()) {
+                showError('fullNameError', 'Please enter your full name');
+                isValid = false;
+            } else {
+                hideError('fullNameError');
+            }
+            
+            if (!window.phoneInput.isValidNumber()) {
+                showError('phoneError', 'Please enter a valid phone number');
+                isValid = false;
+            } else {
+                hideError('phoneError');
+            }
+            
+            if (!document.getElementById('email').value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError('emailError', 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                hideError('emailError');
+            }
+            
+            if (!document.getElementById('skillLevel').value) {
+                showError('skillLevelError', 'Please select your skill level');
+                isValid = false;
+            } else {
+                hideError('skillLevelError');
+            }
+            
+            return isValid;
+        }
+
+        function showError(id, message) {
+            const element = document.getElementById(id);
+            element.textContent = message;
+            element.classList.add('show');
+        }
+
+        function hideError(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function getFormData() {
+            const duration = document.getElementById('duration').value;
+            const participants = parseInt(document.getElementById('participants').value);
+            const days = parseInt(document.getElementById('days').value);
+            const sport = document.querySelector('.tab.active').dataset.sport;
+            
+            const durationText = {'2': '2 Hours', '3': '3 Hours', 'full': 'Full Day'}[duration];
+            const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
+            const participantsText = participants === 1 ? '1 Person' : `${participants} Persons`;
+            
+            const priceData = calculatePrice();
+            
+            return {
+                subject: `Booking: ${durationText} ${sportText} Lesson with ${participantsText} x ${days} days`,
+                durationText,
+                sportText,
+                participantsText,
+                days,
+                dateTime: document.getElementById('selectedDateTime').textContent,
+                fullName: document.getElementById('fullName').value,
+                phone: window.phoneInput.getNumber(),
+                email: document.getElementById('email').value,
+                skillLevel: document.getElementById('skillLevel').options[document.getElementById('skillLevel').selectedIndex].text,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                total: priceData.total,
+                deposit: priceData.deposit,
+                remaining: priceData.remaining
+            };
+        }
+
+        function sendEmail(formData) {
+            const emailBody = `
+${formData.durationText} ${formData.sportText} Lesson with ${formData.participantsText} x ${formData.days} days
+${formData.dateTime}
+
+Full Name: ${formData.fullName}
+Phone (WhatsApp): https://wa.me/${formData.phone.replace('+', '')}
+Email: ${formData.email}
+Skill level: ${formData.skillLevel}
+Additional information: ${formData.additionalInfo || 'None'}
+
+Total amount: $${formData.total}
+20% deposit: $${formData.deposit}
+Remaining balance: $${formData.remaining}
+            `.trim();
+
+            emailjs.init('gb9ZTULk6-ghDtZuV');
+            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
+                to_email: 'info@skischool.ge',
+                subject: formData.subject,
+                message: emailBody,
+                from_name: formData.fullName,
+                from_email: formData.email,
+                phone: formData.phone
+            }).then(function() {
+                console.log('Email sent');
+            }, function() {
+                const mailtoLink = `mailto:info@skischool.ge?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(emailBody)}`;
+                window.open(mailtoLink, '_blank');
+            });
+        }
+
+        function showSuccessScreen() {
+            document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+            document.getElementById('successScreen').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
