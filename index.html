@@ -203,7 +203,7 @@
         .calendar-time-container {
             display: flex;
             flex-direction: column;
-            gap: var(--spacing-lg); /* Уменьшено с var(--spacing-xl) */
+            gap: var(--spacing-xl);
         }
         
         .calendar-container {
@@ -657,7 +657,7 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group">
+                            <div class="form-group" id="timeSelectionContainer">
                                 <div class="time-selection">
                                     <div class="time-slots" id="timeSlots"></div>
                                 </div>
@@ -793,13 +793,32 @@
         // DOM Elements
         const getEl = id => document.getElementById(id);
 
-        // Scroll to element function
-        function scrollToElement(elementId) {
-            const element = getEl(elementId);
-            if (element) {
-                element.scrollIntoView({ 
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Scroll to button function
+        function scrollToButton() {
+            const button = getEl('nextToStep2');
+            if (button) {
+                button.scrollIntoView({ 
                     behavior: 'smooth',
                     block: 'center'
+                });
+            }
+        }
+
+        // Scroll to time selection
+        function scrollToTimeSelection() {
+            const timeSelection = getEl('timeSelectionContainer');
+            if (timeSelection) {
+                timeSelection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             }
         }
@@ -857,11 +876,11 @@
 
             // Navigation
             getEl('nextToStep2').addEventListener('click', () => {
-                scrollToElement('step2');
+                scrollToTop();
                 setTimeout(() => showStep(2), 100);
             });
             getEl('backToStep1').addEventListener('click', () => {
-                scrollToElement('step1');
+                scrollToTop();
                 setTimeout(() => showStep(1), 100);
             });
 
@@ -989,10 +1008,7 @@
                     getEl('nextToStep2').disabled = !State.selectedTime;
                     
                     // Scroll to time selection after date is selected
-                    setTimeout(() => {
-                        scrollToElement('timeSlots');
-                    }, 300);
-                    
+                    setTimeout(scrollToTimeSelection, 300);
                     notifyParentAboutHeight();
                 });
             }
@@ -1041,9 +1057,7 @@
                 getEl('nextToStep2').disabled = false;
                 
                 // Scroll to Next button when time is selected
-                setTimeout(() => {
-                    scrollToElement('nextToStep2');
-                }, 300);
+                setTimeout(scrollToButton, 300);
                 notifyParentAboutHeight();
             });
             
@@ -1230,7 +1244,7 @@ Remaining balance: $${formData.remaining}
         function showSuccessScreen() {
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             getEl('successScreen').classList.add('active');
-            scrollToElement('successScreen');
+            scrollToTop();
             notifyParentAboutHeight();
         }
 
