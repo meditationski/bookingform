@@ -882,7 +882,7 @@
             }
             
             // Notify parent about height change
-            setTimeout(notifyParentAboutHeight, 300);
+            setTimeout(notifyParentAboutHeight, 500);
         }
 
         function updateAllPrices() {
@@ -1224,39 +1224,52 @@ Remaining balance: $${formData.remaining}
             notifyParentAboutHeight();
         }
 
-        // Notify parent window about height changes for iframe resizing
+        // Fixed height calculation for Carrd
+        let lastHeight = 0;
+        
         function notifyParentAboutHeight() {
-            const height = document.documentElement.scrollHeight || document.body.scrollHeight;
-            if (window.parent && window.parent !== window) {
-                window.parent.postMessage({
-                    type: 'resize',
-                    height: height + 50 // Add some extra space
-                }, '*');
-            }
-        }
-
-        // Enhanced notification system for Carrd
-        function enhancedNotifyParent() {
-            notifyParentAboutHeight();
-            // Additional notification for better Carrd compatibility
-            setTimeout(() => {
-                const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+            const currentHeight = Math.max(
+                document.documentElement.scrollHeight,
+                document.body.scrollHeight
+            );
+            
+            // Only notify if height actually changed (more than 10px difference)
+            if (Math.abs(currentHeight - lastHeight) > 10) {
+                lastHeight = currentHeight;
+                
                 if (window.parent && window.parent !== window) {
                     window.parent.postMessage({
                         type: 'resize',
-                        height: height + 100
+                        height: currentHeight
                     }, '*');
                 }
-            }, 500);
+            }
         }
 
-        // Notify on various events
-        window.addEventListener('load', enhancedNotifyParent);
-        window.addEventListener('resize', enhancedNotifyParent);
+        // Notify on load and resize
+        window.addEventListener('load', notifyParentAboutHeight);
+        window.addEventListener('resize', notifyParentAboutHeight);
 
-        // Notify when steps change or content updates
+        // Limited mutation observer
         const observer = new MutationObserver(function(mutations) {
-            enhancedNotifyParent();
+            let shouldNotify = false;
+            
+            // Only notify for significant changes
+            mutations.forEach(mutation => {
+                if (mutation.type === 'childList') {
+                    shouldNotify = true;
+                }
+                if (mutation.type === 'attributes' && 
+                    (mutation.attributeName === 'class' || mutation.attributeName === 'style')) {
+                    shouldNotify = true;
+                }
+            });
+            
+            if (shouldNotify) {
+                // Debounce notifications
+                clearTimeout(window.resizeTimeout);
+                window.resizeTimeout = setTimeout(notifyParentAboutHeight, 200);
+            }
         });
         
         observer.observe(document.body, {
@@ -1266,12 +1279,7 @@ Remaining balance: $${formData.remaining}
             attributeFilter: ['class', 'style']
         });
 
-        // Also notify after transitions and animations
-        document.addEventListener('transitionend', enhancedNotifyParent);
-        document.addEventListener('animationend', enhancedNotifyParent);
-
-        // Periodic check as fallback
-        setInterval(enhancedNotifyParent, 1000);
+        // Remove periodic check to prevent infinite growth
     </script>
 </body>
 </html>
