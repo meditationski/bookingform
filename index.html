@@ -97,6 +97,31 @@
             text-align: center;
         }
         
+        /* Step 1 Desktop Layout */
+        .step1-desktop-layout {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+        
+        @media (min-width: 768px) {
+            .step1-desktop-layout {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 25px;
+            }
+            
+            .step1-controls {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .step1-price {
+                flex: 0 0 300px;
+                min-width: 0;
+            }
+        }
+        
         .tabs { 
             display: flex; 
             background: var(--bg-secondary); 
@@ -185,6 +210,7 @@
             margin-top: 5px;
         }
         
+        /* Calendar & Time Layout */
         .calendar-time-container {
             display: flex;
             flex-direction: column;
@@ -321,12 +347,13 @@
         .calendar-day.disabled {
             opacity: 0.2;
             cursor: not-allowed;
+            background: transparent !important;
         }
         
         .calendar-day.other-month {
             opacity: 0.2;
             cursor: not-allowed;
-            background: transparent;
+            background: transparent !important;
         }
         
         .time-selection { 
@@ -384,20 +411,35 @@
             border-radius: var(--radius-sm);
         }
         
+        /* Price Display Compact */
         .price-display { 
             background: var(--bg-accent); 
             color: var(--text-primary); 
             padding: 20px; 
             border-radius: var(--radius-lg); 
-            margin-top: 25px;
+            margin-top: 0;
+        }
+        
+        @media (min-width: 768px) {
+            .price-display.compact {
+                padding: 15px;
+                margin-top: 0;
+            }
         }
         
         .price-row { 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            margin-bottom: 12px; 
+            margin-bottom: 8px; 
             font-size: 14px; 
+        }
+        
+        @media (min-width: 768px) {
+            .price-row {
+                margin-bottom: 6px;
+                font-size: 13px;
+            }
         }
         
         .total-price { 
@@ -405,15 +447,51 @@
             font-weight: 700; 
         }
         
+        @media (min-width: 768px) {
+            .total-price {
+                font-size: 20px;
+            }
+        }
+        
         .discount-info { 
             text-align: center; 
-            margin-top: 10px; 
-            font-size: 12px; 
+            margin-top: 8px; 
+            font-size: 11px; 
             color: var(--text-accent); 
             font-weight: 600; 
-            padding: 8px;
+            padding: 6px;
             background: rgba(0, 163, 255, 0.1);
             border-radius: 4px;
+        }
+
+        /* Step 2 & 3 Desktop Layout */
+        .step2-desktop-layout,
+        .step3-desktop-layout {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+        
+        @media (min-width: 768px) {
+            .step2-desktop-layout,
+            .step3-desktop-layout {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 25px;
+            }
+            
+            .step2-main,
+            .step3-main {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .step2-price,
+            .step3-price {
+                flex: 0 0 280px;
+                min-width: 0;
+                align-self: stretch;
+            }
         }
 
         .button-container {
@@ -594,63 +672,69 @@
         <div class="form-content">
             <!-- Step 1: Lesson Details -->
             <div class="form-section active" id="step1">
-                <div class="form-group">
-                    <div class="tabs">
-                        <div class="tab active" data-sport="ski">Ski</div>
-                        <div class="tab" data-sport="snowboard">Snowboard</div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="select-container">
-                        <select class="custom-select" id="duration">
-                            <option value="2">2 hours lesson - $100</option>
-                            <option value="3">3 hours lesson - $140</option>
-                            <option value="full">Full day lesson - $250</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="slider-container">
-                        <div class="slider-value" id="participantsValue">1 Person</div>
-                        <input type="range" id="participants" min="1" max="5" value="1" step="1">
-                        <div class="slider-labels">
-                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                <div class="step1-desktop-layout">
+                    <div class="step1-controls">
+                        <div class="form-group">
+                            <div class="tabs">
+                                <div class="tab active" data-sport="ski">Ski</div>
+                                <div class="tab" data-sport="snowboard">Snowboard</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="select-container">
+                                <select class="custom-select" id="duration">
+                                    <option value="2">2 hours lesson - $100</option>
+                                    <option value="3">3 hours lesson - $140</option>
+                                    <option value="full">Full day lesson - $250</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="slider-container">
+                                <div class="slider-value" id="participantsValue">1 Person</div>
+                                <input type="range" id="participants" min="1" max="5" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="slider-container">
+                                <div class="slider-value" id="daysValue">1 Day</div>
+                                <input type="range" id="days" min="1" max="10" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="slider-container">
-                        <div class="slider-value" id="daysValue">1 Day</div>
-                        <input type="range" id="days" min="1" max="10" value="1" step="1">
-                        <div class="slider-labels">
-                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+
+                    <!-- Price Display -->
+                    <div class="step1-price">
+                        <div class="price-display compact">
+                            <div class="price-row">
+                                <span>Total amount:</span>
+                                <span id="totalPrice" class="total-price">$100</span>
+                            </div>
+                            <div class="price-row">
+                                <span>20% deposit:</span>
+                                <span id="depositPrice" class="deposit-price">$20</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Remaining balance:</span>
+                                <span id="remainingPrice" class="remaining-price">$80</span>
+                            </div>
+                            <div id="discountInfo" class="discount-info"></div>
+                        </div>
+
+                        <div class="button-container">
+                            <button class="next-button" id="nextToStep2">Continue to Date & Time</button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Price Display -->
-                <div class="price-display">
-                    <div class="price-row">
-                        <span>Total amount:</span>
-                        <span id="totalPrice" class="total-price">$100</span>
-                    </div>
-                    <div class="price-row">
-                        <span>20% deposit:</span>
-                        <span id="depositPrice" class="deposit-price">$20</span>
-                    </div>
-                    <div class="price-row">
-                        <span>Remaining balance:</span>
-                        <span id="remainingPrice" class="remaining-price">$80</span>
-                    </div>
-                    <div id="discountInfo" class="discount-info"></div>
-                </div>
-
-                <div class="button-container">
-                    <button class="next-button" id="nextToStep2">Continue to Date & Time</button>
                 </div>
             </div>
 
@@ -660,61 +744,67 @@
                     <div class="main-title" id="step2Title"></div>
                 </div>
                 
-                <div class="calendar-time-container">
-                    <div class="calendar-section">
-                        <div class="form-group">
-                            <div class="calendar-container">
-                                <div class="calendar-header">
-                                    <div class="calendar-nav">
-                                        <button id="prevMonth">‹</button>
-                                    </div>
-                                    <div class="calendar-month" id="currentMonth">December 2025</div>
-                                    <div class="calendar-nav">
-                                        <button id="nextMonth">›</button>
+                <div class="step2-desktop-layout">
+                    <div class="step2-main">
+                        <div class="calendar-time-container">
+                            <div class="calendar-section">
+                                <div class="form-group">
+                                    <div class="calendar-container">
+                                        <div class="calendar-header">
+                                            <div class="calendar-nav">
+                                                <button id="prevMonth">‹</button>
+                                            </div>
+                                            <div class="calendar-month" id="currentMonth">December 2025</div>
+                                            <div class="calendar-nav">
+                                                <button id="nextMonth">›</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="calendar-weekdays">
+                                            <div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div>
+                                            <div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+                                            <div class="weekday">Sun</div>
+                                        </div>
+                                        
+                                        <div class="calendar-days" id="calendarDays"></div>
                                     </div>
                                 </div>
-                                
-                                <div class="calendar-weekdays">
-                                    <div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div>
-                                    <div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
-                                    <div class="weekday">Sun</div>
+                            </div>
+                            
+                            <div class="time-section">
+                                <div class="form-group">
+                                    <div class="time-selection">
+                                        <div class="time-slots" id="timeSlots"></div>
+                                    </div>
+                                    <div class="selected-info" id="selectedDateTime">Please select a date first</div>
                                 </div>
-                                
-                                <div class="calendar-days" id="calendarDays"></div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="time-section">
-                        <div class="form-group">
-                            <div class="time-selection">
-                                <div class="time-slots" id="timeSlots"></div>
+
+                    <div class="step2-price">
+                        <!-- Price Display -->
+                        <div class="price-display compact">
+                            <div class="price-row">
+                                <span>Total amount:</span>
+                                <span id="totalPriceStep2" class="total-price">$100</span>
                             </div>
-                            <div class="selected-info" id="selectedDateTime">Please select a date first</div>
+                            <div class="price-row">
+                                <span>20% deposit:</span>
+                                <span id="depositPriceStep2" class="deposit-price">$20</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Remaining balance:</span>
+                                <span id="remainingPriceStep2" class="remaining-price">$80</span>
+                            </div>
+                            <div id="discountInfoStep2" class="discount-info"></div>
+                        </div>
+
+                        <div class="button-container">
+                            <button class="nav-button" id="backToStep1">Back</button>
+                            <button class="next-button" id="nextToStep3" disabled>Continue to Personal Info</button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Price Display -->
-                <div class="price-display">
-                    <div class="price-row">
-                        <span>Total amount:</span>
-                        <span id="totalPriceStep2" class="total-price">$100</span>
-                    </div>
-                    <div class="price-row">
-                        <span>20% deposit:</span>
-                        <span id="depositPriceStep2" class="deposit-price">$20</span>
-                    </div>
-                    <div class="price-row">
-                        <span>Remaining balance:</span>
-                        <span id="remainingPriceStep2" class="remaining-price">$80</span>
-                    </div>
-                    <div id="discountInfoStep2" class="discount-info"></div>
-                </div>
-
-                <div class="button-container">
-                    <button class="nav-button" id="backToStep1">Back</button>
-                    <button class="next-button" id="nextToStep3" disabled>Continue to Personal Info</button>
                 </div>
             </div>
 
@@ -725,68 +815,74 @@
                     <div class="selected-info" id="step3DateTime"></div>
                 </div>
 
-                <form id="personalInfoForm">
-                    <div class="form-row">
-                        <div class="form-field full-width">
-                            <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
-                            <div class="error-message" id="fullNameError">Please enter your full name</div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-field">
-                            <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
-                            <div class="error-message" id="phoneError">Please enter a valid phone number</div>
-                        </div>
-                        <div class="form-field">
-                            <input type="email" id="email" class="form-input" placeholder="Email *" required>
-                            <div class="error-message" id="emailError">Please enter a valid email address</div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-field full-width">
-                            <div class="select-container">
-                                <select id="skillLevel" class="custom-select" required>
-                                    <option value="">Skill Level *</option>
-                                    <option value="first-time">First Time</option>
-                                    <option value="beginner">Beginner</option>
-                                    <option value="intermediate">Intermediate</option>
-                                    <option value="advanced">Advanced</option>
-                                </select>
+                <div class="step3-desktop-layout">
+                    <div class="step3-main">
+                        <form id="personalInfoForm">
+                            <div class="form-row">
+                                <div class="form-field full-width">
+                                    <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
+                                    <div class="error-message" id="fullNameError">Please enter your full name</div>
+                                </div>
                             </div>
-                            <div class="error-message" id="skillLevelError">Please select your skill level</div>
-                        </div>
+
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
+                                    <div class="error-message" id="phoneError">Please enter a valid phone number</div>
+                                </div>
+                                <div class="form-field">
+                                    <input type="email" id="email" class="form-input" placeholder="Email *" required>
+                                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-field full-width">
+                                    <div class="select-container">
+                                        <select id="skillLevel" class="custom-select" required>
+                                            <option value="">Skill Level *</option>
+                                            <option value="first-time">First Time</option>
+                                            <option value="beginner">Beginner</option>
+                                            <option value="intermediate">Intermediate</option>
+                                            <option value="advanced">Advanced</option>
+                                        </select>
+                                    </div>
+                                    <div class="error-message" id="skillLevelError">Please select your skill level</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-field full-width">
+                                    <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Additional Information (optional)"></textarea>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-field full-width">
-                            <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Additional Information (optional)"></textarea>
+                    <div class="step3-price">
+                        <!-- Price Display -->
+                        <div class="price-display compact">
+                            <div class="price-row">
+                                <span>Total amount:</span>
+                                <span id="totalPriceStep3" class="total-price">$100</span>
+                            </div>
+                            <div class="price-row">
+                                <span>20% deposit:</span>
+                                <span id="depositPriceStep3" class="deposit-price">$20</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Remaining balance:</span>
+                                <span id="remainingPriceStep3" class="remaining-price">$80</span>
+                            </div>
+                            <div id="discountInfoStep3" class="discount-info"></div>
                         </div>
-                    </div>
 
-                    <!-- Price Display -->
-                    <div class="price-display">
-                        <div class="price-row">
-                            <span>Total amount:</span>
-                            <span id="totalPriceStep3" class="total-price">$100</span>
+                        <div class="button-container">
+                            <button type="button" class="nav-button" id="backToStep2">Back</button>
+                            <button type="submit" class="book-button" id="bookButton">BOOK NOW</button>
                         </div>
-                        <div class="price-row">
-                            <span>20% deposit:</span>
-                            <span id="depositPriceStep3" class="deposit-price">$20</span>
-                        </div>
-                        <div class="price-row">
-                            <span>Remaining balance:</span>
-                            <span id="remainingPriceStep3" class="remaining-price">$80</span>
-                        </div>
-                        <div id="discountInfoStep3" class="discount-info"></div>
                     </div>
-
-                    <div class="button-container">
-                        <button type="button" class="nav-button" id="backToStep2">Back</button>
-                        <button type="submit" class="book-button" id="bookButton">BOOK NOW</button>
-                    </div>
-                </form>
+                </div>
             </div>
 
             <!-- Success Screen -->
