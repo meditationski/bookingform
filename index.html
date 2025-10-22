@@ -49,7 +49,7 @@
         }
         
         .calculator-container { 
-            max-width: 1200px; 
+            max-width: 900px; 
             margin: 0 auto; 
             background: var(--bg-primary); 
             padding: 20px;
@@ -83,6 +83,18 @@
         
         .form-group { 
             margin-bottom: var(--spacing-xl); 
+        }
+        
+        .form-header {
+            margin-bottom: 30px;
+        }
+        
+        .main-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.4;
+            text-align: center;
         }
         
         .tabs { 
@@ -173,25 +185,18 @@
             margin-top: 5px;
         }
         
-        /* Two-step layout */
-        .two-step-layout {
+        .step1-desktop-layout {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-xl);
         }
         
-        @media (min-width: 1024px) {
-            .two-step-layout {
-                flex-direction: row;
-                gap: 30px;
-            }
-            
-            .step1-section {
-                flex: 1;
-            }
-            
-            .step2-section {
-                flex: 1;
+        @media (min-width: 768px) {
+            .step1-desktop-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+                align-items: start;
             }
         }
         
@@ -203,19 +208,8 @@
         
         @media (min-width: 768px) {
             .calendar-time-container {
-                flex-direction: row;
-                align-items: flex-start;
+                flex-direction: column;
                 gap: 20px;
-            }
-            
-            .calendar-section {
-                flex: 1;
-                min-width: 0;
-            }
-            
-            .time-section {
-                flex: 1;
-                min-width: 0;
             }
         }
         
@@ -370,7 +364,6 @@
             color: var(--text-primary); 
             padding: 20px; 
             border-radius: var(--radius-lg); 
-            margin-top: 25px;
         }
         
         .price-row { 
@@ -563,7 +556,7 @@
         @media (min-width: 768px) {
             .step2-desktop-layout {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 2fr 1fr;
                 gap: 25px;
                 align-items: start;
             }
@@ -583,11 +576,11 @@
 <body>
     <div class="calculator-container">
         <div class="form-content">
-            <!-- Step 1 & 2 Combined -->
+            <!-- Step 1: Lesson Details & Date/Time -->
             <div class="form-section active" id="step1">
-                <div class="two-step-layout">
-                    <!-- Left: Step 1 Content -->
-                    <div class="step1-section">
+                <div class="step1-desktop-layout">
+                    <!-- Left Column: Lesson Details -->
+                    <div class="step1-main-content">
                         <div class="form-group">
                             <div class="tabs">
                                 <div class="tab active" data-sport="ski">Ski</div>
@@ -625,62 +618,56 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Price Display -->
-                        <div class="price-display">
-                            <div class="price-row">
-                                <span>Total amount:</span>
-                                <span id="totalPrice" class="total-price">$100</span>
-                            </div>
-                            <div class="price-row">
-                                <span>20% deposit:</span>
-                                <span id="depositPrice" class="deposit-price">$20</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Remaining balance:</span>
-                                <span id="remainingPrice" class="remaining-price">$80</span>
-                            </div>
-                            <div id="discountInfo" class="discount-info"></div>
-                        </div>
                     </div>
 
-                    <!-- Right: Step 2 Content -->
-                    <div class="step2-section">
-                        <div class="calendar-time-container">
-                            <div class="calendar-section">
-                                <div class="form-group">
-                                    <div class="calendar-container">
-                                        <div class="calendar-header">
-                                            <div class="calendar-nav">
-                                                <button id="prevMonth">‹</button>
-                                            </div>
-                                            <div class="calendar-month" id="currentMonth">December 2025</div>
-                                            <div class="calendar-nav">
-                                                <button id="nextMonth">›</button>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="calendar-weekdays">
-                                            <div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div>
-                                            <div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
-                                            <div class="weekday">Sun</div>
-                                        </div>
-                                        
-                                        <div class="calendar-days" id="calendarDays"></div>
+                    <!-- Right Column: Calendar & Time -->
+                    <div class="calendar-time-container">
+                        <div class="form-group">
+                            <div class="calendar-container">
+                                <div class="calendar-header">
+                                    <div class="calendar-nav">
+                                        <button id="prevMonth">‹</button>
+                                    </div>
+                                    <div class="calendar-month" id="currentMonth">December 2025</div>
+                                    <div class="calendar-nav">
+                                        <button id="nextMonth">›</button>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="time-section">
-                                <div class="form-group">
-                                    <div class="time-selection">
-                                        <div class="time-slots" id="timeSlots"></div>
-                                    </div>
-                                    <div class="selected-info" id="selectedDateTime">Please select a date first</div>
+                                
+                                <div class="calendar-weekdays">
+                                    <div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div>
+                                    <div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+                                    <div class="weekday">Sun</div>
                                 </div>
+                                
+                                <div class="calendar-days" id="calendarDays"></div>
                             </div>
                         </div>
+                        
+                        <div class="form-group">
+                            <div class="time-selection">
+                                <div class="time-slots" id="timeSlots"></div>
+                            </div>
+                            <div class="selected-info" id="selectedDateTime">Please select a date first</div>
+                        </div>
                     </div>
+                </div>
+
+                <!-- Price Display -->
+                <div class="price-display">
+                    <div class="price-row">
+                        <span>Total amount:</span>
+                        <span id="totalPrice" class="total-price">$100</span>
+                    </div>
+                    <div class="price-row">
+                        <span>20% deposit:</span>
+                        <span id="depositPrice" class="deposit-price">$20</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Remaining balance:</span>
+                        <span id="remainingPrice" class="remaining-price">$80</span>
+                    </div>
+                    <div id="discountInfo" class="discount-info"></div>
                 </div>
 
                 <div class="button-container">
@@ -690,6 +677,11 @@
 
             <!-- Step 2: Personal Information -->
             <div class="form-section" id="step2">
+                <div class="form-header">
+                    <div class="main-title" id="step2Title"></div>
+                    <div class="selected-info" id="step2DateTime"></div>
+                </div>
+
                 <div class="step2-desktop-layout">
                     <div class="step2-form-content">
                         <form id="personalInfoForm">
@@ -725,31 +717,32 @@
                                 </div>
                             </div>
 
-                            <!-- Additional Info and Price side by side -->
+                            <!-- Row 3: Additional Info -->
                             <div class="form-row">
-                                <div class="form-field">
+                                <div class="form-field full-width">
                                     <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Additional Information (optional)"></textarea>
-                                </div>
-                                <div class="form-field">
-                                    <!-- Price Display -->
-                                    <div class="price-display">
-                                        <div class="price-row">
-                                            <span>Total amount:</span>
-                                            <span id="totalPriceStep2" class="total-price">$100</span>
-                                        </div>
-                                        <div class="price-row">
-                                            <span>20% deposit:</span>
-                                            <span id="depositPriceStep2" class="deposit-price">$20</span>
-                                        </div>
-                                        <div class="price-row">
-                                            <span>Remaining balance:</span>
-                                            <span id="remainingPriceStep2" class="remaining-price">$80</span>
-                                        </div>
-                                        <div id="discountInfoStep2" class="discount-info"></div>
-                                    </div>
                                 </div>
                             </div>
                         </form>
+                    </div>
+
+                    <div class="step2-price-sidebar">
+                        <!-- Price Display -->
+                        <div class="price-display">
+                            <div class="price-row">
+                                <span>Total amount:</span>
+                                <span id="totalPriceStep2" class="total-price">$100</span>
+                            </div>
+                            <div class="price-row">
+                                <span>20% deposit:</span>
+                                <span id="depositPriceStep2" class="deposit-price">$20</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Remaining balance:</span>
+                                <span id="remainingPriceStep2" class="remaining-price">$80</span>
+                            </div>
+                            <div id="discountInfoStep2" class="discount-info"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -791,6 +784,20 @@
             
             init() {
                 this.currentMonth.setDate(1);
+            },
+            
+            getBookingTitle() {
+                const activeSport = document.querySelector('.tab.active').dataset.sport;
+                const duration = document.getElementById('duration').value;
+                const participants = parseInt(document.getElementById('participants').value);
+                const days = parseInt(document.getElementById('days').value);
+                
+                const durationText = {'2': '2 Hours', '3': '3 Hours', 'full': 'Full Day'}[duration];
+                const sportText = activeSport.charAt(0).toUpperCase() + activeSport.slice(1);
+                const participantsText = participants === 1 ? '' : ` with ${participants} Persons`;
+                const daysText = days === 1 ? '' : ` x ${days} Days`;
+                
+                return `${durationText} ${sportText} Lesson${participantsText}${daysText}`;
             }
         };
 
@@ -838,6 +845,7 @@
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     updateAllPrices();
+                    updateTitles();
                     notifyParentAboutHeight();
                 });
             });
@@ -852,6 +860,7 @@
                         getEl('daysValue').textContent = getEl('days').value + ' Day' + (getEl('days').value > 1 ? 's' : '');
                     }
                     updateAllPrices();
+                    updateTitles();
                     notifyParentAboutHeight();
                 });
             });
@@ -872,12 +881,22 @@
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             getEl(`step${step}`).classList.add('active');
             State.currentStep = step;
+            updateTitles();
+            
+            if (step === 2) {
+                getEl('step2DateTime').textContent = getEl('selectedDateTime').textContent;
+            }
             
             // Scroll to top when changing steps
             setTimeout(scrollToTop, 100);
             
             // Notify parent about height change
             setTimeout(notifyParentAboutHeight, 300);
+        }
+
+        function updateTitles() {
+            const title = State.getBookingTitle();
+            getEl('step2Title').textContent = title;
         }
 
         function updateAllPrices() {
@@ -1186,6 +1205,7 @@ Total amount: $${formData.total}
 Remaining balance: $${formData.remaining}
             `.trim();
 
+            // Clean title without "New Booking"
             const eventTitle = `${formData.durationText} ${formData.sportText} Lesson with ${formData.participantsText} x ${formData.days} days`;
 
             const params = new URLSearchParams({
