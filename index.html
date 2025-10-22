@@ -46,6 +46,7 @@
             min-height: 100vh;
             padding: 0;
             margin: 0;
+            overflow-x: hidden;
         }
         
         .calculator-container { 
@@ -53,6 +54,7 @@
             margin: 0 auto; 
             background: var(--bg-primary); 
             padding: 15px;
+            min-height: auto;
         }
         
         @media (min-width: 768px) {
@@ -71,10 +73,12 @@
             display: flex;
             flex-direction: column;
             gap: var(--spacing-xxl);
+            min-height: auto;
         }
         
         .form-section {
             display: none;
+            min-height: auto;
         }
         
         .form-section.active {
@@ -184,6 +188,7 @@
             .two-step-layout {
                 flex-direction: row;
                 gap: 25px;
+                align-items: flex-start;
             }
             
             .step-left {
@@ -384,6 +389,7 @@
             justify-content: flex-end;
             gap: 15px;
             margin-top: var(--spacing-xxl);
+            padding-top: 20px;
         }
 
         .nav-button {
@@ -536,6 +542,10 @@
             
             .price-display {
                 padding: 15px;
+            }
+            
+            .button-container {
+                padding-top: 15px;
             }
         }
 
@@ -813,8 +823,8 @@
             renderCalendar();
             updateAllPrices();
             
-            // Notify parent about initial height
-            setTimeout(notifyParentAboutHeight, 100);
+            // Initial height notification
+            setTimeout(notifyParentAboutHeight, 500);
         });
 
         function initPhoneInput() {
@@ -856,11 +866,11 @@
             // Navigation
             getEl('nextToStep2').addEventListener('click', () => {
                 scrollToTop();
-                setTimeout(() => showStep(2), 300);
+                setTimeout(() => showStep(2), 100);
             });
             getEl('backToStep1').addEventListener('click', () => {
                 scrollToTop();
-                setTimeout(() => showStep(1), 300);
+                setTimeout(() => showStep(1), 100);
             });
 
             // Calendar
@@ -881,8 +891,8 @@
                 getEl('step2DateTime').textContent = getEl('selectedDateTime').textContent;
             }
             
-            // Notify parent about height change
-            setTimeout(notifyParentAboutHeight, 500);
+            // Notify parent about height change after DOM update
+            setTimeout(notifyParentAboutHeight, 200);
         }
 
         function updateAllPrices() {
@@ -1226,14 +1236,10 @@ Remaining balance: $${formData.remaining}
 
         // Fixed height calculation for Carrd
         let lastHeight = 0;
-        
         function notifyParentAboutHeight() {
-            const currentHeight = Math.max(
-                document.documentElement.scrollHeight,
-                document.body.scrollHeight
-            );
+            const currentHeight = document.documentElement.scrollHeight;
             
-            // Only notify if height actually changed (more than 10px difference)
+            // Prevent infinite growth - only notify if height changed significantly
             if (Math.abs(currentHeight - lastHeight) > 10) {
                 lastHeight = currentHeight;
                 
@@ -1247,28 +1253,24 @@ Remaining balance: $${formData.remaining}
         }
 
         // Notify on load and resize
-        window.addEventListener('load', notifyParentAboutHeight);
-        window.addEventListener('resize', notifyParentAboutHeight);
+        window.addEventListener('load', () => {
+            setTimeout(notifyParentAboutHeight, 1000);
+        });
 
-        // Limited mutation observer
+        // Remove periodic checks and excessive notifications
+        // Only notify on important events
         const observer = new MutationObserver(function(mutations) {
             let shouldNotify = false;
-            
-            // Only notify for significant changes
-            mutations.forEach(mutation => {
-                if (mutation.type === 'childList') {
+            for (let mutation of mutations) {
+                if (mutation.type === 'childList' || 
+                    (mutation.type === 'attributes' && 
+                     (mutation.attributeName === 'class' || mutation.attributeName === 'style'))) {
                     shouldNotify = true;
+                    break;
                 }
-                if (mutation.type === 'attributes' && 
-                    (mutation.attributeName === 'class' || mutation.attributeName === 'style')) {
-                    shouldNotify = true;
-                }
-            });
-            
+            }
             if (shouldNotify) {
-                // Debounce notifications
-                clearTimeout(window.resizeTimeout);
-                window.resizeTimeout = setTimeout(notifyParentAboutHeight, 200);
+                setTimeout(notifyParentAboutHeight, 100);
             }
         });
         
@@ -1278,8 +1280,6 @@ Remaining balance: $${formData.remaining}
             attributes: true,
             attributeFilter: ['class', 'style']
         });
-
-        // Remove periodic check to prevent infinite growth
     </script>
 </body>
 </html>
