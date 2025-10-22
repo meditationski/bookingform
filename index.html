@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,9 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
-        /* === VARIABLES === */
         :root {
-            /* Colors */
             --bg-primary: #222529;
             --bg-secondary: #2a2e33;
             --bg-tertiary: #3a3f45;
@@ -20,7 +19,6 @@
             --text-success: #00ff88;
             --text-error: #ff4757;
             
-            /* Spacing */
             --spacing-xs: 4px;
             --spacing-sm: 8px;
             --spacing-md: 12px;
@@ -28,17 +26,14 @@
             --spacing-xl: 20px;
             --spacing-xxl: 25px;
             
-            /* Border Radius */
             --radius-sm: 6px;
             --radius-md: 8px;
             --radius-lg: 10px;
             --radius-xl: 12px;
             
-            /* Transitions */
             --transition: all 0.3s ease;
         }
 
-        /* === BASE STYLES === */
         * { 
             margin: 0; 
             padding: 0; 
@@ -60,17 +55,24 @@
             background: var(--bg-primary); 
             border-radius: var(--radius-xl); 
             padding: var(--spacing-xl);
-            position: relative;
         }
         
-        /* === LAYOUT === */
         .form-content {
             display: grid;
             grid-template-columns: 1fr;
             gap: var(--spacing-xxl);
-            align-items: start;
         }
         
+        @media (min-width: 1024px) {
+            .form-content {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .desktop-sidebar {
+                display: block !important;
+            }
+        }
+
         .form-section {
             display: none;
         }
@@ -79,31 +81,33 @@
             display: block;
         }
         
-        .form-group { 
-            margin-bottom: var(--spacing-xl); 
-            width: 100%;
+        .desktop-sidebar {
+            display: none;
         }
         
-        /* === HEADER === */
+        .form-group { 
+            margin-bottom: var(--spacing-xl); 
+        }
+        
         .form-header {
-            text-align: center;
             margin-bottom: 30px;
         }
         
-        .form-title {
+        .step-title {
+            font-size: 14px;
+            color: var(--text-accent);
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .main-title {
             font-size: 20px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 8px;
+            line-height: 1.4;
         }
         
-        .form-subtitle {
-            font-size: 16px;
-            color: var(--text-accent);
-            font-weight: 600;
-        }
-        
-        /* === TABS === */
         .tabs { 
             display: flex; 
             background: var(--bg-secondary); 
@@ -131,14 +135,8 @@
             color: var(--text-primary); 
         }
         
-        .tab:hover:not(.active) {
-            background: var(--bg-tertiary);
-        }
-        
-        /* === FORM ELEMENTS === */
         .select-container {
             position: relative;
-            width: 100%;
         }
         
         .custom-select {
@@ -152,27 +150,13 @@
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%23858e96' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 16px center;
             background-size: 12px;
             padding-right: 40px;
-            transition: var(--transition);
         }
         
-        .custom-select:focus {
-            outline: none;
-            border-color: var(--text-accent);
-            box-shadow: 0 0 0 2px rgba(0, 163, 255, 0.2);
-        }
-        
-        .custom-select:hover {
-            border-color: var(--text-accent);
-        }
-        
-        /* === SLIDERS === */
         .slider-container { 
             margin-top: var(--spacing-sm); 
         }
@@ -192,7 +176,6 @@
             border-radius: 3px; 
             margin: var(--spacing-md) 0; 
             -webkit-appearance: none;
-            cursor: pointer;
         }
         
         input[type="range"]::-webkit-slider-thumb {
@@ -203,7 +186,6 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid var(--bg-primary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .slider-labels { 
@@ -214,7 +196,6 @@
             margin-top: 5px;
         }
         
-        /* === CALENDAR === */
         .calendar-container {
             background: var(--bg-secondary);
             border-radius: var(--radius-xl);
@@ -251,17 +232,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            transition: var(--transition);
-        }
-        
-        .calendar-nav button:hover:not(:disabled) {
-            background: var(--text-accent);
-        }
-        
-        .calendar-nav button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
         }
         
         .calendar-weekdays {
@@ -272,10 +242,6 @@
             font-size: 11px;
             color: var(--text-secondary);
             font-weight: 500;
-        }
-        
-        .weekday {
-            padding: var(--spacing-sm) 0;
         }
         
         .calendar-days {
@@ -295,27 +261,15 @@
             font-size: 13px;
             border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .calendar-day:hover:not(.disabled):not(.selected) {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
         }
         
         .calendar-day.selected {
             background: var(--text-accent);
             color: var(--text-primary);
-            box-shadow: 0 2px 8px rgba(0, 163, 255, 0.3);
         }
         
         .calendar-day.today {
             border: 1px solid var(--text-accent);
-        }
-        
-        .calendar-day.today:not(.selected) {
-            background: transparent;
-            color: var(--text-accent);
         }
         
         .calendar-day.disabled {
@@ -323,11 +277,6 @@
             cursor: not-allowed;
         }
         
-        .calendar-day.other-month {
-            opacity: 0.3;
-        }
-        
-        /* === TIME SELECTION === */
         .time-selection { 
             background: var(--bg-secondary); 
             border-radius: var(--radius-md); 
@@ -350,21 +299,10 @@
             font-size: 13px; 
             cursor: pointer; 
             text-align: center; 
-            transition: var(--transition);
-        }
-        
-        .time-slot:hover:not(.disabled) {
-            background: var(--text-accent);
         }
         
         .time-slot.selected { 
             background: var(--text-accent); 
-            box-shadow: 0 2px 8px rgba(0, 163, 255, 0.3);
-        }
-        
-        .time-slot.disabled { 
-            opacity: 0.3; 
-            cursor: not-allowed; 
         }
         
         .selected-info { 
@@ -379,14 +317,12 @@
             border: 1px solid rgba(0, 163, 255, 0.3);
         }
         
-        /* === PRICE DISPLAY === */
         .price-display { 
             background: var(--bg-accent); 
             color: var(--text-primary); 
             padding: 18px; 
             border-radius: var(--radius-lg); 
             border: 1px solid var(--bg-tertiary);
-            margin-top: 10px;
         }
         
         .price-row { 
@@ -400,15 +336,6 @@
         .total-price { 
             font-size: 24px; 
             font-weight: 700; 
-            color: var(--text-primary);
-        }
-        
-        .deposit-price {
-            color: var(--text-accent);
-        }
-        
-        .remaining-price {
-            color: var(--text-primary);
         }
         
         .discount-info { 
@@ -422,7 +349,6 @@
             border-radius: 4px;
         }
 
-        /* === BUTTONS === */
         .button-container {
             display: flex;
             justify-content: space-between;
@@ -439,15 +365,10 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
             flex: 1;
         }
 
-        .nav-button:hover {
-            background: #4a4f55;
-        }
-
-        .next-button {
+        .next-button, .book-button {
             background: var(--text-accent);
             color: var(--text-primary);
             border: none;
@@ -456,50 +377,14 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
             flex: 1;
-        }
-
-        .next-button:hover {
-            background: #0088cc;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 163, 255, 0.3);
         }
 
         .next-button:disabled {
             background: var(--bg-tertiary);
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
-        .book-button {
-            background: var(--text-accent);
-            color: var(--text-primary);
-            border: none;
-            border-radius: var(--radius-md);
-            padding: 14px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            flex: 1;
-        }
-
-        .book-button:hover {
-            background: #0088cc;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 163, 255, 0.3);
-        }
-
-        .book-button:disabled {
-            background: var(--bg-tertiary);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* === FORM FIELDS === */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -517,12 +402,6 @@
             grid-column: 1 / -1;
         }
 
-        .form-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
         .form-input {
             padding: 12px 16px;
             border: 1px solid var(--bg-tertiary);
@@ -531,22 +410,12 @@
             color: var(--text-primary);
             font-size: 14px;
             font-family: 'Inter', sans-serif;
-            transition: var(--transition);
             width: 100%;
-        }
-
-        .form-input::placeholder {
-            color: var(--text-secondary);
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--text-accent);
-            box-shadow: 0 0 0 2px rgba(0, 163, 255, 0.2);
-        }
-
-        .form-input.error {
-            border-color: var(--text-error);
         }
 
         .error-message {
@@ -560,177 +429,52 @@
             display: block;
         }
 
-        /* === PHONE INPUT STYLES === */
+        .success-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
         .iti {
             width: 100%;
         }
 
-        .iti__flag {
-            background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/img/flags.png");
-        }
-
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .iti__flag {
-                background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/img/flags@2x.png");
-            }
-        }
-
-        .iti__selected-flag {
-            background-color: var(--bg-secondary);
-            border-right: 1px solid var(--bg-tertiary);
-            padding: 0 12px;
-            width: 70px;
-        }
-
-        .iti__selected-flag:hover {
-            background-color: var(--bg-tertiary);
-        }
-
-        .iti__country-list {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--bg-tertiary);
-            color: var(--text-primary);
-            width: 300px;
-        }
-
-        .iti__country {
-            padding: 8px 10px;
-        }
-
-        .iti__country:hover, .iti__country.iti__highlight {
-            background-color: var(--bg-tertiary);
-        }
-
-        .iti__dial-code {
-            color: var(--text-secondary);
-        }
-
-        .iti__divider {
-            border-bottom-color: var(--bg-tertiary);
-        }
-
-        /* FIX: Добавляем отступ для номера телефона */
         #phone {
             padding-left: 80px !important;
         }
 
-        /* FIX: Убираем красную обводку при первом показе */
-        .phone-input-init .form-input {
-            border-color: var(--bg-tertiary) !important;
-        }
-
-        /* === SCROLL ANCHORS === */
         .scroll-anchor {
             position: absolute;
             top: -100px;
         }
 
-        /* === RESPONSIVE DESIGN === */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .calculator-container {
-                padding: 15px;
-                border-radius: var(--radius-lg);
-            }
-            
-            .form-group {
-                margin-bottom: 15px;
-            }
-            
-            .calendar-container,
-            .time-selection {
-                padding: 15px;
-            }
-            
-            .time-slots {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .price-display {
-                padding: 15px;
-            }
-            
-            .custom-select {
-                padding: 12px 14px;
-                font-size: 13px;
-            }
-            
-            .tab {
-                padding: 10px;
-                font-size: 13px;
-            }
-            
             .form-row {
                 grid-template-columns: 1fr;
-                gap: 15px;
             }
             
             .button-container {
                 flex-direction: column;
             }
-
-            /* Responsive phone input */
-            #phone {
-                padding-left: 70px !important;
-            }
-
-            .iti__selected-flag {
-                width: 60px;
-            }
-
-            .iti__country-list {
-                width: 280px;
-                left: 0 !important;
-                right: auto !important;
-            }
-        }
-
-        @media (max-width: 480px) {
+            
             .time-slots {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .calendar-container {
-                padding: 12px;
-            }
-            
-            .calendar-day {
-                font-size: 12px;
-            }
-            
-            .calendar-month {
-                font-size: 14px;
-            }
-            
-            .calendar-nav button {
-                width: 28px;
-                height: 28px;
-            }
-
-            #phone {
-                padding-left: 65px !important;
-            }
-
-            .iti__selected-flag {
-                width: 55px;
-                padding: 0 8px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .time-slots {
-                grid-template-columns: 1fr;
-            }
-            
-            .calculator-container {
-                padding: 10px;
-            }
-
-            .iti__country-list {
-                width: 260px;
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -742,11 +486,9 @@
             <div class="form-section active" id="step1">
                 <div class="scroll-anchor" id="step1-anchor"></div>
                 <div class="form-header">
-                    <h2 class="form-title">Book Your Lesson</h2>
-                    <div class="form-subtitle">Step 1: Choose Lesson Details</div>
+                    <div class="step-title">Step 1</div>
                 </div>
                 
-                <!-- Equipment Type -->
                 <div class="form-group">
                     <div class="tabs">
                         <div class="tab active" data-sport="ski">Ski</div>
@@ -754,7 +496,6 @@
                     </div>
                 </div>
                 
-                <!-- Lesson Duration -->
                 <div class="form-group">
                     <div class="select-container">
                         <select class="custom-select" id="duration">
@@ -765,7 +506,6 @@
                     </div>
                 </div>
                 
-                <!-- Number of Participants -->
                 <div class="form-group">
                     <div class="slider-container">
                         <div class="slider-value" id="participantsValue">1 Person</div>
@@ -776,7 +516,6 @@
                     </div>
                 </div>
                 
-                <!-- Number of Days -->
                 <div class="form-group">
                     <div class="slider-container">
                         <div class="slider-value" id="daysValue">1 Day</div>
@@ -788,24 +527,6 @@
                     </div>
                 </div>
 
-                <!-- Price Display -->
-                <div class="price-display">
-                    <div class="price-row">
-                        <span>Total amount:</span>
-                        <span id="totalPrice" class="total-price">$100</span>
-                    </div>
-                    <div class="price-row">
-                        <span>20% deposit:</span>
-                        <span id="depositPrice" class="deposit-price">$20</span>
-                    </div>
-                    <div class="price-row">
-                        <span>Remaining balance:</span>
-                        <span id="remainingPrice" class="remaining-price">$80</span>
-                    </div>
-                    <div id="discountInfo" class="discount-info"></div>
-                </div>
-
-                <!-- Next Button -->
                 <div class="button-container">
                     <button class="next-button" id="nextToStep2">Continue to Date & Time</button>
                 </div>
@@ -815,11 +536,10 @@
             <div class="form-section" id="step2">
                 <div class="scroll-anchor" id="step2-anchor"></div>
                 <div class="form-header">
-                    <h2 class="form-title" id="step2Title">2 Hours Ski Lesson with 1 Person x 1 Day</h2>
-                    <div class="form-subtitle">Step 2: Choose Date & Time</div>
+                    <div class="step-title">Step 2</div>
+                    <div class="main-title" id="step2Title"></div>
                 </div>
                 
-                <!-- Calendar -->
                 <div class="form-group">
                     <div class="calendar-container">
                         <div class="calendar-header">
@@ -833,12 +553,8 @@
                         </div>
                         
                         <div class="calendar-weekdays">
-                            <div class="weekday">Mon</div>
-                            <div class="weekday">Tue</div>
-                            <div class="weekday">Wed</div>
-                            <div class="weekday">Thu</div>
-                            <div class="weekday">Fri</div>
-                            <div class="weekday">Sat</div>
+                            <div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div>
+                            <div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
                             <div class="weekday">Sun</div>
                         </div>
                         
@@ -846,7 +562,6 @@
                     </div>
                 </div>
                 
-                <!-- Time Selection -->
                 <div class="form-group">
                     <div class="time-selection">
                         <div class="time-slots" id="timeSlots"></div>
@@ -854,7 +569,6 @@
                     <div class="selected-info" id="selectedDateTime">Please select a date first</div>
                 </div>
 
-                <!-- Navigation Buttons -->
                 <div class="button-container">
                     <button class="nav-button" id="backToStep1">Back</button>
                     <button class="next-button" id="nextToStep3" disabled>Continue to Personal Info</button>
@@ -865,11 +579,11 @@
             <div class="form-section" id="step3">
                 <div class="scroll-anchor" id="step3-anchor"></div>
                 <div class="form-header">
-                    <h2 class="form-title" id="step3Title">2 Hours Ski Lesson with 1 Person x 1 Day</h2>
-                    <div class="form-subtitle">Step 3: Your Information</div>
+                    <div class="step-title">Step 3</div>
+                    <div class="main-title" id="step3Title"></div>
+                    <div class="selected-info" id="step3DateTime"></div>
                 </div>
 
-                <!-- Personal Information Form -->
                 <form id="personalInfoForm">
                     <div class="form-row">
                         <div class="form-field full-width">
@@ -880,7 +594,7 @@
 
                     <div class="form-row">
                         <div class="form-field">
-                            <input type="tel" id="phone" class="form-input phone-input-init" placeholder="Phone (WhatsApp) *" required>
+                            <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
                             <div class="error-message" id="phoneError">Please enter a valid phone number</div>
                         </div>
                         <div class="form-field">
@@ -910,112 +624,46 @@
                         </div>
                     </div>
 
-                    <!-- Price Display -->
-                    <div class="price-display">
-                        <div class="price-row">
-                            <span>Total amount:</span>
-                            <span id="summaryTotalPrice" class="total-price">$100</span>
-                        </div>
-                        <div class="price-row">
-                            <span>20% deposit:</span>
-                            <span id="summaryDepositPrice" class="deposit-price">$20</span>
-                        </div>
-                        <div class="price-row">
-                            <span>Remaining balance:</span>
-                            <span id="summaryRemainingPrice" class="remaining-price">$80</span>
-                        </div>
-                        <div id="summaryDiscountInfo" class="discount-info"></div>
-                    </div>
-
                     <div class="button-container">
                         <button type="button" class="nav-button" id="backToStep2">Back</button>
                         <button type="submit" class="book-button" id="bookButton">BOOK NOW</button>
                     </div>
                 </form>
             </div>
+
+            <!-- Success Screen -->
+            <div class="form-section" id="successScreen">
+                <div class="success-screen">
+                    <div class="success-icon">✅</div>
+                    <h1 class="success-title">Thank you!</h1>
+                    <p class="success-message">Your booking has been submitted successfully. We will contact you shortly to confirm your lesson.</p>
+                </div>
+            </div>
+
+            <!-- Desktop Sidebar -->
+            <div class="desktop-sidebar">
+                <div class="price-display">
+                    <div class="price-row">
+                        <span>Total amount:</span>
+                        <span id="totalPrice" class="total-price">$100</span>
+                    </div>
+                    <div class="price-row">
+                        <span>20% deposit:</span>
+                        <span id="depositPrice" class="deposit-price">$20</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Remaining balance:</span>
+                        <span id="remainingPrice" class="remaining-price">$80</span>
+                    </div>
+                    <div id="discountInfo" class="discount-info"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script>
-        // ===== CARRD SCROLL FIX =====
-        const ScrollManager = {
-            scrollToElement(elementId) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    element.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    
-                    // Также уведомляем родительское окно для Carrd
-                    if (window.parent !== window) {
-                        window.parent.postMessage({
-                            type: 'booking-form-scroll',
-                            elementId: elementId
-                        }, '*');
-                    }
-                }
-            },
-            
-            scrollToStep(stepNumber) {
-                this.scrollToElement(`step${stepNumber}-anchor`);
-            },
-            
-            scrollToNextButton() {
-                // Находим активную кнопку Next в текущем шаге
-                const activeSection = document.querySelector('.form-section.active');
-                const nextButton = activeSection.querySelector('.next-button');
-                if (nextButton) {
-                    nextButton.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                }
-            }
-        };
-
-        // ===== PHONE INPUT INITIALIZATION =====
-        let phoneInput;
-
-        function initPhoneInput() {
-            const phoneElement = document.getElementById('phone');
-            
-            phoneInput = window.intlTelInput(phoneElement, {
-                initialCountry: "auto",
-                geoIpLookup: function(callback) {
-                    fetch('https://ipapi.co/json/')
-                        .then(response => response.json())
-                        .then(data => callback(data.country_code))
-                        .catch(() => callback('us'));
-                },
-                preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
-                separateDialCode: false,
-                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-                customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
-                    return "Phone number";
-                }
-            });
-            
-            phoneElement.addEventListener('focus', function() {
-                this.classList.remove('phone-input-init');
-            });
-            
-            phoneElement.addEventListener('input', function() {
-                this.classList.remove('phone-input-init');
-                Booking.validateField('phone');
-            });
-            
-            phoneElement.addEventListener('blur', function() {
-                Booking.validateField('phone');
-            });
-            
-            phoneElement.addEventListener('countrychange', function() {
-                Booking.validateField('phone');
-            });
-        }
-
-        // ===== CONFIGURATION =====
+        // Configuration
         const CONFIG = {
             prices: {'2': 100, '3': 140, 'full': 250},
             minDate: new Date(2025, 11, 15),
@@ -1024,7 +672,7 @@
             lessonStartHour: 10
         };
 
-        // ===== STATE MANAGEMENT =====
+        // State
         const State = {
             currentMonth: new Date(Math.max(new Date(), CONFIG.minDate)),
             selectedDate: null,
@@ -1035,547 +683,416 @@
                 this.currentMonth.setDate(1);
             },
             
-            setSelectedDate(date) {
-                this.selectedDate = date;
-                this.selectedTime = null;
-            },
-            
-            setSelectedTime(time) {
-                this.selectedTime = time;
-            },
-            
-            setCurrentStep(step) {
-                this.currentStep = step;
-            },
-            
             getBookingTitle() {
                 const activeSport = document.querySelector('.tab.active').dataset.sport;
-                const duration = Elements.durationSelect.value;
-                const participants = parseInt(Elements.participantsSlider.value);
-                const days = parseInt(Elements.daysSlider.value);
+                const duration = document.getElementById('duration').value;
+                const participants = parseInt(document.getElementById('participants').value);
+                const days = parseInt(document.getElementById('days').value);
                 
-                const durationText = {
-                    '2': '2 Hours',
-                    '3': '3 Hours', 
-                    'full': 'Full Day'
-                }[duration];
-
+                const durationText = {'2': '2 Hours', '3': '3 Hours', 'full': 'Full Day'}[duration];
                 const sportText = activeSport.charAt(0).toUpperCase() + activeSport.slice(1);
-                const participantsText = participants === 1 ? '1 Person' : `${participants} Persons`;
-                const daysText = days === 1 ? '1 Day' : `${days} Days`;
+                const participantsText = participants === 1 ? '' : ` with ${participants} Persons`;
+                const daysText = days === 1 ? '' : ` x ${days} Days`;
                 
-                return `${durationText} ${sportText} Lesson with ${participantsText} x ${daysText}`;
+                return `${durationText} ${sportText} Lesson${participantsText}${daysText}`;
             }
         };
 
-        // ===== DOM ELEMENTS =====
-        const Elements = {
-            // Navigation
-            step1: document.getElementById('step1'),
-            step2: document.getElementById('step2'),
-            step3: document.getElementById('step3'),
-            nextToStep2: document.getElementById('nextToStep2'),
-            nextToStep3: document.getElementById('nextToStep3'),
-            backToStep1: document.getElementById('backToStep1'),
-            backToStep2: document.getElementById('backToStep2'),
-            
-            // Step 1
-            tabs: document.querySelectorAll('.tab'),
-            durationSelect: document.getElementById('duration'),
-            participantsSlider: document.getElementById('participants'),
-            participantsValue: document.getElementById('participantsValue'),
-            daysSlider: document.getElementById('days'),
-            daysValue: document.getElementById('daysValue'),
-            totalPrice: document.getElementById('totalPrice'),
-            depositPrice: document.getElementById('depositPrice'),
-            remainingPrice: document.getElementById('remainingPrice'),
-            discountInfo: document.getElementById('discountInfo'),
-            
-            // Step 2
-            step2Title: document.getElementById('step2Title'),
-            step3Title: document.getElementById('step3Title'),
-            prevMonthBtn: document.getElementById('prevMonth'),
-            nextMonthBtn: document.getElementById('nextMonth'),
-            currentMonthEl: document.getElementById('currentMonth'),
-            calendarDaysEl: document.getElementById('calendarDays'),
-            timeSlotsEl: document.getElementById('timeSlots'),
-            selectedDateTimeEl: document.getElementById('selectedDateTime'),
-            
-            // Step 3
-            personalInfoForm: document.getElementById('personalInfoForm'),
-            bookButton: document.getElementById('bookButton'),
-            fullNameInput: document.getElementById('fullName'),
-            phoneInput: document.getElementById('phone'),
-            emailInput: document.getElementById('email'),
-            skillLevelSelect: document.getElementById('skillLevel'),
-            additionalInfoInput: document.getElementById('additionalInfo'),
-            summaryTotalPrice: document.getElementById('summaryTotalPrice'),
-            summaryDepositPrice: document.getElementById('summaryDepositPrice'),
-            summaryRemainingPrice: document.getElementById('summaryRemainingPrice'),
-            summaryDiscountInfo: document.getElementById('summaryDiscountInfo')
-        };
+        // DOM Elements
+        const getEl = id => document.getElementById(id);
 
-        // ===== UTILITIES =====
-        const Utils = {
-            updateIframeHeight() {
-                const height = document.documentElement.scrollHeight;
-                if (window.parent !== window) {
-                    window.parent.postMessage({
-                        type: 'resize',
-                        height: height
-                    }, '*');
-                }
-            },
-            
-            formatDate(date) {
-                return date.toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
-                });
-            }
-        };
-
-        // ===== CALENDAR MODULE =====
-        const Calendar = {
-            render() {
-                const year = State.currentMonth.getFullYear();
-                const month = State.currentMonth.getMonth();
-                
-                Elements.currentMonthEl.textContent = State.currentMonth.toLocaleDateString('en-US', {
-                    month: 'long',
-                    year: 'numeric'
-                });
-                
-                const prevMonthDate = new Date(year, month - 1, 1);
-                const nextMonthDate = new Date(year, month + 1, 1);
-                
-                Elements.prevMonthBtn.disabled = prevMonthDate < new Date(CONFIG.minDate.getFullYear(), CONFIG.minDate.getMonth(), 1);
-                Elements.nextMonthBtn.disabled = nextMonthDate > new Date(CONFIG.maxDate.getFullYear(), CONFIG.maxDate.getMonth(), 1);
-                
-                const firstDay = new Date(year, month, 1);
-                const lastDay = new Date(year, month + 1, 0);
-                const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-                
-                Elements.calendarDaysEl.innerHTML = '';
-                
-                const prevMonthLastDay = new Date(year, month, 0).getDate();
-                for (let i = startDay - 1; i >= 0; i--) {
-                    const day = prevMonthLastDay - i;
-                    this.createCalendarDay(day, 'other-month disabled', true);
-                }
-                
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                for (let day = 1; day <= lastDay.getDate(); day++) {
-                    const date = new Date(year, month, day);
-                    let className = 'calendar-day';
-                    
-                    if (date.toDateString() === today.toDateString()) {
-                        className += ' today';
-                    }
-                    
-                    if (date < CONFIG.minDate || date > CONFIG.maxDate || date < today) {
-                        className += ' disabled';
-                        this.createCalendarDay(day, className, true);
-                    } else {
-                        if (State.selectedDate && State.selectedDate.toDateString() === date.toDateString()) {
-                            className += ' selected';
-                        }
-                        this.createCalendarDay(day, className, false, date);
-                    }
-                }
-                
-                const totalCells = 42;
-                const daysSoFar = startDay + lastDay.getDate();
-                const nextMonthDays = totalCells - daysSoFar;
-                
-                for (let day = 1; day <= nextMonthDays; day++) {
-                    this.createCalendarDay(day, 'other-month disabled', true);
-                }
-            },
-            
-            createCalendarDay(day, className, disabled, date = null) {
-                const button = document.createElement('button');
-                button.className = className;
-                button.textContent = day;
-                button.disabled = disabled;
-                
-                if (!disabled && date) {
-                    button.addEventListener('click', () => {
-                        State.setSelectedDate(date);
-                        Calendar.render();
-                        TimeSlots.update();
-                        Booking.updateSelectedDateTime();
-                        Navigation.updateStep2ButtonState();
-                        
-                        // Скроллим к выбору времени
-                        setTimeout(() => {
-                            ScrollManager.scrollToElement('timeSlots');
-                        }, 300);
-                    });
-                }
-                
-                Elements.calendarDaysEl.appendChild(button);
-            },
-            
-            navigate(direction) {
-                State.currentMonth.setMonth(State.currentMonth.getMonth() + direction);
-                this.render();
-                Utils.updateIframeHeight();
-            }
-        };
-
-        // ===== TIME SLOTS MODULE =====
-        const TimeSlots = {
-            update() {
-                Elements.timeSlotsEl.innerHTML = '';
-                
-                if (!State.selectedDate) {
-                    Elements.timeSlotsEl.innerHTML = '<div class="time-slot disabled">Select date first</div>';
-                    return;
-                }
-
-                const duration = Elements.durationSelect.value;
-                
-                if (duration === 'full') {
-                    this.createTimeSlot('10:00', '10:00 (Full day)');
-                } else {
-                    const lessonHours = parseInt(duration);
-                    
-                    for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - lessonHours; hour++) {
-                        this.createTimeSlot(`${hour}:00`);
-                    }
-                }
-                
-                if (Elements.timeSlotsEl.children.length === 0) {
-                    Elements.timeSlotsEl.innerHTML = '<div class="time-slot disabled">No available times</div>';
-                }
-            },
-            
-            createTimeSlot(timeString, displayText = null) {
-                const timeSlot = document.createElement('button');
-                timeSlot.className = 'time-slot';
-                timeSlot.textContent = displayText || timeString;
-                
-                if (State.selectedTime === timeString) {
-                    timeSlot.classList.add('selected');
-                }
-                
-                timeSlot.addEventListener('click', function() {
-                    document.querySelectorAll('.time-slot').forEach(slot => {
-                        slot.classList.remove('selected');
-                    });
-                    State.setSelectedTime(timeString);
-                    this.classList.add('selected');
-                    Booking.updateSelectedDateTime();
-                    Navigation.updateStep2ButtonState();
-                    
-                    // Скроллим к кнопке Next после выбора времени
-                    setTimeout(() => {
-                        ScrollManager.scrollToNextButton();
-                    }, 300);
-                });
-                
-                Elements.timeSlotsEl.appendChild(timeSlot);
-            }
-        };
-
-        // ===== PRICING MODULE =====
-        const Pricing = {
-            calculate() {
-                const duration = Elements.durationSelect.value;
-                const participants = parseInt(Elements.participantsSlider.value);
-                const days = parseInt(Elements.daysSlider.value);
-                
-                let basePrice = CONFIG.prices[duration];
-                const additionalPrice = (participants - 1) * 40;
-                const pricePerDay = basePrice + additionalPrice;
-                
-                let total = 0;
-                let maxDiscount = 0;
-                
-                for (let day = 1; day <= days; day++) {
-                    let discount = 0;
-                    if (day >= 8) discount = 0.20;
-                    else if (day >= 6) discount = 0.15;
-                    else if (day >= 4) discount = 0.10;
-                    
-                    total += pricePerDay * (1 - discount);
-                    if (discount > maxDiscount) maxDiscount = discount;
-                }
-                
-                total = Math.round(total);
-                const deposit = Math.round(total * 0.20);
-                const remaining = total - deposit;
-                
-                this.updatePriceDisplay(Elements.totalPrice, total);
-                this.updatePriceDisplay(Elements.depositPrice, deposit);
-                this.updatePriceDisplay(Elements.remainingPrice, remaining);
-                this.updatePriceDisplay(Elements.summaryTotalPrice, total);
-                this.updatePriceDisplay(Elements.summaryDepositPrice, deposit);
-                this.updatePriceDisplay(Elements.summaryRemainingPrice, remaining);
-                
-                const discountText = maxDiscount > 0 ? 
-                    `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
-                
-                Elements.discountInfo.textContent = discountText;
-                Elements.summaryDiscountInfo.textContent = discountText;
-            },
-            
-            updatePriceDisplay(element, amount) {
-                element.textContent = `$${amount}`;
-            }
-        };
-
-        // ===== BOOKING MODULE =====
-        const Booking = {
-            updateSelectedDateTime() {
-                if (State.selectedDate && State.selectedTime) {
-                    const dateStr = Utils.formatDate(State.selectedDate);
-                    Elements.selectedDateTimeEl.textContent = `${dateStr} at ${State.selectedTime}`;
-                } else if (State.selectedDate) {
-                    const dateStr = Utils.formatDate(State.selectedDate);
-                    Elements.selectedDateTimeEl.textContent = `${dateStr} - Please select a time`;
-                } else {
-                    Elements.selectedDateTimeEl.textContent = 'Please select a date first';
-                }
-            },
-            
-            validateField(fieldId) {
-                let isValid = true;
-                let errorMessage = '';
-
-                switch (fieldId) {
-                    case 'fullName':
-                        isValid = Elements.fullNameInput.value.trim().length >= 2;
-                        errorMessage = 'Please enter your full name (min 2 characters)';
-                        break;
-                    case 'phone':
-                        const phoneValue = Elements.phoneInput.value.trim();
-                        
-                        if (!phoneValue && Elements.phoneInput.classList.contains('phone-input-init')) {
-                            isValid = true;
-                        } else if (!phoneValue) {
-                            isValid = false;
-                            errorMessage = 'Please enter a phone number';
-                        } else if (!phoneInput.isValidNumber()) {
-                            isValid = false;
-                            errorMessage = 'Please enter a valid phone number';
-                        } else {
-                            isValid = true;
-                        }
-                        break;
-                    case 'email':
-                        const email = Elements.emailInput.value.trim();
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        isValid = emailRegex.test(email);
-                        errorMessage = 'Please enter a valid email address';
-                        break;
-                    case 'skillLevel':
-                        isValid = Elements.skillLevelSelect.value !== '';
-                        errorMessage = 'Please select your skill level';
-                        break;
-                }
-
-                const errorElement = document.getElementById(fieldId + 'Error');
-                const inputElement = document.getElementById(fieldId);
-
-                if (isValid) {
-                    inputElement.classList.remove('error');
-                    errorElement.classList.remove('show');
-                } else {
-                    inputElement.classList.add('error');
-                    errorElement.textContent = errorMessage;
-                    errorElement.classList.add('show');
-                }
-
-                return isValid;
-            },
-            
-            validateForm() {
-                const fields = ['fullName', 'phone', 'email', 'skillLevel'];
-                let isValid = true;
-
-                fields.forEach(field => {
-                    if (!this.validateField(field)) {
-                        isValid = false;
-                    }
-                });
-
-                Elements.bookButton.disabled = !isValid;
-                return isValid;
-            },
-            
-            submit() {
-                Elements.bookButton.disabled = true;
-                Elements.bookButton.textContent = 'Processing...';
-
-                setTimeout(() => {
-                    alert('Booking submitted successfully! We will contact you shortly to confirm your booking.');
-                    
-                    // Reset form
-                    Elements.personalInfoForm.reset();
-                    Navigation.showStep(1);
-                    
-                    // Reset phone input
-                    Elements.phoneInput.classList.add('phone-input-init');
-                    
-                    Elements.bookButton.disabled = false;
-                    Elements.bookButton.textContent = 'BOOK NOW';
-                }, 2000);
-            }
-        };
-
-        // ===== NAVIGATION MODULE =====
-        const Navigation = {
-            showStep(stepNumber) {
-                // Hide all steps
-                document.querySelectorAll('.form-section').forEach(section => {
-                    section.classList.remove('active');
-                });
-                
-                // Show target step
-                document.getElementById(`step${stepNumber}`).classList.add('active');
-                
-                State.setCurrentStep(stepNumber);
-                
-                // Update titles for steps 2 and 3
-                if (stepNumber === 2 || stepNumber === 3) {
-                    const title = State.getBookingTitle();
-                    Elements.step2Title.textContent = title;
-                    Elements.step3Title.textContent = title;
-                }
-                
-                Utils.updateIframeHeight();
-                
-                // Scroll to top of the step
-                setTimeout(() => {
-                    ScrollManager.scrollToStep(stepNumber);
-                }, 100);
-            },
-            
-            updateStep2ButtonState() {
-                Elements.nextToStep3.disabled = !(State.selectedDate && State.selectedTime);
-            }
-        };
-
-        // ===== EVENT HANDLERS =====
-        const EventHandlers = {
-            init() {
-                // Step 1 elements
-                Elements.tabs.forEach(tab => {
-                    tab.addEventListener('click', function() {
-                        Elements.tabs.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                        Pricing.calculate();
-                        
-                        // Скроллим к следующему элементу
-                        setTimeout(() => {
-                            ScrollManager.scrollToElement('duration');
-                        }, 100);
-                    });
-                });
-
-                Elements.participantsSlider.addEventListener('input', function() {
-                    const value = this.value;
-                    const displayText = value == 1 ? '1 Person' : `${value} Persons`;
-                    Elements.participantsValue.textContent = displayText;
-                    Pricing.calculate();
-                    
-                    // Скроллим к следующему слайдеру
-                    setTimeout(() => {
-                        ScrollManager.scrollToElement('days');
-                    }, 100);
-                });
-
-                Elements.daysSlider.addEventListener('input', function() {
-                    const value = this.value;
-                    const displayText = value == 1 ? '1 Day' : `${value} Days`;
-                    Elements.daysValue.textContent = displayText;
-                    Pricing.calculate();
-                    
-                    // Скроллим к цене
-                    setTimeout(() => {
-                        ScrollManager.scrollToElement('price-display');
-                    }, 100);
-                });
-
-                Elements.durationSelect.addEventListener('change', function() {
-                    Pricing.calculate();
-                    
-                    // Скроллим к следующему элементу
-                    setTimeout(() => {
-                        ScrollManager.scrollToElement('participants');
-                    }, 100);
-                });
-
-                // Navigation buttons
-                Elements.nextToStep2.addEventListener('click', function() {
-                    Navigation.showStep(2);
-                });
-
-                Elements.nextToStep3.addEventListener('click', function() {
-                    Navigation.showStep(3);
-                });
-
-                Elements.backToStep1.addEventListener('click', function() {
-                    Navigation.showStep(1);
-                });
-
-                Elements.backToStep2.addEventListener('click', function() {
-                    Navigation.showStep(2);
-                });
-
-                // Form submission
-                Elements.personalInfoForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    if (Booking.validateForm()) {
-                        Booking.submit();
-                    }
-                });
-
-                // Form validation
-                [Elements.fullNameInput, Elements.phoneInput, Elements.emailInput, Elements.skillLevelSelect].forEach(element => {
-                    element.addEventListener('input', function() {
-                        Booking.validateField(this.id);
-                    });
-                });
-
-                // Calendar navigation
-                Elements.prevMonthBtn.addEventListener('click', () => {
-                    Calendar.navigate(-1);
-                });
-                
-                Elements.nextMonthBtn.addEventListener('click', () => {
-                    Calendar.navigate(1);
-                });
-            }
-        };
-
-        // ===== INITIALIZATION =====
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             State.init();
-            Calendar.render();
-            TimeSlots.update();
-            Pricing.calculate();
-            Navigation.updateStep2ButtonState();
             initPhoneInput();
-            EventHandlers.init();
-            
-            setTimeout(Utils.updateIframeHeight, 100);
-            window.addEventListener('resize', Utils.updateIframeHeight);
-            window.addEventListener('load', Utils.updateIframeHeight);
+            setupEventListeners();
+            renderCalendar();
+            updatePrices();
+            updateTitles();
         });
 
-        // Handle messages from parent window
-        window.addEventListener('message', function(event) {
-            if (event.data && event.data.type === 'getHeight') {
-                Utils.updateIframeHeight();
+        function initPhoneInput() {
+            window.phoneInput = window.intlTelInput(getEl('phone'), {
+                initialCountry: "auto",
+                geoIpLookup: callback => {
+                    fetch('https://ipapi.co/json/').then(r => r.json()).then(data => callback(data.country_code)).catch(() => callback('us'));
+                },
+                preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+        }
+
+        function setupEventListeners() {
+            // Tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    updatePrices();
+                    updateTitles();
+                });
+            });
+
+            // Sliders and selects
+            ['duration', 'participants', 'days'].forEach(id => {
+                getEl(id).addEventListener('input', () => {
+                    if (id === 'participants') {
+                        getEl('participantsValue').textContent = getEl('participants').value + ' Person' + (getEl('participants').value > 1 ? 's' : '');
+                    }
+                    if (id === 'days') {
+                        getEl('daysValue').textContent = getEl('days').value + ' Day' + (getEl('days').value > 1 ? 's' : '');
+                    }
+                    updatePrices();
+                    updateTitles();
+                });
+            });
+
+            // Navigation
+            getEl('nextToStep2').addEventListener('click', () => showStep(2));
+            getEl('nextToStep3').addEventListener('click', () => showStep(3));
+            getEl('backToStep1').addEventListener('click', () => showStep(1));
+            getEl('backToStep2').addEventListener('click', () => showStep(2));
+
+            // Calendar
+            getEl('prevMonth').addEventListener('click', () => navigateMonth(-1));
+            getEl('nextMonth').addEventListener('click', () => navigateMonth(1));
+
+            // Form submission
+            getEl('personalInfoForm').addEventListener('submit', handleSubmit);
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+            getEl(`step${step}`).classList.add('active');
+            State.currentStep = step;
+            updateTitles();
+            
+            if (step === 2) {
+                getEl('step3DateTime').textContent = getEl('selectedDateTime').textContent;
             }
-        });
+            
+            scrollToTop();
+        }
+
+        function updateTitles() {
+            const title = State.getBookingTitle();
+            getEl('step2Title').textContent = title;
+            getEl('step3Title').textContent = title;
+        }
+
+        function updatePrices() {
+            const duration = getEl('duration').value;
+            const participants = parseInt(getEl('participants').value);
+            const days = parseInt(getEl('days').value);
+            
+            let basePrice = CONFIG.prices[duration];
+            const pricePerDay = basePrice + (participants - 1) * 40;
+            
+            let total = 0;
+            let maxDiscount = 0;
+            
+            for (let day = 1; day <= days; day++) {
+                let discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                total += pricePerDay * (1 - discount);
+                if (discount > maxDiscount) maxDiscount = discount;
+            }
+            
+            total = Math.round(total);
+            const deposit = Math.round(total * 0.20);
+            const remaining = total - deposit;
+            
+            getEl('totalPrice').textContent = `$${total}`;
+            getEl('depositPrice').textContent = `$${deposit}`;
+            getEl('remainingPrice').textContent = `$${remaining}`;
+            
+            const discountText = maxDiscount > 0 ? `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+            getEl('discountInfo').textContent = discountText;
+        }
+
+        function renderCalendar() {
+            const year = State.currentMonth.getFullYear();
+            const month = State.currentMonth.getMonth();
+            
+            getEl('currentMonth').textContent = State.currentMonth.toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            
+            getEl('calendarDays').innerHTML = '';
+            
+            // Previous month
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = startDay - 1; i >= 0; i--) {
+                createCalendarDay(prevMonthLastDay - i, 'other-month disabled', true);
+            }
+            
+            // Current month
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                let className = 'calendar-day';
+                
+                if (date.toDateString() === today.toDateString()) className += ' today';
+                
+                if (date < CONFIG.minDate || date > CONFIG.maxDate || date < today) {
+                    createCalendarDay(day, className + ' disabled', true);
+                } else {
+                    if (State.selectedDate && State.selectedDate.toDateString() === date.toDateString()) {
+                        className += ' selected';
+                    }
+                    createCalendarDay(day, className, false, date);
+                }
+            }
+            
+            // Next month
+            const totalCells = 42;
+            const nextMonthDays = totalCells - (startDay + lastDay.getDate());
+            for (let day = 1; day <= nextMonthDays; day++) {
+                createCalendarDay(day, 'other-month disabled', true);
+            }
+            
+            updateTimeSlots();
+        }
+
+        function createCalendarDay(day, className, disabled, date = null) {
+            const button = document.createElement('button');
+            button.className = className;
+            button.textContent = day;
+            button.disabled = disabled;
+            
+            if (!disabled && date) {
+                button.addEventListener('click', () => {
+                    State.selectedDate = date;
+                    renderCalendar();
+                    updateTimeSlots();
+                    updateSelectedDateTime();
+                    getEl('nextToStep3').disabled = !State.selectedTime;
+                });
+            }
+            
+            getEl('calendarDays').appendChild(button);
+        }
+
+        function navigateMonth(direction) {
+            State.currentMonth.setMonth(State.currentMonth.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function updateTimeSlots() {
+            getEl('timeSlots').innerHTML = '';
+            
+            if (!State.selectedDate) {
+                getEl('timeSlots').innerHTML = '<div class="time-slot disabled">Select date first</div>';
+                return;
+            }
+
+            const duration = getEl('duration').value;
+            
+            if (duration === 'full') {
+                createTimeSlot('10:00', '10:00 (Full day)');
+            } else {
+                const lessonHours = parseInt(duration);
+                for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - lessonHours; hour++) {
+                    createTimeSlot(`${hour}:00`);
+                }
+            }
+        }
+
+        function createTimeSlot(timeString, displayText = null) {
+            const timeSlot = document.createElement('button');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = displayText || timeString;
+            
+            if (State.selectedTime === timeString) timeSlot.classList.add('selected');
+            
+            timeSlot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+                State.selectedTime = timeString;
+                this.classList.add('selected');
+                updateSelectedDateTime();
+                getEl('nextToStep3').disabled = false;
+                getEl('step3DateTime').textContent = getEl('selectedDateTime').textContent;
+            });
+            
+            getEl('timeSlots').appendChild(timeSlot);
+        }
+
+        function updateSelectedDateTime() {
+            if (State.selectedDate && State.selectedTime) {
+                const dateStr = State.selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+                });
+                getEl('selectedDateTime').textContent = `${dateStr} at ${State.selectedTime}`;
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) return;
+            
+            const formData = getFormData();
+            sendEmail(formData);
+            showSuccessScreen();
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            if (!getEl('fullName').value.trim()) {
+                showError('fullNameError', 'Please enter your full name');
+                isValid = false;
+            } else {
+                hideError('fullNameError');
+            }
+            
+            if (!window.phoneInput.isValidNumber()) {
+                showError('phoneError', 'Please enter a valid phone number');
+                isValid = false;
+            } else {
+                hideError('phoneError');
+            }
+            
+            if (!getEl('email').value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError('emailError', 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                hideError('emailError');
+            }
+            
+            if (!getEl('skillLevel').value) {
+                showError('skillLevelError', 'Please select your skill level');
+                isValid = false;
+            } else {
+                hideError('skillLevelError');
+            }
+            
+            return isValid;
+        }
+
+        function showError(id, message) {
+            const element = getEl(id);
+            element.textContent = message;
+            element.classList.add('show');
+        }
+
+        function hideError(id) {
+            getEl(id).classList.remove('show');
+        }
+
+        function getFormData() {
+            const duration = getEl('duration').value;
+            const participants = parseInt(getEl('participants').value);
+            const days = parseInt(getEl('days').value);
+            const sport = document.querySelector('.tab.active').dataset.sport;
+            
+            const durationText = {'2': '2 Hours', '3': '3 Hours', 'full': 'Full Day'}[duration];
+            const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
+            const participantsText = participants === 1 ? '1 Person' : `${participants} Persons`;
+            
+            const total = getEl('totalPrice').textContent;
+            const deposit = getEl('depositPrice').textContent;
+            const remaining = getEl('remainingPrice').textContent;
+            
+            return {
+                subject: `New Booking: ${durationText} ${sportText} Lesson with ${participantsText} x ${days} days`,
+                durationText,
+                sportText,
+                participantsText,
+                days,
+                dateTime: getEl('selectedDateTime').textContent,
+                fullName: getEl('fullName').value,
+                phone: window.phoneInput.getNumber(),
+                email: getEl('email').value,
+                skillLevel: getEl('skillLevel').options[getEl('skillLevel').selectedIndex].text,
+                additionalInfo: getEl('additionalInfo').value,
+                total,
+                deposit,
+                remaining
+            };
+        }
+
+        function sendEmail(formData) {
+            const emailBody = `
+${formData.durationText} ${formData.sportText} Lesson with ${formData.participantsText} x ${formData.days} days
+${formData.dateTime}
+
+Full Name: ${formData.fullName}
+Phone (WhatsApp): https://wa.me/${formData.phone.replace('+', '')}
+Email: ${formData.email}
+Skill level: ${formData.skillLevel}
+Additional information: ${formData.additionalInfo || 'None'}
+
+Total amount: ${formData.total}
+20% deposit: ${formData.deposit}
+Remaining balance: ${formData.remaining}
+
+Google Calendar Link: ${generateGoogleCalendarLink(formData)}
+            `.trim();
+
+            // Using Formspree or similar service - replace with your actual endpoint
+            fetch('https://formspree.io/f/xjvnzzvz', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    _subject: formData.subject,
+                    _replyto: formData.email,
+                    message: emailBody,
+                    name: formData.fullName,
+                    phone: formData.phone,
+                    email: formData.email
+                })
+            });
+        }
+
+        function generateGoogleCalendarLink(formData) {
+            const startDate = new Date(State.selectedDate);
+            const [hours] = State.selectedTime.split(':');
+            startDate.setHours(parseInt(hours), 0, 0);
+            
+            const endDate = new Date(startDate);
+            const duration = getEl('duration').value;
+            endDate.setHours(startDate.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
+            
+            const details = `
+Full Name: ${formData.fullName}
+Phone (WhatsApp): ${formData.phone}
+Email: ${formData.email}
+Skill level: ${formData.skillLevel}
+Additional information: ${formData.additionalInfo || 'None'}
+
+Total amount: ${formData.total}
+20% deposit: ${formData.deposit}
+Remaining balance: ${formData.remaining}
+            `.trim();
+
+            const params = new URLSearchParams({
+                action: 'TEMPLATE',
+                text: formData.subject,
+                dates: `${formatGoogleCalendarDate(startDate)}/${formatGoogleCalendarDate(endDate)}`,
+                details: details,
+                location: 'Gudauri Ski Resort'
+            });
+
+            return `https://calendar.google.com/calendar/render?${params}`;
+        }
+
+        function formatGoogleCalendarDate(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+
+        function showSuccessScreen() {
+            document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+            getEl('successScreen').classList.add('active');
+            scrollToTop();
+        }
     </script>
 </body>
 </html>
