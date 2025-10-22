@@ -50,6 +50,7 @@
             max-width: 900px; 
             margin: 0 auto; 
             background: var(--bg-primary); 
+            padding: 15px;
         }
         
         .form-content {
@@ -209,7 +210,7 @@
         .calendar-container {
             background: var(--bg-secondary);
             border-radius: var(--radius-xl);
-            padding: 18px;
+            padding: 15px;
         }
         
         .calendar-header {
@@ -302,7 +303,7 @@
         .time-selection { 
             background: var(--bg-secondary); 
             border-radius: var(--radius-md); 
-            padding: 18px; 
+            padding: 15px; 
         }
         
         .time-slots { 
@@ -351,7 +352,7 @@
         .price-display { 
             background: var(--bg-accent); 
             color: var(--text-primary); 
-            padding: 18px; 
+            padding: 15px; 
             border-radius: var(--radius-lg); 
             margin-top: 20px;
         }
@@ -1128,7 +1129,7 @@ Google Calendar Link: ${generateGoogleCalendarLink(formData)}
             `.trim();
 
             // Send email using EmailJS
-            emailjs.send('service_0tuoznd', 'template_5md8afc', {
+            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
                 to_email: 'info@skischool.ge',
                 subject: formData.subject,
                 message: emailBody,
