@@ -29,6 +29,7 @@
             font-family: 'Inter', sans-serif; 
             color: var(--text-secondary);
             line-height: 1.4;
+            min-height: 100vh;
         }
         
         .calculator-container { 
@@ -400,8 +401,8 @@
             color: var(--text-secondary);
         }
 
-        #phone {
-            padding-left: 80px !important;
+        .phone-input-container {
+            width: 100%;
         }
 
         .main-title {
@@ -410,6 +411,22 @@
             color: var(--text-primary);
             text-align: center;
             margin-bottom: 30px;
+        }
+
+        /* Fix for phone input height */
+        .iti {
+            width: 100%;
+            display: block !important;
+        }
+
+        .iti__selected-flag {
+            padding: 0 16px !important;
+            height: 48px !important;
+        }
+
+        #phone {
+            padding-left: 80px !important;
+            height: 48px !important;
         }
     </style>
 </head>
@@ -522,7 +539,9 @@
 
                 <div class="form-row">
                     <div class="form-field">
-                        <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
+                        <div class="phone-input-container">
+                            <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required style="height: 48px;">
+                        </div>
                         <div class="error-message" id="phoneError">Please enter a valid phone number</div>
                     </div>
                     <div class="form-field">
@@ -687,7 +706,14 @@
                 document.getElementById('step2DateTime').textContent = document.getElementById('selectedDateTime').textContent;
             }
             
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Enhanced scroll for Carrd
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Additional scroll for mobile iframes
+                if (window.parent !== window) {
+                    window.parent.postMessage({ type: 'scrollToTop' }, '*');
+                }
+            }, 100);
         }
 
         function updateAllPrices() {
@@ -974,8 +1000,21 @@ Remaining balance: $${formData.remaining}
         function showSuccessScreen() {
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             document.getElementById('successScreen').classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (window.parent !== window) {
+                    window.parent.postMessage({ type: 'scrollToTop' }, '*');
+                }
+            }, 100);
         }
+
+        // Listen for messages from parent (Carrd)
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'scrollToTop') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
     </script>
 </body>
 </html>
