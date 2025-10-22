@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Form</title>
+    <title>Ski School Booking Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
@@ -44,6 +44,8 @@
             font-family: 'Inter', sans-serif; 
             color: var(--text-secondary); 
             min-height: 100vh;
+            padding: 0;
+            margin: 0;
         }
         
         .calculator-container { 
@@ -56,6 +58,12 @@
         @media (min-width: 768px) {
             .calculator-container {
                 padding: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calculator-container {
+                padding: 15px;
             }
         }
         
@@ -550,6 +558,32 @@
             .calculator-container {
                 padding: 15px;
             }
+            
+            .main-title {
+                font-size: 18px;
+            }
+            
+            .price-display {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calendar-container,
+            .time-selection {
+                padding: 15px;
+            }
+            
+            .button-container {
+                gap: 10px;
+            }
+            
+            .nav-button,
+            .next-button,
+            .book-button {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
         }
     </style>
 </head>
@@ -824,6 +858,9 @@
             renderCalendar();
             updateAllPrices();
             updateTitles();
+            
+            // Notify parent about initial height
+            setTimeout(notifyParentAboutHeight, 100);
         });
 
         function initPhoneInput() {
@@ -845,6 +882,7 @@
                     this.classList.add('active');
                     updateAllPrices();
                     updateTitles();
+                    notifyParentAboutHeight();
                 });
             });
 
@@ -859,6 +897,7 @@
                     }
                     updateAllPrices();
                     updateTitles();
+                    notifyParentAboutHeight();
                 });
             });
 
@@ -888,6 +927,9 @@
             
             // Scroll to top when changing steps
             setTimeout(scrollToTop, 100);
+            
+            // Notify parent about height change
+            setTimeout(notifyParentAboutHeight, 300);
         }
 
         function updateTitles() {
@@ -980,6 +1022,7 @@
             }
             
             updateTimeSlots();
+            notifyParentAboutHeight();
         }
 
         function createCalendarDay(day, className, disabled, date = null) {
@@ -995,6 +1038,7 @@
                     updateTimeSlots();
                     updateSelectedDateTime();
                     getEl('nextToStep3').disabled = !State.selectedTime;
+                    notifyParentAboutHeight();
                 });
             }
             
@@ -1043,6 +1087,7 @@
                 
                 // Scroll to top when time is selected
                 setTimeout(scrollToTop, 300);
+                notifyParentAboutHeight();
             });
             
             getEl('timeSlots').appendChild(timeSlot);
@@ -1105,10 +1150,12 @@
             const element = getEl(id);
             element.textContent = message;
             element.classList.add('show');
+            notifyParentAboutHeight();
         }
 
         function hideError(id) {
             getEl(id).classList.remove('show');
+            notifyParentAboutHeight();
         }
 
         function getFormData() {
@@ -1124,7 +1171,7 @@
             const priceData = calculatePrice();
             
             return {
-                subject: `New Booking: ${durationText} ${sportText} Lesson with ${participantsText} x ${days} days`,
+                subject: `Booking: ${durationText} ${sportText} Lesson with ${participantsText} x ${days} days`,
                 durationText,
                 sportText,
                 participantsText,
@@ -1200,9 +1247,12 @@ Total amount: $${formData.total}
 Remaining balance: $${formData.remaining}
             `.trim();
 
+            // Clean title without "New Booking"
+            const eventTitle = `${formData.durationText} ${formData.sportText} Lesson with ${formData.participantsText} x ${formData.days} days`;
+
             const params = new URLSearchParams({
                 action: 'TEMPLATE',
-                text: formData.subject,
+                text: eventTitle,
                 dates: `${formatGoogleCalendarDate(startDate)}/${formatGoogleCalendarDate(endDate)}`,
                 details: details,
                 location: 'Gudauri Ski Resort'
@@ -1210,9 +1260,6 @@ Remaining balance: $${formData.remaining}
 
             // Add recurrence for multiple days
             if (days > 1) {
-                const recurrenceEndDate = new Date(startDate);
-                recurrenceEndDate.setDate(startDate.getDate() + days - 1);
-                
                 const rrule = `RRULE:FREQ=DAILY;COUNT=${days}`;
                 params.append('recur', rrule);
             }
@@ -1228,7 +1275,42 @@ Remaining balance: $${formData.remaining}
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             getEl('successScreen').classList.add('active');
             scrollToTop();
+            notifyParentAboutHeight();
         }
+
+        // Notify parent window about height changes for iframe resizing
+        function notifyParentAboutHeight() {
+            const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'resize',
+                    height: height
+                }, '*');
+            }
+        }
+
+        // Notify on various events
+        window.addEventListener('load', notifyParentAboutHeight);
+        window.addEventListener('resize', notifyParentAboutHeight);
+
+        // Notify when steps change or content updates
+        const observer = new MutationObserver(function(mutations) {
+            notifyParentAboutHeight();
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class', 'style']
+        });
+
+        // Also notify after transitions and animations
+        document.addEventListener('transitionend', notifyParentAboutHeight);
+        document.addEventListener('animationend', notifyParentAboutHeight);
+
+        // Periodic check as fallback
+        setInterval(notifyParentAboutHeight, 1000);
     </script>
 </body>
 </html>
