@@ -6,6 +6,7 @@
     <title>Ski School Booking Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
     <style>
         :root {
             --bg-primary: #222529;
@@ -311,6 +312,60 @@
             text-align: center;
             margin-bottom: 30px;
         }
+
+        /* PayPal Styles */
+        .paypal-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .paypal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .terms-checkbox input {
+            margin-top: 2px;
+        }
+
+        .terms-text {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .payment-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .paypal-or {
+            text-align: center;
+            margin: 15px 0;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -466,9 +521,27 @@
                     <div id="discountInfoStep2" class="discount"></div>
                 </div>
 
+                <!-- Terms and Conditions -->
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="termsAgreement" required>
+                    <label for="termsAgreement" class="terms-text">
+                        I agree to the terms and conditions. The 20% deposit is non-refundable in case of cancellation less than 48 hours before the lesson. The remaining balance will be paid directly to the instructor.
+                    </label>
+                </div>
+                <div class="error" id="termsError">Please accept the terms and conditions</div>
+
+                <!-- Payment Section -->
+                <div class="paypal-container">
+                    <h3 style="color: var(--text-primary); margin-bottom: 15px; text-align: center;">Secure Payment</h3>
+                    <div class="payment-buttons">
+                        <button type="submit" class="btn btn-book" id="bookButton">BOOK NOW (Pay Later)</button>
+                        <div class="paypal-or">or</div>
+                        <div id="paypal-button-container" style="flex: 1;"></div>
+                    </div>
+                </div>
+
                 <div class="buttons">
                     <button type="button" class="btn btn-back" id="backToStep1">Back</button>
-                    <button type="submit" class="btn btn-book" id="bookButton">BOOK NOW</button>
                 </div>
             </form>
         </div>
@@ -477,8 +550,18 @@
         <div class="form-section" id="successScreen">
             <div class="success">
                 <div class="success-icon">✅</div>
-                <h1 class="success-title">Thank you!</h1>
-                <p class="success-message">Your booking has been submitted successfully.</p>
+                <h1 class="success-title">Thank you for your booking!</h1>
+                <p class="success-message">Your booking has been confirmed and your deposit payment was successful. We will contact you shortly with more details.</p>
+            </div>
+        </div>
+
+        <!-- Payment Failed -->
+        <div class="form-section" id="paymentFailedScreen">
+            <div class="success">
+                <div class="success-icon" style="color: var(--text-error);">❌</div>
+                <h1 class="success-title">Payment Not Completed</h1>
+                <p class="success-message">Your booking details have been saved but the deposit payment was not completed. Please try again or contact us for alternative payment methods.</p>
+                <button class="btn btn-book" onclick="showStep(2)" style="margin-top: 20px;">Try Payment Again</button>
             </div>
         </div>
     </div>
@@ -486,6 +569,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
+        // Replace with your actual PayPal Client ID
+        const PAYPAL_CLIENT_ID = 'AUFAuKE5jRCH1Ucd72VfmAn5xR0v9Nyg27zWWi1kCjyqKVxgb3bNxWgZ21WxoeC3dP8U122SfuhMu4Qm';
+        const PAYPAL_EMAIL = 'meditationski@gmail.com';
+
         const CONFIG = {
             prices: {2: 100, 3: 140, full: 250},
             minDate: new Date(2025, 11, 15),
@@ -499,6 +586,7 @@
             selectedDate: null,
             selectedTime: null,
             currentStep: 1,
+            bookingData: null,
             init() { this.currentMonth.setDate(1); },
             getBookingTitle() {
                 const sport = document.querySelector('.tab.active').dataset.sport;
@@ -521,6 +609,7 @@
             setupEvents();
             renderCalendar();
             updatePrices();
+            initPayPal();
         });
 
         function initPhone() {
@@ -558,7 +647,7 @@
             document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
             document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
             document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
-            document.getElementById('personalInfoForm').addEventListener('submit', handleSubmit);
+            document.getElementById('personalInfoForm').addEventListener('submit', handleFormSubmit);
         }
 
         function showStep(step) {
@@ -731,13 +820,16 @@
             }
         }
 
-        function handleSubmit(e) {
+        function handleFormSubmit(e) {
             e.preventDefault();
             if (!validateForm()) return;
             
-            const data = getFormData();
-            sendEmail(data);
-            showSuccess();
+            const formData = getFormData();
+            State.bookingData = formData;
+            
+            // For "Book Now (Pay Later)" - send email without payment
+            sendEmail(formData, false);
+            showSuccessScreen();
         }
 
         function validateForm() {
@@ -762,6 +854,11 @@
                 showError('skillLevelError', 'Please select your skill level');
                 valid = false;
             } else hideError('skillLevelError');
+            
+            if (!document.getElementById('termsAgreement').checked) {
+                showError('termsError', 'Please accept the terms and conditions');
+                valid = false;
+            } else hideError('termsError');
             
             return valid;
         }
@@ -802,21 +899,98 @@
                 additionalInfo: document.getElementById('additionalInfo').value,
                 total: price.total,
                 deposit: price.deposit,
-                remaining: price.remaining
+                remaining: price.remaining,
+                paymentStatus: 'Pending'
             };
         }
 
-        function sendEmail(data) {
-            const body = `
+        function initPayPal() {
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color:  'blue',
+                    shape:  'rect',
+                    label:  'paypal'
+                },
+
+                createOrder: function(data, actions) {
+                    if (!validateForm()) {
+                        alert('Please fill all required fields and accept terms');
+                        return actions.reject();
+                    }
+
+                    const formData = getFormData();
+                    State.bookingData = formData;
+                    const depositAmount = formData.deposit.toString();
+
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: depositAmount,
+                                currency_code: 'USD'
+                            },
+                            description: `Booking Deposit - ${formData.sportText} Lesson Reservation`,
+                            custom_id: `booking_${Date.now()}`,
+                            payee: {
+                                email_address: PAYPAL_EMAIL
+                            }
+                        }],
+                        application_context: {
+                            shipping_preference: 'NO_SHIPPING',
+                            user_action: 'PAY_NOW',
+                            brand_name: 'Ski School Booking'
+                        }
+                    });
+                },
+
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        // Payment successful
+                        State.bookingData.paymentStatus = 'Paid';
+                        State.bookingData.paymentId = details.id;
+                        State.bookingData.payerEmail = details.payer.email_address;
+                        
+                        sendEmail(State.bookingData, true);
+                        showSuccessScreen();
+                    });
+                },
+
+                onError: function(err) {
+                    console.error('PayPal error:', err);
+                    State.bookingData.paymentStatus = 'Failed';
+                    sendEmail(State.bookingData, false, true);
+                    showPaymentFailedScreen();
+                },
+
+                onCancel: function(data) {
+                    State.bookingData.paymentStatus = 'Cancelled';
+                    sendEmail(State.bookingData, false, true);
+                    showPaymentFailedScreen();
+                }
+
+            }).render('#paypal-button-container');
+        }
+
+        function sendEmail(data, isPaid = false, isFailed = false) {
+            const paymentStatus = isPaid ? 'PAID' : (isFailed ? 'FAILED' : 'PENDING');
+            const subjectPrefix = isFailed ? 'Booking Incomplete: ' : (isPaid ? 'Booking Confirmed: ' : 'Booking Request: ');
+            
+            const emailBody = `
 ${data.durationText} ${data.sportText} Lesson with ${data.peopleText} x ${data.days} days
 ${data.dateTime}
 
+PAYMENT STATUS: ${paymentStatus}
+${data.paymentId ? `Payment ID: ${data.paymentId}` : ''}
+${data.payerEmail ? `Payer Email: ${data.payerEmail}` : ''}
+
+CLIENT DETAILS:
 Full Name: ${data.fullName}
 Phone (WhatsApp): https://wa.me/${data.phone.replace('+', '')}
 Email: ${data.email}
 Skill level: ${data.skillLevel}
 Additional information: ${data.additionalInfo || 'None'}
 
+PRICE DETAILS:
 Total amount: $${data.total}
 20% deposit: $${data.deposit}
 Remaining balance: $${data.remaining}
@@ -825,19 +999,48 @@ Google Calendar Link: ${generateCalendarLink(data)}
             `.trim();
 
             emailjs.init('gb9ZTULk6-ghDtZuV');
+            
+            // Send to admin
             emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
                 to_email: 'info@skischool.ge',
-                subject: data.subject,
-                message: body,
+                subject: subjectPrefix + data.subject,
+                message: emailBody,
                 from_name: data.fullName,
                 from_email: data.email,
                 phone: data.phone
             }).then(() => {
-                console.log('Email sent');
-            }, () => {
-                const mailto = `mailto:info@skischool.ge?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(body)}`;
+                console.log('Admin email sent');
+            }).catch(() => {
+                const mailto = `mailto:info@skischool.ge?subject=${encodeURIComponent(subjectPrefix + data.subject)}&body=${encodeURIComponent(emailBody)}`;
                 window.open(mailto, '_blank');
             });
+
+            // Send confirmation to client if paid
+            if (isPaid) {
+                const clientBody = `
+Thank you for your booking! Your deposit payment has been received.
+
+BOOKING DETAILS:
+${data.durationText} ${data.sportText} Lesson with ${data.peopleText} x ${data.days} days
+${data.dateTime}
+
+Payment Amount: $${data.deposit}
+Payment Status: CONFIRMED
+
+We will contact you shortly to confirm your lesson details.
+
+Thank you,
+Ski School Team
+                `.trim();
+
+                emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
+                    to_email: data.email,
+                    subject: 'Booking Confirmation - ' + data.subject,
+                    message: clientBody,
+                    from_name: 'Ski School',
+                    from_email: 'info@skischool.ge'
+                });
+            }
         }
 
         function generateCalendarLink(data) {
@@ -852,11 +1055,13 @@ Google Calendar Link: ${generateCalendarLink(data)}
             end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
             
             const details = `
-Full Name: ${data.fullName}
+Client: ${data.fullName}
 Phone: ${data.phone}
 Email: ${data.email}
-Skill level: ${data.skillLevel}
-Additional info: ${data.additionalInfo || 'None'}
+Skill Level: ${data.skillLevel}
+Lesson: ${data.durationText} ${data.sportText}
+Participants: ${data.peopleText}
+Days: ${data.days}
 
 Total: $${data.total}
 Deposit: $${data.deposit}
@@ -882,9 +1087,15 @@ Balance: $${data.remaining}
             return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         }
 
-        function showSuccess() {
+        function showSuccessScreen() {
             document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
             document.getElementById('successScreen').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showPaymentFailedScreen() {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('paymentFailedScreen').classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
