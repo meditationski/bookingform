@@ -131,7 +131,7 @@
             text-align: center; 
             font-weight: 600; 
             color: var(--text-primary); 
-            font-size: 1.25em; 
+            font-size: 1.125em; 
             margin-bottom: 0.75em; 
         }
         
@@ -195,7 +195,7 @@
                 margin-top: 4.5em;
             }
         }
-
+        
         /* Step 2 Layout */
         .step2-layout {
             display: flex;
@@ -533,10 +533,6 @@
             flex: 1;
         }
 
-        .paypal-buttons {
-            min-height: 55px !important;
-        }
-
         /* Step 3 Layout */
         .step3-layout {
             display: flex;
@@ -559,39 +555,54 @@
             }
         }
 
-        .step3-form-row {
+        .step3-compact-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 1.5em;
-            margin-bottom: 1.5em;
         }
         
         @media (min-width: 768px) {
-            .step3-form-row {
+            .step3-compact-grid {
                 grid-template-columns: 1fr 1fr;
             }
         }
 
-        .step3-compact-row {
+        .terms-price-container {
             display: flex;
             flex-direction: column;
-            gap: 1.5em;
-            margin-bottom: 1.5em;
+            gap: 2em;
         }
         
         @media (min-width: 768px) {
-            .step3-compact-row {
+            .terms-price-container {
                 flex-direction: row;
                 align-items: flex-start;
             }
             
-            .step3-terms {
+            .terms-container {
                 flex: 1;
             }
             
-            .step3-price {
+            .price-container {
                 flex: 0 0 22em;
             }
+        }
+
+        .form-row { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 1.5em; 
+            margin-bottom: 1.5em; 
+        }
+
+        @media (min-width: 768px) {
+            .form-row { 
+                grid-template-columns: 1fr 1fr; 
+            }
+        }
+
+        .full-width { 
+            grid-column: 1 / -1; 
         }
 
         .form-input { 
@@ -675,12 +686,10 @@
             display: flex;
             align-items: flex-start;
             gap: 1em;
-            margin: 0;
             padding: 1.5em;
             background: var(--bg-secondary);
             border-radius: var(--border-radius-sm);
             border: 0.125em solid var(--bg-tertiary);
-            height: 100%;
         }
 
         .terms-checkbox input {
@@ -723,20 +732,18 @@
                 font-size: 14px;
             }
             
-            .form-group {
-                margin-bottom: 1em;
-            }
-            
             .subsection-title {
                 font-size: 1.25em;
-                margin-bottom: 0.75em;
+            }
+            
+            .form-group {
+                margin-bottom: 1em;
             }
             
             .btn {
                 padding: 1.25em 1.5em;
                 font-size: 1em;
                 height: 3.5em;
-                min-height: 3.5em;
             }
             
             .total-price {
@@ -757,14 +764,6 @@
                 padding: 0.75em;
             }
             
-            .slider-value {
-                margin-bottom: 0.5em;
-            }
-            
-            input[type="range"] {
-                margin: 0.75em 0;
-            }
-            
             .calendar, .time-selection {
                 padding: 1em;
             }
@@ -774,14 +773,14 @@
             }
             
             .buttons {
+                flex-wrap: wrap;
                 margin-top: 1.5em;
                 padding-top: 1.5em;
-                gap: 0.75em;
             }
             
             .btn {
                 flex: 1 1 calc(50% - 0.5em);
-                min-width: 120px;
+                min-width: 140px;
             }
             
             .paypal-container {
@@ -793,27 +792,13 @@
             #paypal-button-container {
                 min-width: 100%;
             }
-            
-            .terms-checkbox {
-                padding: 1em;
-                margin-bottom: 1em;
-            }
-            
-            .step3-compact-row {
-                gap: 1em;
-                margin-bottom: 1em;
+
+            .time-slots-compact {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
         @media (max-width: 480px) {
-            body {
-                font-size: 14px;
-            }
-            
-            .time-slots-compact {
-                grid-template-columns: 1fr 1fr;
-            }
-            
             .buttons {
                 flex-direction: column;
             }
@@ -827,26 +812,9 @@
                 flex: 1 1 100%;
                 width: 100%;
             }
-        }
 
-        /* Tablet adjustments */
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .container {
-                padding: 1em;
-            }
-            
-            .step1-right,
-            .step2-right,
-            .step3-right {
-                flex: 0 0 20em;
-            }
-            
-            .time-compact {
-                flex: 0 0 20em;
-            }
-            
-            .calendar-time-compact {
-                gap: 1em;
+            .time-slots-compact {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -860,10 +828,10 @@
     <div class="container">
         <!-- Step 1: Lesson Details -->
         <div class="form-section active" id="step1">
-            <h2 class="subsection-title">Lesson Details</h2>
             <div class="step1-layout">
                 <div class="step1-left">
                     <div class="form-group">
+                        <h2 class="subsection-title">Lesson Details</h2>
                         <div class="tabs">
                             <div class="tab active" data-sport="ski">Ski</div>
                             <div class="tab" data-sport="snowboard">Snowboard</div>
@@ -927,10 +895,10 @@
 
         <!-- Step 2: Date & Time -->
         <div class="form-section" id="step2">
-            <h2 class="subsection-title">Select Date & Time</h2>
             <div class="step2-layout">
                 <div class="step2-left">
                     <div class="form-group">
+                        <h2 class="subsection-title">Select Date & Time</h2>
                         <div class="calendar-time-compact">
                             <div class="calendar-compact">
                                 <div class="calendar">
@@ -966,21 +934,7 @@
 
                 <div class="step2-right">
                     <!-- Price card hidden on step 2 -->
-                    <div class="price-card" style="display: none;">
-                        <div class="price-row">
-                            <span class="price-label">Total amount:</span>
-                            <span id="totalPriceStep2" class="total-price">$100</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price-label">20% deposit:</span>
-                            <span id="depositPriceStep2" class="deposit-price">$20</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price-label">Remaining balance:</span>
-                            <span id="remainingPriceStep2" class="price-value">$80</span>
-                        </div>
-                        <div id="discountInfoStep2" class="discount-info"></div>
-                    </div>
+                    <div class="price-card" style="display: none;"></div>
                 </div>
             </div>
 
@@ -998,23 +952,25 @@
             <form id="personalInfoForm">
                 <div class="step3-layout">
                     <div class="step3-left">
-                        <div class="step3-form-row">
-                            <div>
+                        <div class="step3-compact-grid">
+                            <!-- Full Name - Phone -->
+                            <div class="form-group">
                                 <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
                                 <div class="error" id="fullNameError">Please enter your full name</div>
                             </div>
-                            <div>
+                            
+                            <div class="form-group">
                                 <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
                                 <div class="error" id="phoneError">Please enter a valid phone number</div>
                             </div>
-                        </div>
 
-                        <div class="step3-form-row">
-                            <div>
+                            <!-- Email - Skill Level -->
+                            <div class="form-group">
                                 <input type="email" id="email" class="form-input" placeholder="Email *" required>
                                 <div class="error" id="emailError">Please enter a valid email address</div>
                             </div>
-                            <div>
+                            
+                            <div class="form-group">
                                 <select id="skillLevel" class="custom-select" required>
                                     <option value="">Skill Level *</option>
                                     <option value="first-time">First Time</option>
@@ -1026,12 +982,14 @@
                             </div>
                         </div>
 
+                        <!-- Additional Info -->
                         <div class="form-group">
-                            <textarea id="additionalInfo" class="form-input" rows="4" placeholder="Additional Information (optional)"></textarea>
+                            <textarea id="additionalInfo" class="form-input" rows="3" placeholder="Additional Information (optional)"></textarea>
                         </div>
 
-                        <div class="step3-compact-row">
-                            <div class="step3-terms">
+                        <!-- Terms & Price Container -->
+                        <div class="terms-price-container">
+                            <div class="terms-container">
                                 <div class="terms-checkbox">
                                     <input type="checkbox" id="termsAgreement" required>
                                     <label for="termsAgreement" class="terms-text">
@@ -1041,7 +999,7 @@
                                 <div class="error" id="termsError">Please agree to the terms and conditions</div>
                             </div>
                             
-                            <div class="step3-price">
+                            <div class="price-container">
                                 <div class="price-card">
                                     <div class="price-row">
                                         <span class="price-label">Total amount:</span>
@@ -1059,6 +1017,10 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="step3-right">
+                        <!-- Empty space for alignment -->
                     </div>
                 </div>
 
@@ -1093,8 +1055,527 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // JavaScript код остается таким же как в предыдущей версии
-        // ... (весь JavaScript код из предыдущего ответа)
+        // Optimized JavaScript code
+        const CONFIG = {
+            prices: {2: 100, 3: 140, full: 250},
+            minDate: new Date(2025, 11, 15),
+            maxDate: new Date(2026, 3, 30),
+            resortCloseHour: 17,
+            lessonStartHour: 10
+        };
+
+        const State = {
+            currentMonth: new Date(Math.max(new Date(), CONFIG.minDate)),
+            selectedDate: null,
+            selectedTime: null,
+            currentStep: 1,
+            init() { this.currentMonth.setDate(1); },
+            getBookingTitle() {
+                const sport = document.querySelector('.tab.active').dataset.sport;
+                const duration = document.getElementById('duration').value;
+                const people = document.getElementById('participants').value;
+                const days = document.getElementById('days').value;
+                
+                const durationText = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'}[duration];
+                const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
+                const peopleText = people > 1 ? ` with ${people} Persons` : '';
+                const daysText = days > 1 ? ` x ${days} Days` : '';
+                
+                return `${durationText} ${sportText} Lesson${peopleText}${daysText}`;
+            }
+        };
+
+        let paypalButtons;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            State.init();
+            initPhone();
+            setupEvents();
+            renderCalendar();
+            updatePrices();
+            initPayPal();
+        });
+
+        function initPhone() {
+            window.phoneInput = window.intlTelInput(document.getElementById('phone'), {
+                initialCountry: "auto",
+                preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+        }
+
+        function initPayPal() {
+            paypalButtons = paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'pill',
+                    label: 'paypal',
+                    height: 55
+                },
+                createOrder: function(data, actions) {
+                    const depositAmount = document.getElementById('depositPriceStep3').textContent.replace('$', '');
+                    const bookingDetails = getBookingDetails();
+                    
+                    return actions.order.create({
+                        purchase_units: [{
+                            description: `Booking Deposit - ${bookingDetails.sport} Lesson Reservation`,
+                            amount: {
+                                value: depositAmount,
+                                currency_code: 'USD'
+                            },
+                            custom_id: generateBookingId()
+                        }],
+                        application_context: {
+                            shipping_preference: 'NO_SHIPPING'
+                        }
+                    });
+                },
+                onApprove: function(data, actions) {
+                    showPaymentProcessing();
+                    return actions.order.capture().then(function(details) {
+                        const formData = getFormData();
+                        formData.paymentStatus = 'completed';
+                        formData.paymentId = details.id;
+                        formData.payerEmail = details.payer.email_address;
+                        sendEmail(formData, 'Booking Confirmation');
+                        setTimeout(() => showSuccess(), 1000);
+                    });
+                },
+                onCancel: function(data) {
+                    const formData = getFormData();
+                    formData.paymentStatus = 'cancelled';
+                    sendEmail(formData, 'Booking Incomplete');
+                    alert('Payment was cancelled. Please try again to complete your booking.');
+                },
+                onError: function(err) {
+                    const formData = getFormData();
+                    formData.paymentStatus = 'failed';
+                    formData.error = err.toString();
+                    sendEmail(formData, 'Booking Incomplete');
+                    alert('An error occurred with the payment. Please try again.');
+                    showStep(3);
+                }
+            });
+
+            if (paypalButtons.isEligible()) {
+                paypalButtons.render('#paypal-button-container');
+            }
+        }
+
+        function setupEvents() {
+            // Tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    updatePrices();
+                });
+            });
+
+            // Inputs
+            ['duration', 'participants', 'days'].forEach(id => {
+                document.getElementById(id).addEventListener('input', () => {
+                    if (id === 'participants') {
+                        const val = document.getElementById('participants').value;
+                        document.getElementById('participantsValue').textContent = val + ' Person' + (val > 1 ? 's' : '');
+                    }
+                    if (id === 'days') {
+                        const val = document.getElementById('days').value;
+                        document.getElementById('daysValue').textContent = val + ' Day' + (val > 1 ? 's' : '');
+                    }
+                    updatePrices();
+                });
+            });
+
+            // Navigation
+            document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
+            document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
+            document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
+            document.getElementById('backToStep2').addEventListener('click', () => showStep(2));
+            document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
+            
+            // Terms
+            document.getElementById('termsAgreement').addEventListener('change', function() {
+                hideError('termsError');
+            });
+
+            // Form submission
+            document.getElementById('personalInfoForm').addEventListener('submit', handleSubmit);
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            State.currentStep = step;
+            
+            if (step === 3) {
+                const title = State.getBookingTitle();
+                document.getElementById('step3Title').textContent = title;
+                
+                const dateTimeElement = document.getElementById('step3DateTime');
+                const selectedDateTime = document.getElementById('selectedDateTime').textContent;
+                dateTimeElement.textContent = selectedDateTime;
+                dateTimeElement.style.display = selectedDateTime !== 'Please select a date first' ? 'block' : 'none';
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showPaymentProcessing() {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('paymentProcessing').classList.add('active');
+        }
+
+        function showSuccess() {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('successScreen').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updatePrices() {
+            const data = calculatePrice();
+            ['', 'Step2', 'Step3'].forEach(suffix => {
+                const totalElement = document.getElementById(`totalPrice${suffix}`);
+                const depositElement = document.getElementById(`depositPrice${suffix}`);
+                const remainingElement = document.getElementById(`remainingPrice${suffix}`);
+                const discountElement = document.getElementById(`discountInfo${suffix}`);
+                
+                if (totalElement) totalElement.textContent = `$${data.total}`;
+                if (depositElement) depositElement.textContent = `$${data.deposit}`;
+                if (remainingElement) remainingElement.textContent = `$${data.remaining}`;
+                
+                if (discountElement) {
+                    if (data.discountText) {
+                        discountElement.textContent = data.discountText;
+                        discountElement.classList.add('show');
+                    } else {
+                        discountElement.classList.remove('show');
+                    }
+                }
+            });
+        }
+
+        function calculatePrice() {
+            const duration = document.getElementById('duration').value;
+            const people = parseInt(document.getElementById('participants').value);
+            const days = parseInt(document.getElementById('days').value);
+            
+            const basePrice = CONFIG.prices[duration];
+            const pricePerDay = basePrice + (people - 1) * 40;
+            
+            let total = 0;
+            let maxDiscount = 0;
+            
+            for (let day = 1; day <= days; day++) {
+                const discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                total += pricePerDay * (1 - discount);
+                if (discount > maxDiscount) maxDiscount = discount;
+            }
+            
+            total = Math.round(total);
+            const deposit = Math.round(total * 0.20);
+            const remaining = total - deposit;
+            
+            const discountText = maxDiscount > 0 ? 
+                `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+            
+            return { total, deposit, remaining, discountText };
+        }
+
+        function getBookingDetails() {
+            const sport = document.querySelector('.tab.active').dataset.sport;
+            return {
+                sport: sport.charAt(0).toUpperCase() + sport.slice(1),
+                duration: document.getElementById('duration').value,
+                people: document.getElementById('participants').value,
+                days: document.getElementById('days').value
+            };
+        }
+
+        function generateBookingId() {
+            return 'BK' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
+        }
+
+        function renderCalendar() {
+            const year = State.currentMonth.getFullYear();
+            const month = State.currentMonth.getMonth();
+            
+            document.querySelector('.calendar-month').textContent = 
+                State.currentMonth.toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            
+            document.getElementById('calendarDays').innerHTML = '';
+            
+            for (let i = 0; i < startDay; i++) {
+                createDay('', 'day other-month', true);
+            }
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                let className = 'day';
+                
+                if (date.toDateString() === today.toDateString()) className += ' today';
+                
+                if (date < CONFIG.minDate || date > CONFIG.maxDate || date < today) {
+                    createDay(day, className + ' disabled', true);
+                } else {
+                    if (State.selectedDate && State.selectedDate.toDateString() === date.toDateString()) {
+                        className += ' selected';
+                    }
+                    createDay(day, className, false, date);
+                }
+            }
+            
+            updateTimeSlots();
+        }
+
+        function createDay(day, className, disabled, date = null) {
+            const button = document.createElement('button');
+            button.className = className;
+            button.textContent = day;
+            button.disabled = disabled;
+            
+            if (!disabled && date) {
+                button.addEventListener('click', () => {
+                    State.selectedDate = date;
+                    renderCalendar();
+                    updateTimeSlots();
+                    updateSelectedDateTime();
+                    document.getElementById('nextToStep3').disabled = !State.selectedTime;
+                });
+            }
+            
+            document.getElementById('calendarDays').appendChild(button);
+        }
+
+        function navigateMonth(direction) {
+            State.currentMonth.setMonth(State.currentMonth.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function updateTimeSlots() {
+            document.getElementById('timeSlots').innerHTML = '';
+            
+            if (!State.selectedDate) {
+                document.getElementById('timeSlots').innerHTML = '<div class="time-slot disabled">Select date first</div>';
+                document.getElementById('nextToStep3').disabled = true;
+                return;
+            }
+
+            const duration = document.getElementById('duration').value;
+            
+            if (duration === 'full') {
+                createTimeSlot('10:00', '10:00 (Full day)');
+            } else {
+                const hours = parseInt(duration);
+                for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - hours; hour++) {
+                    createTimeSlot(`${hour}:00`);
+                }
+            }
+        }
+
+        function createTimeSlot(time, display = null) {
+            const slot = document.createElement('button');
+            slot.className = 'time-slot';
+            slot.textContent = display || time;
+            
+            if (State.selectedTime === time) slot.classList.add('selected');
+            
+            slot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                State.selectedTime = time;
+                this.classList.add('selected');
+                updateSelectedDateTime();
+                document.getElementById('nextToStep3').disabled = false;
+            });
+            
+            document.getElementById('timeSlots').appendChild(slot);
+        }
+
+        function updateSelectedDateTime() {
+            const selectedDateTimeElement = document.getElementById('selectedDateTime');
+            if (State.selectedDate && State.selectedTime) {
+                const dateStr = State.selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+                });
+                selectedDateTimeElement.textContent = `${dateStr} at ${State.selectedTime}`;
+            } else {
+                selectedDateTimeElement.textContent = 'Please select a date first';
+            }
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            if (!validateForm()) return;
+            
+            const data = getFormData();
+            sendEmail(data, 'Booking Confirmation');
+            showSuccess();
+        }
+
+        function validateForm() {
+            let valid = true;
+            
+            if (!document.getElementById('fullName').value.trim()) {
+                showError('fullNameError', 'Please enter your full name');
+                valid = false;
+            } else hideError('fullNameError');
+            
+            if (!window.phoneInput.isValidNumber()) {
+                showError('phoneError', 'Please enter a valid phone number');
+                valid = false;
+            } else hideError('phoneError');
+            
+            if (!document.getElementById('email').value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError('emailError', 'Please enter a valid email address');
+                valid = false;
+            } else hideError('emailError');
+            
+            if (!document.getElementById('skillLevel').value) {
+                showError('skillLevelError', 'Please select your skill level');
+                valid = false;
+            } else hideError('skillLevelError');
+            
+            if (!document.getElementById('termsAgreement').checked) {
+                showError('termsError', 'Please agree to the terms and conditions');
+                valid = false;
+            } else hideError('termsError');
+            
+            return valid;
+        }
+
+        function getFormData() {
+            const duration = document.getElementById('duration').value;
+            const people = document.getElementById('participants').value;
+            const days = document.getElementById('days').value;
+            const sport = document.querySelector('.tab.active').dataset.sport;
+            
+            const durationText = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'}[duration];
+            const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
+            const peopleText = people + ' Person' + (people > 1 ? 's' : '');
+            
+            const price = calculatePrice();
+            
+            return {
+                subject: `Booking: ${durationText} ${sportText} Lesson with ${peopleText} x ${days} days`,
+                durationText,
+                sportText,
+                peopleText,
+                days,
+                dateTime: document.getElementById('selectedDateTime').textContent,
+                fullName: document.getElementById('fullName').value,
+                phone: window.phoneInput.getNumber(),
+                email: document.getElementById('email').value,
+                skillLevel: document.getElementById('skillLevel').options[document.getElementById('skillLevel').selectedIndex].text,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                total: price.total,
+                deposit: price.deposit,
+                remaining: price.remaining,
+                bookingId: generateBookingId()
+            };
+        }
+
+        function sendEmail(formData, emailType) {
+            const paymentStatus = formData.paymentStatus || 'unknown';
+            const paymentInfo = paymentStatus === 'completed' ? 
+                `Payment Status: ✅ COMPLETED\nPayment ID: ${formData.paymentId}\nPayer Email: ${formData.payerEmail}` :
+                `Payment Status: ❌ ${paymentStatus.toUpperCase()}\nError: ${formData.error || 'N/A'}`;
+
+            const body = `
+${formData.durationText} ${formData.sportText} Lesson with ${formData.peopleText} x ${formData.days} days
+${formData.dateTime}
+
+${paymentInfo}
+
+Booking ID: ${formData.bookingId}
+Full Name: ${formData.fullName}
+Phone (WhatsApp): https://wa.me/${formData.phone.replace('+', '')}
+Email: ${formData.email}
+Skill level: ${formData.skillLevel}
+Additional information: ${formData.additionalInfo || 'None'}
+
+Total amount: $${formData.total}
+20% deposit: $${formData.deposit}
+Remaining balance: $${formData.remaining}
+
+Google Calendar Link: ${generateCalendarLink(formData)}
+            `.trim();
+
+            const toEmail = 'info@skischool.ge';
+            
+            emailjs.init('gb9ZTULk6-ghDtZuV');
+            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
+                to_email: toEmail,
+                subject: `${emailType}: ${formData.durationText} ${formData.sportText} Lesson`,
+                message: body,
+                from_name: formData.fullName,
+                from_email: formData.email,
+                phone: formData.phone
+            }).catch(() => {
+                const mailto = `mailto:${toEmail}?subject=${encodeURIComponent(emailType + ': ' + formData.subject)}&body=${encodeURIComponent(body)}`;
+                window.open(mailto, '_blank');
+            });
+        }
+
+        function generateCalendarLink(data) {
+            const start = new Date(State.selectedDate);
+            const [hours] = State.selectedTime.split(':');
+            start.setHours(parseInt(hours), 0, 0);
+            
+            const end = new Date(start);
+            const duration = document.getElementById('duration').value;
+            const days = parseInt(document.getElementById('days').value);
+            
+            end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
+            
+            const details = `
+Full Name: ${data.fullName}
+Phone: ${data.phone}
+Email: ${data.email}
+Skill level: ${data.skillLevel}
+Additional info: ${data.additionalInfo || 'None'}
+
+Total: $${data.total}
+Deposit: $${data.deposit}
+Balance: $${data.remaining}
+            `.trim();
+
+            const params = new URLSearchParams({
+                action: 'TEMPLATE',
+                text: data.subject,
+                dates: `${formatDate(start)}/${formatDate(end)}`,
+                details: details,
+                location: 'Gudauri Ski Resort'
+            });
+
+            if (days > 1) {
+                params.append('recur', `RRULE:FREQ=DAILY;COUNT=${days}`);
+            }
+
+            return `https://calendar.google.com/calendar/render?${params}`;
+        }
+
+        function formatDate(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+
+        function hideError(id) {
+            document.getElementById(id).classList.remove('show');
+        }
     </script>
 </body>
 </html>
