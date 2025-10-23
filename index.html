@@ -6,7 +6,7 @@
     <title>Ski School Booking Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AUFAuKE5jRCH1Ucd72VfmAn5xR0v9Nyg27zWWi1kCjyqKVxgb3bNxWgZ21WxoeC3dP8U122SfuhMu4Qm&currency=USD"></script>
     <style>
         :root {
             --bg-primary: #222529;
@@ -17,6 +17,7 @@
             --text-secondary: #858e96;
             --text-accent: #00A3FF;
             --text-error: #ff4757;
+            --text-warning: #ffa502;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -267,11 +268,14 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .btn-back { background: var(--bg-tertiary); color: var(--text-primary); }
         .btn-next, .btn-book { background: var(--text-accent); color: var(--text-primary); }
         .btn-next:disabled { background: var(--bg-tertiary); cursor: not-allowed; }
+        .btn-paypal { background: #0070ba; color: white; }
+        .btn-paypal:hover { background: #005ea6; }
 
         .form-row { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
 
@@ -313,58 +317,50 @@
             margin-bottom: 30px;
         }
 
-        /* PayPal Styles */
-        .paypal-container {
-            margin-top: 20px;
-            padding: 20px;
+        .terms {
             background: var(--bg-secondary);
+            padding: 15px;
             border-radius: 8px;
-            border: 1px solid var(--bg-tertiary);
-        }
-
-        .paypal-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            margin: 20px 0;
+            font-size: 14px;
         }
 
         .terms-checkbox {
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            margin: 20px 0;
-            padding: 15px;
-            background: var(--bg-primary);
-            border-radius: 8px;
-            border: 1px solid var(--bg-tertiary);
+            margin: 15px 0;
         }
 
-        .terms-checkbox input {
+        .terms-checkbox input[type="checkbox"] {
             margin-top: 2px;
         }
 
         .terms-text {
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.4;
         }
 
         .payment-buttons {
             display: flex;
-            gap: 15px;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        @media (max-width: 768px) {
-            .payment-buttons {
-                flex-direction: column;
-            }
+        .paypal-container {
+            margin: 20px 0;
+            min-height: 50px;
         }
 
-        .paypal-or {
+        .warning-message {
+            background: rgba(255, 165, 2, 0.1);
+            color: var(--text-warning);
+            padding: 12px;
+            border-radius: 6px;
             text-align: center;
             margin: 15px 0;
-            color: var(--text-secondary);
-            font-weight: 600;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -505,38 +501,44 @@
                     </div>
                 </div>
 
+                <div class="terms">
+                    <h3 style="color: var(--text-primary); margin-bottom: 15px;">Booking Terms & Conditions</h3>
+                    <div class="terms-text">
+                        <p>• 20% deposit is required to secure your booking</p>
+                        <p>• Remaining balance to be paid on the day of the lesson</p>
+                        <p>• Cancellations made 48 hours in advance receive full deposit refund</p>
+                        <p>• No-shows will forfeit the deposit</p>
+                        <p>• Lessons are weather-dependent and may be rescheduled</p>
+                    </div>
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <label for="agreeTerms" style="color: var(--text-primary);">
+                            I agree to the terms and conditions and understand that a 20% deposit is required to secure my booking
+                        </label>
+                    </div>
+                    <div class="error" id="termsError">You must agree to the terms and conditions</div>
+                </div>
+
                 <div class="price">
                     <div class="price-row">
                         <span>Total amount:</span>
                         <span id="totalPriceStep2" class="total">$100</span>
                     </div>
                     <div class="price-row">
-                        <span>20% deposit:</span>
-                        <span id="depositPriceStep2">$20</span>
+                        <span>20% deposit to pay now:</span>
+                        <span id="depositPriceStep2" class="total">$20</span>
                     </div>
                     <div class="price-row">
-                        <span>Remaining balance:</span>
+                        <span>Remaining balance (pay on arrival):</span>
                         <span id="remainingPriceStep2">$80</span>
                     </div>
                     <div id="discountInfoStep2" class="discount"></div>
                 </div>
 
-                <!-- Terms and Conditions -->
-                <div class="terms-checkbox">
-                    <input type="checkbox" id="termsAgreement" required>
-                    <label for="termsAgreement" class="terms-text">
-                        I agree to the terms and conditions. The 20% deposit is non-refundable in case of cancellation less than 48 hours before the lesson. The remaining balance will be paid directly to the instructor.
-                    </label>
-                </div>
-                <div class="error" id="termsError">Please accept the terms and conditions</div>
-
-                <!-- Payment Section -->
-                <div class="paypal-container">
-                    <h3 style="color: var(--text-primary); margin-bottom: 15px; text-align: center;">Secure Payment</h3>
-                    <div class="payment-buttons">
-                        <button type="submit" class="btn btn-book" id="bookButton">BOOK NOW (Pay Later)</button>
-                        <div class="paypal-or">or</div>
-                        <div id="paypal-button-container" style="flex: 1;"></div>
+                <div class="payment-buttons">
+                    <div class="paypal-container" id="paypal-button-container"></div>
+                    <div class="warning-message">
+                        Your booking will be confirmed only after successful deposit payment
                     </div>
                 </div>
 
@@ -551,7 +553,7 @@
             <div class="success">
                 <div class="success-icon">✅</div>
                 <h1 class="success-title">Thank you for your booking!</h1>
-                <p class="success-message">Your booking has been confirmed and your deposit payment was successful. We will contact you shortly with more details.</p>
+                <p class="success-message">Your deposit has been paid successfully. We have sent a confirmation email and will contact you shortly to confirm your lesson details.</p>
             </div>
         </div>
 
@@ -560,8 +562,10 @@
             <div class="success">
                 <div class="success-icon" style="color: var(--text-error);">❌</div>
                 <h1 class="success-title">Payment Not Completed</h1>
-                <p class="success-message">Your booking details have been saved but the deposit payment was not completed. Please try again or contact us for alternative payment methods.</p>
-                <button class="btn btn-book" onclick="showStep(2)" style="margin-top: 20px;">Try Payment Again</button>
+                <p class="success-message">Your booking request has been received but the deposit payment was not completed. We have sent you an email with your booking details. Please complete the payment to secure your booking.</p>
+                <div class="buttons" style="justify-content: center; margin-top: 30px;">
+                    <button class="btn btn-next" onclick="showStep(1)">Try Again</button>
+                </div>
             </div>
         </div>
     </div>
@@ -569,16 +573,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // Replace with your actual PayPal Client ID
-        const PAYPAL_CLIENT_ID = 'AUFAuKE5jRCH1Ucd72VfmAn5xR0v9Nyg27zWWi1kCjyqKVxgb3bNxWgZ21WxoeC3dP8U122SfuhMu4Qm';
-        const PAYPAL_EMAIL = 'meditationski@gmail.com';
-
         const CONFIG = {
             prices: {2: 100, 3: 140, full: 250},
             minDate: new Date(2025, 11, 15),
             maxDate: new Date(2026, 3, 30),
             resortCloseHour: 17,
-            lessonStartHour: 10
+            lessonStartHour: 10,
+            paypalEmail: 'meditationski@gmail.com'
         };
 
         const State = {
@@ -586,7 +587,7 @@
             selectedDate: null,
             selectedTime: null,
             currentStep: 1,
-            bookingData: null,
+            formData: null,
             init() { this.currentMonth.setDate(1); },
             getBookingTitle() {
                 const sport = document.querySelector('.tab.active').dataset.sport;
@@ -602,6 +603,8 @@
                 return `${durationText} ${sportText} Lesson${peopleText}${daysText}`;
             }
         };
+
+        let paypalButtons;
 
         document.addEventListener('DOMContentLoaded', function() {
             State.init();
@@ -658,6 +661,7 @@
             if (step === 2) {
                 document.getElementById('step2Title').textContent = State.getBookingTitle();
                 document.getElementById('step2DateTime').textContent = document.getElementById('selectedDateTime').textContent;
+                updatePayPalButton();
             }
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -713,12 +717,10 @@
             
             document.getElementById('calendarDays').innerHTML = '';
             
-            // Previous month days (hidden)
             for (let i = 0; i < startDay; i++) {
                 createDay('', 'day other-month', true);
             }
             
-            // Current month days
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             
@@ -822,14 +824,7 @@
 
         function handleFormSubmit(e) {
             e.preventDefault();
-            if (!validateForm()) return;
-            
-            const formData = getFormData();
-            State.bookingData = formData;
-            
-            // For "Book Now (Pay Later)" - send email without payment
-            sendEmail(formData, false);
-            showSuccessScreen();
+            // Form validation is now handled by PayPal button
         }
 
         function validateForm() {
@@ -855,8 +850,8 @@
                 valid = false;
             } else hideError('skillLevelError');
             
-            if (!document.getElementById('termsAgreement').checked) {
-                showError('termsError', 'Please accept the terms and conditions');
+            if (!document.getElementById('agreeTerms').checked) {
+                showError('termsError', 'You must agree to the terms and conditions');
                 valid = false;
             } else hideError('termsError');
             
@@ -900,45 +895,33 @@
                 total: price.total,
                 deposit: price.deposit,
                 remaining: price.remaining,
-                paymentStatus: 'Pending'
+                paypalEmail: CONFIG.paypalEmail
             };
         }
 
         function initPayPal() {
-            paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color:  'blue',
-                    shape:  'rect',
-                    label:  'paypal'
-                },
-
+            paypalButtons = paypal.Buttons({
                 createOrder: function(data, actions) {
                     if (!validateForm()) {
-                        alert('Please fill all required fields and accept terms');
-                        return actions.reject();
+                        return Promise.reject(new Error('Please fill all required fields'));
                     }
-
-                    const formData = getFormData();
-                    State.bookingData = formData;
-                    const depositAmount = formData.deposit.toString();
-
+                    
+                    State.formData = getFormData();
+                    const depositAmount = State.formData.deposit.toString();
+                    
                     return actions.order.create({
                         purchase_units: [{
+                            description: `Booking Deposit - ${State.formData.sportText} Lesson Reservation`,
                             amount: {
                                 value: depositAmount,
                                 currency_code: 'USD'
                             },
-                            description: `Booking Deposit - ${formData.sportText} Lesson Reservation`,
-                            custom_id: `booking_${Date.now()}`,
                             payee: {
-                                email_address: PAYPAL_EMAIL
+                                email_address: CONFIG.paypalEmail
                             }
                         }],
                         application_context: {
-                            shipping_preference: 'NO_SHIPPING',
-                            user_action: 'PAY_NOW',
-                            brand_name: 'Ski School Booking'
+                            shipping_preference: 'NO_SHIPPING'
                         }
                     });
                 },
@@ -946,101 +929,136 @@
                 onApprove: function(data, actions) {
                     return actions.order.capture().then(function(details) {
                         // Payment successful
-                        State.bookingData.paymentStatus = 'Paid';
-                        State.bookingData.paymentId = details.id;
-                        State.bookingData.payerEmail = details.payer.email_address;
+                        State.formData.paymentId = details.id;
+                        State.formData.payerEmail = details.payer.email_address;
+                        State.formData.paymentStatus = 'completed';
                         
-                        sendEmail(State.bookingData, true);
+                        sendEmail(State.formData, true);
                         showSuccessScreen();
                     });
                 },
 
-                onError: function(err) {
-                    console.error('PayPal error:', err);
-                    State.bookingData.paymentStatus = 'Failed';
-                    sendEmail(State.bookingData, false, true);
+                onCancel: function(data) {
+                    // Payment cancelled
+                    State.formData = getFormData();
+                    State.formData.paymentStatus = 'cancelled';
+                    sendEmail(State.formData, false);
                     showPaymentFailedScreen();
                 },
 
-                onCancel: function(data) {
-                    State.bookingData.paymentStatus = 'Cancelled';
-                    sendEmail(State.bookingData, false, true);
+                onError: function(err) {
+                    // Payment error
+                    State.formData = getFormData();
+                    State.formData.paymentStatus = 'error';
+                    State.formData.error = err.message;
+                    sendEmail(State.formData, false);
                     showPaymentFailedScreen();
-                }
+                },
 
-            }).render('#paypal-button-container');
+                style: {
+                    layout: 'vertical',
+                    color:  'blue',
+                    shape:  'rect',
+                    label:  'paypal'
+                }
+            });
+
+            paypalButtons.render('#paypal-button-container');
         }
 
-        function sendEmail(data, isPaid = false, isFailed = false) {
-            const paymentStatus = isPaid ? 'PAID' : (isFailed ? 'FAILED' : 'PENDING');
-            const subjectPrefix = isFailed ? 'Booking Incomplete: ' : (isPaid ? 'Booking Confirmed: ' : 'Booking Request: ');
-            
-            const emailBody = `
+        function updatePayPalButton() {
+            if (paypalButtons) {
+                document.getElementById('paypal-button-container').innerHTML = '';
+                paypalButtons.render('#paypal-button-container');
+            }
+        }
+
+        function sendEmail(data, isSuccess) {
+            const emailBody = isSuccess ? createSuccessEmailBody(data) : createFailedEmailBody(data);
+            const subject = isSuccess ? data.subject : `Booking Incomplete: ${data.subject}`;
+            const toEmail = isSuccess ? data.email : 'info@skischool.ge';
+
+            emailjs.init('gb9ZTULk6-ghDtZuV');
+            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
+                to_email: toEmail,
+                subject: subject,
+                message: emailBody,
+                from_name: data.fullName,
+                from_email: data.email,
+                phone: data.phone
+            }).then(() => {
+                console.log('Email sent');
+            }, () => {
+                // Fallback to mailto
+                const mailto = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+                window.open(mailto, '_blank');
+            });
+
+            // Also send to admin for failed payments
+            if (!isSuccess) {
+                setTimeout(() => {
+                    emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
+                        to_email: 'info@skischool.ge',
+                        subject: `ADMIN: ${subject}`,
+                        message: emailBody,
+                        from_name: 'Booking System',
+                        from_email: 'noreply@skischool.ge'
+                    });
+                }, 1000);
+            }
+        }
+
+        function createSuccessEmailBody(data) {
+            return `
+BOOKING CONFIRMED - DEPOSIT PAID
 ${data.durationText} ${data.sportText} Lesson with ${data.peopleText} x ${data.days} days
 ${data.dateTime}
 
-PAYMENT STATUS: ${paymentStatus}
-${data.paymentId ? `Payment ID: ${data.paymentId}` : ''}
-${data.payerEmail ? `Payer Email: ${data.payerEmail}` : ''}
-
-CLIENT DETAILS:
+CUSTOMER DETAILS:
 Full Name: ${data.fullName}
 Phone (WhatsApp): https://wa.me/${data.phone.replace('+', '')}
 Email: ${data.email}
 Skill level: ${data.skillLevel}
 Additional information: ${data.additionalInfo || 'None'}
 
-PRICE DETAILS:
+PAYMENT DETAILS:
 Total amount: $${data.total}
-20% deposit: $${data.deposit}
+Deposit paid: $${data.deposit}
 Remaining balance: $${data.remaining}
+Payment ID: ${data.paymentId || 'N/A'}
+
+Your booking is now confirmed! We will contact you within 24 hours to finalize the details.
 
 Google Calendar Link: ${generateCalendarLink(data)}
             `.trim();
+        }
 
-            emailjs.init('gb9ZTULk6-ghDtZuV');
-            
-            // Send to admin
-            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
-                to_email: 'info@skischool.ge',
-                subject: subjectPrefix + data.subject,
-                message: emailBody,
-                from_name: data.fullName,
-                from_email: data.email,
-                phone: data.phone
-            }).then(() => {
-                console.log('Admin email sent');
-            }).catch(() => {
-                const mailto = `mailto:info@skischool.ge?subject=${encodeURIComponent(subjectPrefix + data.subject)}&body=${encodeURIComponent(emailBody)}`;
-                window.open(mailto, '_blank');
-            });
-
-            // Send confirmation to client if paid
-            if (isPaid) {
-                const clientBody = `
-Thank you for your booking! Your deposit payment has been received.
-
-BOOKING DETAILS:
+        function createFailedEmailBody(data) {
+            return `
+BOOKING INCOMPLETE - DEPOSIT NOT PAID
 ${data.durationText} ${data.sportText} Lesson with ${data.peopleText} x ${data.days} days
 ${data.dateTime}
 
-Payment Amount: $${data.deposit}
-Payment Status: CONFIRMED
+CUSTOMER DETAILS:
+Full Name: ${data.fullName}
+Phone (WhatsApp): https://wa.me/${data.phone.replace('+', '')}
+Email: ${data.email}
+Skill level: ${data.skillLevel}
+Additional information: ${data.additionalInfo || 'None'}
 
-We will contact you shortly to confirm your lesson details.
+PAYMENT STATUS:
+Total amount: $${data.total}
+Deposit required: $${data.deposit}
+Remaining balance: $${data.remaining}
+Payment Status: ${data.paymentStatus}
+Error: ${data.error || 'Payment was cancelled or failed'}
 
-Thank you,
-Ski School Team
-                `.trim();
+ACTION REQUIRED:
+Please complete the deposit payment to secure your booking.
+Contact us if you need assistance.
 
-                emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
-                    to_email: data.email,
-                    subject: 'Booking Confirmation - ' + data.subject,
-                    message: clientBody,
-                    from_name: 'Ski School',
-                    from_email: 'info@skischool.ge'
-                });
-            }
+Google Calendar Link: ${generateCalendarLink(data)}
+            `.trim();
         }
 
         function generateCalendarLink(data) {
@@ -1055,13 +1073,11 @@ Ski School Team
             end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
             
             const details = `
-Client: ${data.fullName}
+Full Name: ${data.fullName}
 Phone: ${data.phone}
 Email: ${data.email}
-Skill Level: ${data.skillLevel}
-Lesson: ${data.durationText} ${data.sportText}
-Participants: ${data.peopleText}
-Days: ${data.days}
+Skill level: ${data.skillLevel}
+Additional info: ${data.additionalInfo || 'None'}
 
 Total: $${data.total}
 Deposit: $${data.deposit}
