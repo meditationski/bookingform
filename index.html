@@ -16,7 +16,6 @@
             --text-secondary: #858e96;
             --text-accent: #00A3FF;
             --text-error: #ff4757;
-            --text-success: #00ff88;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -254,7 +253,7 @@
 
         .buttons {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             gap: 15px;
             margin-top: 20px;
             padding-top: 20px;
@@ -267,9 +266,30 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            flex: 1;
         }
 
-        .btn-back { background: var(--bg-tertiary); color: var(--text-primary); }
+        .btn-back { 
+            background: var(--bg-tertiary); 
+            color: var(--text-primary); 
+            max-width: 120px;
+        }
+        
+        .btn-paypal { 
+            background: #0070ba; 
+            color: var(--text-primary); 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-paypal:disabled {
+            background: var(--bg-tertiary);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
         .btn-next, .btn-book { background: var(--text-accent); color: var(--text-primary); }
         .btn-next:disabled { background: var(--bg-tertiary); cursor: not-allowed; }
 
@@ -313,48 +333,41 @@
             margin-bottom: 30px;
         }
 
-        /* PayPal Styles */
-        .paypal-container {
-            margin: 20px 0;
-            text-align: center;
-        }
-
         .terms {
-            background: var(--bg-secondary);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-
-        .terms-checkbox {
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            margin: 15px 0;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
         }
 
-        .terms-checkbox input {
+        .terms input[type="checkbox"] {
             margin-top: 2px;
         }
 
-        .terms-text {
-            text-align: left;
-            font-size: 13px;
+        .terms label {
+            font-size: 14px;
             color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .paypal-loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-accent);
         }
 
         .payment-error {
-            background: rgba(255, 71, 87, 0.1);
-            color: var(--text-error);
-            padding: 12px;
-            border-radius: 6px;
-            margin: 15px 0;
             text-align: center;
+            padding: 15px;
+            background: rgba(255, 71, 87, 0.1);
+            border-radius: 8px;
+            color: var(--text-error);
+            margin: 15px 0;
             display: none;
         }
-
-        .payment-error.show { display: block; }
     </style>
 </head>
 <body>
@@ -494,13 +507,24 @@
                     </div>
                 </div>
 
+                <div class="terms">
+                    <input type="checkbox" id="termsAgree" required>
+                    <label for="termsAgree">
+                        I agree to pay a 20% deposit to secure my booking. The remaining balance will be paid on the day of the lesson. 
+                        Deposits are refundable if cancellation is made at least 48 hours before the scheduled lesson.
+                    </label>
+                </div>
+                <div class="error" id="termsError">Please agree to the terms and conditions</div>
+
+                <div class="payment-error" id="paymentError"></div>
+
                 <div class="price">
                     <div class="price-row">
                         <span>Total amount:</span>
                         <span id="totalPriceStep2" class="total">$100</span>
                     </div>
                     <div class="price-row">
-                        <span>20% deposit:</span>
+                        <span>20% deposit to pay:</span>
                         <span id="depositPriceStep2">$20</span>
                     </div>
                     <div class="price-row">
@@ -510,35 +534,9 @@
                     <div id="discountInfoStep2" class="discount"></div>
                 </div>
 
-                <div class="terms">
-                    <h4 style="color: var(--text-primary); margin-bottom: 15px;">Booking Terms & Conditions</h4>
-                    <div style="font-size: 13px; line-height: 1.5; color: var(--text-secondary);">
-                        <p>• 20% deposit is required to secure your booking</p>
-                        <p>• Remaining balance to be paid on the day of the lesson</p>
-                        <p>• Cancellations made 48 hours in advance receive full deposit refund</p>
-                        <p>• No-shows will forfeit the deposit</p>
-                        <p>• Lessons are weather-dependent and may be rescheduled</p>
-                    </div>
-                    
-                    <div class="terms-checkbox">
-                        <input type="checkbox" id="agreeTerms" required>
-                        <label for="agreeTerms" class="terms-text">
-                            I agree to the terms and conditions and understand that the 20% deposit is required to secure my booking. The remaining balance will be paid on the day of the lesson.
-                        </label>
-                    </div>
-                    <div class="error" id="termsError">Please agree to the terms and conditions</div>
-                </div>
-
-                <div class="payment-error" id="paymentError">
-                    Payment was not completed. Please try again or contact us for assistance.
-                </div>
-
-                <div class="paypal-container">
-                    <div id="paypal-button-container"></div>
-                </div>
-
                 <div class="buttons">
                     <button type="button" class="btn btn-back" id="backToStep1">Back</button>
+                    <div id="paypal-button-container"></div>
                 </div>
             </form>
         </div>
@@ -548,19 +546,17 @@
             <div class="success">
                 <div class="success-icon">✅</div>
                 <h1 class="success-title">Thank you for your booking!</h1>
-                <p class="success-message">Your booking has been confirmed and your deposit payment was successful. We will contact you shortly with more details.</p>
+                <p class="success-message">Your deposit has been paid successfully. We will contact you shortly to confirm your lesson.</p>
             </div>
         </div>
 
         <!-- Payment Failed -->
         <div class="form-section" id="paymentFailed">
             <div class="success">
-                <div class="success-icon" style="color: var(--text-error);">❌</div>
-                <h1 class="success-title">Payment Not Completed</h1>
-                <p class="success-message">Your booking details have been saved but the deposit payment was not completed. Please try again or contact us for assistance.</p>
-                <div class="buttons" style="justify-content: center; margin-top: 30px;">
-                    <button class="btn btn-next" onclick="showStep(2)">Try Payment Again</button>
-                </div>
+                <div class="success-icon">❌</div>
+                <h1 class="success-title">Payment Incomplete</h1>
+                <p class="success-message">Your booking was received but payment was not completed. Please try again or contact us.</p>
+                <button class="btn btn-back" onclick="showStep(2)" style="margin-top: 20px;">Try Payment Again</button>
             </div>
         </div>
     </div>
@@ -582,7 +578,6 @@
             selectedDate: null,
             selectedTime: null,
             currentStep: 1,
-            formData: null,
             init() { this.currentMonth.setDate(1); },
             getBookingTitle() {
                 const sport = document.querySelector('.tab.active').dataset.sport;
@@ -598,6 +593,8 @@
                 return `${durationText} ${sportText} Lesson${peopleText}${daysText}`;
             }
         };
+
+        let paypalButtons;
 
         document.addEventListener('DOMContentLoaded', function() {
             State.init();
@@ -642,7 +639,10 @@
             document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
             document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
             document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
-            document.getElementById('personalInfoForm').addEventListener('submit', handleFormSubmit);
+            
+            // Form validation for PayPal button
+            document.getElementById('personalInfoForm').addEventListener('input', validateFormForPayment);
+            document.getElementById('termsAgree').addEventListener('change', validateFormForPayment);
         }
 
         function showStep(step) {
@@ -653,7 +653,7 @@
             if (step === 2) {
                 document.getElementById('step2Title').textContent = State.getBookingTitle();
                 document.getElementById('step2DateTime').textContent = document.getElementById('selectedDateTime').textContent;
-                initPayPalButton();
+                setTimeout(initPayPal, 500);
             }
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -709,10 +709,12 @@
             
             document.getElementById('calendarDays').innerHTML = '';
             
+            // Previous month days (hidden)
             for (let i = 0; i < startDay; i++) {
                 createDay('', 'day other-month', true);
             }
             
+            // Current month days
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             
@@ -814,9 +816,16 @@
             }
         }
 
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            return validateForm();
+        function validateFormForPayment() {
+            const isValid = validateForm();
+            if (paypalButtons) {
+                if (isValid && document.getElementById('termsAgree').checked) {
+                    paypalButtons.render('#paypal-button-container');
+                } else {
+                    document.getElementById('paypal-button-container').innerHTML = '';
+                }
+            }
+            return isValid;
         }
 
         function validateForm() {
@@ -842,10 +851,12 @@
                 valid = false;
             } else hideError('skillLevelError');
             
-            if (!document.getElementById('agreeTerms').checked) {
-                showError('termsError', 'Please agree to the terms and conditions');
+            if (!document.getElementById('termsAgree').checked) {
+                document.getElementById('termsError').classList.add('show');
                 valid = false;
-            } else hideError('termsError');
+            } else {
+                document.getElementById('termsError').classList.remove('show');
+            }
             
             return valid;
         }
@@ -858,6 +869,52 @@
 
         function hideError(id) {
             document.getElementById(id).classList.remove('show');
+        }
+
+        function initPayPal() {
+            const deposit = calculatePrice().deposit;
+            const bookingDetails = getFormData();
+
+            document.getElementById('paypal-button-container').innerHTML = '<div class="paypal-loading">Loading PayPal...</div>';
+
+            paypalButtons = paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            description: `Booking Deposit - ${bookingDetails.sportText} Lesson Reservation`,
+                            amount: {
+                                value: deposit.toString(),
+                                currency_code: "USD"
+                            },
+                            payee: {
+                                email_address: "meditationski@gmail.com"
+                            }
+                        }]
+                    });
+                },
+
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        // Payment successful
+                        sendEmail(bookingDetails, true, details.id);
+                        showSuccess();
+                    });
+                },
+
+                onCancel: function(data) {
+                    // Payment cancelled
+                    sendEmail(bookingDetails, false);
+                    showPaymentFailed();
+                },
+
+                onError: function(err) {
+                    document.getElementById('paymentError').textContent = 'Payment error: ' + err;
+                    document.getElementById('paymentError').style.display = 'block';
+                }
+            });
+
+            // Initial validation
+            validateFormForPayment();
         }
 
         function getFormData() {
@@ -890,103 +947,23 @@
             };
         }
 
-        function initPayPalButton() {
-            const depositAmount = calculatePrice().deposit;
+        function sendEmail(data, isSuccess, paymentId = null) {
+            const status = isSuccess ? 'COMPLETED' : 'INCOMPLETE';
+            const paymentInfo = paymentId ? `Payment ID: ${paymentId}` : 'Payment was not completed';
             
-            paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color:  'blue',
-                    shape:  'rect',
-                    label:  'paypal'
-                },
-
-                createOrder: function(data, actions) {
-                    if (!validateForm()) {
-                        document.getElementById('paymentError').classList.add('show');
-                        return actions.reject();
-                    }
-                    
-                    document.getElementById('paymentError').classList.remove('show');
-                    State.formData = getFormData();
-                    
-                    return actions.order.create({
-                        purchase_units: [{
-                            description: `Booking Deposit - ${State.formData.sportText} Lesson Reservation`,
-                            amount: {
-                                value: depositAmount,
-                                breakdown: {
-                                    item_total: {
-                                        value: depositAmount,
-                                        currency_code: 'USD'
-                                    }
-                                }
-                            },
-                            items: [{
-                                name: `Booking Deposit - ${State.formData.durationText} ${State.formData.sportText} Lesson`,
-                                description: `${State.formData.peopleText} x ${State.formData.days} days - ${State.formData.dateTime}`,
-                                unit_amount: {
-                                    value: depositAmount,
-                                    currency_code: 'USD'
-                                },
-                                quantity: '1',
-                                category: 'DIGITAL_GOODS'
-                            }]
-                        }],
-                        application_context: {
-                            shipping_preference: 'NO_SHIPPING'
-                        }
-                    });
-                },
-
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        State.formData.paymentId = details.id;
-                        State.formData.payerEmail = details.payer.email_address;
-                        sendEmail(State.formData, 'success');
-                        showSuccessScreen();
-                    });
-                },
-
-                onCancel: function(data) {
-                    document.getElementById('paymentError').classList.add('show');
-                    State.formData = getFormData();
-                    sendEmail(State.formData, 'incomplete');
-                    showPaymentFailed();
-                },
-
-                onError: function(err) {
-                    document.getElementById('paymentError').classList.add('show');
-                    State.formData = getFormData();
-                    sendEmail(State.formData, 'error');
-                    showPaymentFailed();
-                }
-
-            }).render('#paypal-button-container');
-        }
-
-        function sendEmail(data, status) {
-            const statusText = status === 'success' ? 'COMPLETED' : 'INCOMPLETE';
-            const subject = status === 'success' ? 
-                `Booking Confirmation: ${data.durationText} ${data.sportText} Lesson` :
-                `Booking Incomplete: ${data.durationText} ${data.sportText} Lesson`;
-
             const body = `
+BOOKING STATUS: ${status}
+${paymentInfo}
+
 ${data.durationText} ${data.sportText} Lesson with ${data.peopleText} x ${data.days} days
 ${data.dateTime}
 
-PAYMENT STATUS: ${statusText}
-${data.paymentId ? `Payment ID: ${data.paymentId}` : ''}
-${data.payerEmail ? `Payer Email: ${data.payerEmail}` : ''}
-
-Client Details:
 Full Name: ${data.fullName}
 Phone (WhatsApp): https://wa.me/${data.phone.replace('+', '')}
 Email: ${data.email}
 Skill level: ${data.skillLevel}
 Additional information: ${data.additionalInfo || 'None'}
 
-Pricing:
 Total amount: $${data.total}
 20% deposit: $${data.deposit}
 Remaining balance: $${data.remaining}
@@ -995,22 +972,24 @@ Google Calendar Link: ${generateCalendarLink(data)}
             `.trim();
 
             emailjs.init('gb9ZTULk6-ghDtZuV');
-            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
-                to_email: status === 'success' ? 'info@skischool.ge' : 'info@skischool.ge',
+            const template = isSuccess ? 'template_jiiwo1f' : 'template_jiiwo1f';
+            const toEmail = isSuccess ? 'info@skischool.ge' : 'info@skischool.ge';
+            const subject = isSuccess ? data.subject : `Booking Incomplete: ${data.subject}`;
+
+            emailjs.send('service_0tuoznd', template, {
+                to_email: toEmail,
                 subject: subject,
                 message: body,
                 from_name: data.fullName,
                 from_email: data.email,
                 phone: data.phone
             }).catch(() => {
-                const mailto = `mailto:info@skischool.ge?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                const mailto = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 window.open(mailto, '_blank');
             });
         }
 
         function generateCalendarLink(data) {
-            if (!State.selectedDate || !State.selectedTime) return 'Date not selected';
-
             const start = new Date(State.selectedDate);
             const [hours] = State.selectedTime.split(':');
             start.setHours(parseInt(hours), 0, 0);
@@ -1052,7 +1031,7 @@ Balance: $${data.remaining}
             return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         }
 
-        function showSuccessScreen() {
+        function showSuccess() {
             document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
             document.getElementById('successScreen').classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
