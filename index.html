@@ -131,13 +131,13 @@
             text-align: center; 
             font-weight: 600; 
             color: var(--text-primary); 
-            font-size: 1.125em; 
+            font-size: 1.25em; 
             margin-bottom: 0.75em; 
         }
         
         input[type="range"] { 
             width: 100%; 
-            height: 0.4em; 
+            height: 0.5em; 
             background: var(--bg-tertiary); 
             border-radius: 1em; 
             margin: 1em 0; 
@@ -152,8 +152,8 @@
         
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 1.75em;
-            height: 1.75em;
+            width: 2em;
+            height: 2em;
             background: var(--gradient-primary);
             border-radius: 50%;
             cursor: pointer;
@@ -191,8 +191,14 @@
             }
             
             .step1-right {
-                flex: 0 0 22em;
+                flex: 0 0 18em;
                 margin-top: 4.5em;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .step1-right {
+                flex: 0 0 22em;
             }
         }
         
@@ -214,8 +220,14 @@
             }
             
             .step2-right {
-                flex: 0 0 22em;
+                flex: 0 0 18em;
                 margin-top: 4.5em;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .step2-right {
+                flex: 0 0 22em;
             }
         }
         
@@ -236,7 +248,7 @@
             }
             
             .time-compact {
-                flex: 0 0 22em;
+                flex: 0 0 16em;
             }
         }
         
@@ -350,14 +362,8 @@
         
         .time-slots-compact { 
             display: grid; 
-            grid-template-columns: 1fr; 
+            grid-template-columns: 1fr 1fr; 
             gap: 0.75em; 
-        }
-        
-        @media (min-width: 480px) {
-            .time-slots-compact { 
-                grid-template-columns: 1fr 1fr; 
-            }
         }
         
         .time-slot { 
@@ -401,7 +407,6 @@
             padding: 2em; 
             border-radius: var(--border-radius-sm); 
             border: 0.125em solid var(--bg-tertiary);
-            width: 100%;
         }
         
         .price-row { 
@@ -534,38 +539,22 @@
             flex: 1;
         }
 
-        /* Step 3 Layout */
-        .step3-layout {
+        /* Step 3 Form Layout */
+        .step3-form {
             display: flex;
             flex-direction: column;
-            gap: 2em;
-        }
-        
-        @media (min-width: 768px) {
-            .step3-layout {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-            
-            .step3-left {
-                flex: 1;
-            }
-            
-            .step3-right {
-                flex: 0 0 22em;
-            }
+            gap: 1.5em;
         }
 
-        .form-row-compact { 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            gap: 1em; 
-            margin-bottom: 1em; 
+        .form-row-compact {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5em;
         }
 
         @media (min-width: 768px) {
-            .form-row-compact { 
-                grid-template-columns: 1fr 1fr; 
+            .form-row-compact {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
@@ -687,7 +676,7 @@
             font-weight: 700;
             color: var(--text-primary);
             text-align: center;
-            margin-bottom: 1.5em;
+            margin-bottom: 1em;
             line-height: 1.3;
         }
 
@@ -701,20 +690,19 @@
                 font-size: 14px;
             }
             
+            .form-group {
+                margin-bottom: 1em;
+            }
+            
             .subsection-title {
                 font-size: 1.25em;
                 margin-bottom: 0.75em;
-            }
-            
-            .form-group {
-                margin-bottom: 1em;
             }
             
             .btn {
                 padding: 1.25em 1.5em;
                 font-size: 1em;
                 height: 3.5em;
-                min-height: 3.5em;
             }
             
             .total-price {
@@ -723,7 +711,7 @@
 
             .booking-title {
                 font-size: 1.5em;
-                margin-bottom: 1em;
+                margin-bottom: 0.75em;
             }
             
             .custom-select, .form-input {
@@ -736,13 +724,11 @@
             }
             
             .slider-value {
-                font-size: 1em;
                 margin-bottom: 0.5em;
             }
             
             input[type="range"] {
                 margin: 0.75em 0;
-                height: 0.35em;
             }
             
             .calendar, .time-selection {
@@ -756,12 +742,13 @@
             .buttons {
                 margin-top: 1.5em;
                 padding-top: 1.5em;
-                gap: 0.75em;
+                flex-wrap: wrap;
             }
             
             .btn {
                 flex: 1 1 calc(50% - 0.5em);
-                min-width: 120px;
+                min-width: 140px;
+                padding: 1.1em 1.5em;
             }
             
             .paypal-container {
@@ -773,7 +760,7 @@
             #paypal-button-container {
                 min-width: 100%;
             }
-            
+
             .terms-checkbox {
                 margin: 1em 0;
                 padding: 1em;
@@ -790,17 +777,46 @@
             }
             
             .buttons {
-                flex-direction: column;
+                flex-direction: row;
+                flex-wrap: wrap;
             }
             
             .btn {
-                flex: 1 1 100%;
-                width: 100%;
+                flex: 1 1 calc(50% - 0.5em);
+                width: auto;
+                min-width: 140px;
+                padding: 1.2em 1.5em;
             }
             
             .paypal-container {
                 flex: 1 1 100%;
                 width: 100%;
+            }
+
+            .step1-layout,
+            .step2-layout {
+                gap: 1.5em;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .container {
+                padding: 1em;
+            }
+            
+            .step1-right,
+            .step2-right {
+                flex: 0 0 16em;
+                margin-top: 4em;
+            }
+            
+            .time-compact {
+                flex: 0 0 14em;
+            }
+            
+            .form-group {
+                margin-bottom: 1.25em;
             }
         }
 
@@ -933,83 +949,72 @@
         <!-- Step 3: Personal Info -->
         <div class="form-section" id="step3">
             <div class="booking-title" id="step3Title"></div>
-            <div class="selected-info" id="step3DateTime" style="margin-bottom: 2em;"></div>
+            <div class="selected-info" id="step3DateTime" style="margin-bottom: 1.5em;"></div>
 
-            <div class="step3-layout">
-                <div class="step3-left">
-                    <form id="personalInfoForm">
-                        <div class="form-row-compact">
-                            <div class="full-width">
-                                <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
-                                <div class="error" id="fullNameError">Please enter your full name</div>
-                            </div>
-                        </div>
-
-                        <div class="form-row-compact">
-                            <div>
-                                <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
-                                <div class="error" id="phoneError">Please enter a valid phone number</div>
-                            </div>
-                            <div>
-                                <input type="email" id="email" class="form-input" placeholder="Email *" required>
-                                <div class="error" id="emailError">Please enter a valid email address</div>
-                            </div>
-                        </div>
-
-                        <div class="form-row-compact">
-                            <div class="full-width">
-                                <select id="skillLevel" class="custom-select" required>
-                                    <option value="">Skill Level *</option>
-                                    <option value="first-time">First Time</option>
-                                    <option value="beginner">Beginner</option>
-                                    <option value="intermediate">Intermediate</option>
-                                    <option value="advanced">Advanced</option>
-                                </select>
-                                <div class="error" id="skillLevelError">Please select your skill level</div>
-                            </div>
-                        </div>
-
-                        <div class="form-row-compact">
-                            <div class="full-width">
-                                <textarea id="additionalInfo" class="form-input" rows="3" placeholder="Additional Information (optional)"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="terms-checkbox">
-                            <input type="checkbox" id="termsAgreement" required>
-                            <label for="termsAgreement" class="terms-text">
-                                I agree to the <a href="#termscond" target="_blank">Terms and Conditions</a> and understand that the 20% deposit is required to secure my booking. The remaining balance will be paid directly to the instructor.
-                            </label>
-                        </div>
-                        <div class="error" id="termsError">Please agree to the terms and conditions</div>
-                    </form>
-                </div>
-
-                <div class="step3-right">
-                    <div class="price-card">
-                        <div class="price-row">
-                            <span class="price-label">Total amount:</span>
-                            <span id="totalPriceStep3" class="total-price">$100</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price-label">20% deposit:</span>
-                            <span id="depositPriceStep3" class="deposit-price">$20</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price-label">Remaining balance:</span>
-                            <span id="remainingPriceStep3" class="price-value">$80</span>
-                        </div>
-                        <div id="discountInfoStep3" class="discount-info"></div>
+            <form id="personalInfoForm" class="step3-form">
+                <div class="form-row-compact">
+                    <div class="form-field">
+                        <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
+                        <div class="error" id="fullNameError">Please enter your full name</div>
+                    </div>
+                    <div class="form-field">
+                        <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
+                        <div class="error" id="phoneError">Please enter a valid phone number</div>
                     </div>
                 </div>
-            </div>
 
-            <div class="buttons">
-                <button type="button" class="btn btn-back" id="backToStep2">Back</button>
-                <div class="paypal-container">
-                    <div id="paypal-button-container"></div>
+                <div class="form-row-compact">
+                    <div class="form-field">
+                        <input type="email" id="email" class="form-input" placeholder="Email *" required>
+                        <div class="error" id="emailError">Please enter a valid email address</div>
+                    </div>
+                    <div class="form-field">
+                        <select id="skillLevel" class="custom-select" required>
+                            <option value="">Skill Level *</option>
+                            <option value="first-time">First Time</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                        <div class="error" id="skillLevelError">Please select your skill level</div>
+                    </div>
                 </div>
-            </div>
+
+                <div class="full-width">
+                    <textarea id="additionalInfo" class="form-input" rows="3" placeholder="Additional Information (optional)"></textarea>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-row">
+                        <span class="price-label">Total amount:</span>
+                        <span id="totalPriceStep3" class="total-price">$100</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">20% deposit:</span>
+                        <span id="depositPriceStep3" class="deposit-price">$20</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">Remaining balance:</span>
+                        <span id="remainingPriceStep3" class="price-value">$80</span>
+                    </div>
+                    <div id="discountInfoStep3" class="discount-info"></div>
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="termsAgreement" required>
+                    <label for="termsAgreement" class="terms-text">
+                        I agree to the <a href="#termscond" target="_blank">Terms and Conditions</a> and understand that the 20% deposit is required to secure my booking. The remaining balance will be paid directly to the instructor.
+                    </label>
+                </div>
+                <div class="error" id="termsError">Please agree to the terms and conditions</div>
+
+                <div class="buttons">
+                    <button type="button" class="btn btn-back" id="backToStep2">Back</button>
+                    <div class="paypal-container">
+                        <div id="paypal-button-container"></div>
+                    </div>
+                </div>
+            </form>
         </div>
 
         <!-- Success Screen -->
@@ -1034,6 +1039,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
+        // Optimized JavaScript code
         const CONFIG = {
             prices: {2: 100, 3: 140, full: 250},
             minDate: new Date(2025, 11, 15),
@@ -1091,7 +1097,6 @@
                     label: 'paypal',
                     height: 55
                 },
-
                 createOrder: function(data, actions) {
                     const depositAmount = document.getElementById('depositPriceStep3').textContent.replace('$', '');
                     const bookingDetails = getBookingDetails();
@@ -1110,30 +1115,23 @@
                         }
                     });
                 },
-
                 onApprove: function(data, actions) {
                     showPaymentProcessing();
-                    
                     return actions.order.capture().then(function(details) {
                         const formData = getFormData();
                         formData.paymentStatus = 'completed';
                         formData.paymentId = details.id;
                         formData.payerEmail = details.payer.email_address;
-                        
                         sendEmail(formData, 'Booking Confirmation');
-                        setTimeout(() => {
-                            showSuccess();
-                        }, 1000);
+                        setTimeout(showSuccess, 1000);
                     });
                 },
-
                 onCancel: function(data) {
                     const formData = getFormData();
                     formData.paymentStatus = 'cancelled';
                     sendEmail(formData, 'Booking Incomplete');
                     alert('Payment was cancelled. Please try again to complete your booking.');
                 },
-
                 onError: function(err) {
                     const formData = getFormData();
                     formData.paymentStatus = 'failed';
@@ -1146,10 +1144,14 @@
 
             if (paypalButtons.isEligible()) {
                 paypalButtons.render('#paypal-button-container');
+            } else {
+                document.getElementById('paypal-button-container').innerHTML = 
+                    '<p>PayPal is not available in your region. Please contact us directly.</p>';
             }
         }
 
         function setupEvents() {
+            // Tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1158,6 +1160,7 @@
                 });
             });
 
+            // Inputs
             ['duration', 'participants', 'days'].forEach(id => {
                 document.getElementById(id).addEventListener('input', () => {
                     if (id === 'participants') {
@@ -1172,6 +1175,7 @@
                 });
             });
 
+            // Navigation
             document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
             document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
             document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
@@ -1179,15 +1183,9 @@
             document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
             document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
             
+            // Terms
             document.getElementById('termsAgreement').addEventListener('change', function() {
                 hideError('termsError');
-            });
-
-            document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (validateForm()) {
-                    initPayPal();
-                }
             });
         }
 
@@ -1222,7 +1220,6 @@
 
         function updatePrices() {
             const data = calculatePrice();
-            
             ['', 'Step2', 'Step3'].forEach(suffix => {
                 const totalElement = document.getElementById(`totalPrice${suffix}`);
                 const depositElement = document.getElementById(`depositPrice${suffix}`);
@@ -1353,10 +1350,11 @@
         }
 
         function updateTimeSlots() {
-            document.getElementById('timeSlots').innerHTML = '';
+            const timeSlots = document.getElementById('timeSlots');
+            timeSlots.innerHTML = '';
             
             if (!State.selectedDate) {
-                document.getElementById('timeSlots').innerHTML = '<div class="time-slot disabled">Select date first</div>';
+                timeSlots.innerHTML = '<div class="time-slot disabled">Select date first</div>';
                 document.getElementById('nextToStep3').disabled = true;
                 return;
             }
@@ -1434,37 +1432,6 @@
             };
         }
 
-        function validateForm() {
-            let valid = true;
-            
-            if (!document.getElementById('fullName').value.trim()) {
-                showError('fullNameError', 'Please enter your full name');
-                valid = false;
-            } else hideError('fullNameError');
-            
-            if (!window.phoneInput.isValidNumber()) {
-                showError('phoneError', 'Please enter a valid phone number');
-                valid = false;
-            } else hideError('phoneError');
-            
-            if (!document.getElementById('email').value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                showError('emailError', 'Please enter a valid email address');
-                valid = false;
-            } else hideError('emailError');
-            
-            if (!document.getElementById('skillLevel').value) {
-                showError('skillLevelError', 'Please select your skill level');
-                valid = false;
-            } else hideError('skillLevelError');
-            
-            if (!document.getElementById('termsAgreement').checked) {
-                showError('termsError', 'Please agree to the terms and conditions');
-                valid = false;
-            } else hideError('termsError');
-            
-            return valid;
-        }
-
         function sendEmail(formData, emailType) {
             const paymentStatus = formData.paymentStatus || 'unknown';
             const paymentInfo = paymentStatus === 'completed' ? 
@@ -1491,7 +1458,7 @@ Remaining balance: $${formData.remaining}
 Google Calendar Link: ${generateCalendarLink(formData)}
             `.trim();
 
-            const toEmail = paymentStatus === 'completed' ? 'info@skischool.ge' : 'info@skischool.ge';
+            const toEmail = 'info@skischool.ge';
             
             emailjs.init('gb9ZTULk6-ghDtZuV');
             emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
