@@ -173,7 +173,7 @@
             font-weight: 500;
         }
         
-        /* Common Layout for all steps */
+        /* Step Layouts */
         .step-layout {
             display: flex;
             flex-direction: column;
@@ -195,9 +195,9 @@
                 margin-left: 2em;
             }
         }
-        
+
         /* Step 1 Specific */
-        .step1-controls {
+        .step1-content {
             display: flex;
             flex-direction: column;
             gap: 1.5em;
@@ -324,12 +324,6 @@
             gap: 0.75em; 
         }
         
-        @media (min-width: 480px) {
-            .time-slots-compact { 
-                grid-template-columns: 1fr 1fr 1fr; 
-            }
-        }
-        
         .time-slot { 
             padding: 1em; 
             background: var(--bg-tertiary); 
@@ -364,38 +358,33 @@
             border-radius: var(--border-radius-sm);
             border: 0.125em solid rgba(0, 163, 255, 0.3);
         }
-        
-        /* Step 3 Specific */
-        .step3-form {
+
+        /* Right Side Content */
+        .booking-summary {
             display: flex;
             flex-direction: column;
             gap: 1.5em;
         }
 
-        .form-row-compact {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5em;
+        .summary-title {
+            font-size: 1.25em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5em;
         }
 
-        @media (min-width: 768px) {
-            .form-row-compact {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .full-width { 
-            grid-column: 1 / -1; 
+        .summary-datetime {
+            font-size: 1em;
+            color: var(--text-secondary);
+            line-height: 1.4;
         }
         
-        /* Price Card */
         .price-card { 
             background: var(--bg-secondary); 
             color: var(--text-primary); 
             padding: 2em; 
             border-radius: var(--border-radius-sm); 
             border: 0.125em solid var(--bg-tertiary);
-            margin-bottom: 1.5em;
         }
         
         .price-row { 
@@ -449,27 +438,6 @@
             display: block;
         }
 
-        /* Right Side Content */
-        .booking-summary {
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius-sm);
-            padding: 1.5em;
-            margin-bottom: 1.5em;
-        }
-
-        .summary-title {
-            font-size: 1.25em;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5em;
-        }
-
-        .summary-details {
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        /* Buttons */
         .buttons {
             display: flex;
             justify-content: space-between;
@@ -549,6 +517,29 @@
             flex: 1;
         }
 
+        /* Step 3 Form Layout */
+        .step3-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
+        }
+
+        .form-row-compact {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5em;
+        }
+
+        @media (min-width: 768px) {
+            .form-row-compact {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .full-width { 
+            grid-column: 1 / -1; 
+        }
+
         .form-input { 
             background: var(--bg-primary); 
             border: 0.125em solid var(--bg-tertiary);
@@ -626,6 +617,47 @@
             padding-left: 5em !important; 
         }
 
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 1em;
+            margin: 1.5em 0;
+            padding: 1.5em;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-sm);
+            border: 0.125em solid var(--bg-tertiary);
+        }
+
+        .terms-checkbox input {
+            margin-top: 0.25em;
+            transform: scale(1.2);
+        }
+
+        .terms-text {
+            font-size: 1em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .terms-text a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
+        .booking-title {
+            font-size: 1.75em;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 1em;
+            line-height: 1.3;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 767px) {
             .container {
@@ -654,6 +686,11 @@
             .total-price {
                 font-size: 2em;
             }
+
+            .booking-title {
+                font-size: 1.5em;
+                margin-bottom: 0.75em;
+            }
             
             .custom-select, .form-input {
                 padding: 1em 1.25em;
@@ -664,11 +701,19 @@
                 padding: 0.75em;
             }
             
+            .slider-value {
+                margin-bottom: 0.5em;
+            }
+            
+            input[type="range"] {
+                margin: 0.75em 0;
+            }
+            
             .calendar-large, .time-selection {
                 padding: 1em;
             }
             
-            .price-card, .booking-summary {
+            .price-card {
                 padding: 1.5em;
             }
             
@@ -681,6 +726,7 @@
             .btn {
                 flex: 1 1 calc(50% - 0.5em);
                 min-width: 140px;
+                padding: 1.1em 1.5em;
             }
             
             .paypal-container {
@@ -693,13 +739,33 @@
                 min-width: 100%;
             }
 
+            .terms-checkbox {
+                margin: 1em 0;
+                padding: 1em;
+            }
+
+            /* Mobile layout - right side content on top */
+            .step-layout {
+                flex-direction: column;
+            }
+            
             .step-right {
                 margin-left: 0;
-                margin-top: 1.5em;
+                margin-bottom: 1.5em;
+                order: -1;
+            }
+
+            /* Hide duplicate selected info in mobile */
+            .calendar-time-vertical .selected-info {
+                display: none;
             }
         }
 
         @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+            
             .time-slots-compact {
                 grid-template-columns: 1fr 1fr;
             }
@@ -711,7 +777,38 @@
             
             .btn {
                 flex: 1 1 calc(50% - 0.5em);
+                width: auto;
                 min-width: 140px;
+                padding: 1.2em 1.5em;
+            }
+            
+            .paypal-container {
+                flex: 1 1 100%;
+                width: 100%;
+            }
+
+            .step-layout {
+                gap: 1.5em;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .container {
+                padding: 1em;
+            }
+            
+            .step-left {
+                flex: 2;
+            }
+            
+            .step-right {
+                flex: 1;
+                margin-left: 1.5em;
+            }
+            
+            .form-group {
+                margin-bottom: 1.25em;
             }
         }
     </style>
@@ -723,7 +820,7 @@
             <h2 class="subsection-title">Lesson Details</h2>
             <div class="step-layout">
                 <div class="step-left">
-                    <div class="step1-controls">
+                    <div class="step1-content">
                         <div class="form-group">
                             <div class="tabs">
                                 <div class="tab active" data-sport="ski">Ski</div>
@@ -764,23 +861,25 @@
 
                 <div class="step-right">
                     <div class="booking-summary">
-                        <div class="summary-title" id="step1SummaryTitle">2 Hours Ski Lesson</div>
-                        <div class="summary-details" id="step1SummaryDetails">1 Person × 1 Day</div>
-                    </div>
-                    <div class="price-card">
-                        <div class="price-row">
-                            <span class="price-label">Total amount:</span>
-                            <span id="totalPrice" class="total-price">$100</span>
+                        <div>
+                            <div class="summary-title" id="step1SummaryTitle">Your Lesson</div>
+                            <div class="summary-datetime" id="step1SummaryDetails">2 Hours Ski Lesson</div>
                         </div>
-                        <div class="price-row">
-                            <span class="price-label">20% deposit:</span>
-                            <span id="depositPrice" class="deposit-price">$20</span>
+                        <div class="price-card">
+                            <div class="price-row">
+                                <span class="price-label">Total amount:</span>
+                                <span id="totalPrice" class="total-price">$100</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">20% deposit:</span>
+                                <span id="depositPrice" class="deposit-price">$20</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Remaining balance:</span>
+                                <span id="remainingPrice" class="price-value">$80</span>
+                            </div>
+                            <div id="discountInfo" class="discount-info"></div>
                         </div>
-                        <div class="price-row">
-                            <span class="price-label">Remaining balance:</span>
-                            <span id="remainingPrice" class="price-value">$80</span>
-                        </div>
-                        <div id="discountInfo" class="discount-info"></div>
                     </div>
                 </div>
             </div>
@@ -826,24 +925,26 @@
 
                 <div class="step-right">
                     <div class="booking-summary">
-                        <div class="summary-title" id="step2SummaryTitle">2 Hours Ski Lesson</div>
-                        <div class="summary-details" id="step2SummaryDetails">1 Person × 1 Day</div>
-                    </div>
-                    <div class="selected-info" id="step2DateTimeDisplay" style="display: none; margin-bottom: 1.5em;"></div>
-                    <div class="price-card">
-                        <div class="price-row">
-                            <span class="price-label">Total amount:</span>
-                            <span id="totalPriceStep2" class="total-price">$100</span>
+                        <div>
+                            <div class="summary-title" id="step2SummaryTitle">Your Lesson</div>
+                            <div class="summary-datetime" id="step2SummaryDetails">2 Hours Ski Lesson</div>
+                            <div class="summary-datetime" id="step2DateTime" style="margin-top: 0.5em;"></div>
                         </div>
-                        <div class="price-row">
-                            <span class="price-label">20% deposit:</span>
-                            <span id="depositPriceStep2" class="deposit-price">$20</span>
+                        <div class="price-card">
+                            <div class="price-row">
+                                <span class="price-label">Total amount:</span>
+                                <span id="totalPriceStep2" class="total-price">$100</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">20% deposit:</span>
+                                <span id="depositPriceStep2" class="deposit-price">$20</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Remaining balance:</span>
+                                <span id="remainingPriceStep2" class="price-value">$80</span>
+                            </div>
+                            <div id="discountInfoStep2" class="discount-info"></div>
                         </div>
-                        <div class="price-row">
-                            <span class="price-label">Remaining balance:</span>
-                            <span id="remainingPriceStep2" class="price-value">$80</span>
-                        </div>
-                        <div id="discountInfoStep2" class="discount-info"></div>
                     </div>
                 </div>
             </div>
@@ -854,7 +955,7 @@
             </div>
         </div>
 
-        <!-- Step 3: Personal Information -->
+        <!-- Step 3: Personal Info -->
         <div class="form-section" id="step3">
             <h2 class="subsection-title">Personal Information</h2>
             <div class="step-layout">
@@ -896,24 +997,26 @@
 
                 <div class="step-right">
                     <div class="booking-summary">
-                        <div class="summary-title" id="step3SummaryTitle">2 Hours Ski Lesson</div>
-                        <div class="summary-details" id="step3SummaryDetails">1 Person × 1 Day</div>
-                    </div>
-                    <div class="selected-info" id="step3DateTimeDisplay" style="margin-bottom: 1.5em;"></div>
-                    <div class="price-card">
-                        <div class="price-row">
-                            <span class="price-label">Total amount:</span>
-                            <span id="totalPriceStep3" class="total-price">$100</span>
+                        <div>
+                            <div class="summary-title" id="step3SummaryTitle">Your Lesson</div>
+                            <div class="summary-datetime" id="step3SummaryDetails">2 Hours Ski Lesson</div>
+                            <div class="summary-datetime" id="step3DateTime" style="margin-top: 0.5em;"></div>
                         </div>
-                        <div class="price-row">
-                            <span class="price-label">20% deposit:</span>
-                            <span id="depositPriceStep3" class="deposit-price">$20</span>
+                        <div class="price-card">
+                            <div class="price-row">
+                                <span class="price-label">Total amount:</span>
+                                <span id="totalPriceStep3" class="total-price">$100</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">20% deposit:</span>
+                                <span id="depositPriceStep3" class="deposit-price">$20</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Remaining balance:</span>
+                                <span id="remainingPriceStep3" class="price-value">$80</span>
+                            </div>
+                            <div id="discountInfoStep3" class="discount-info"></div>
                         </div>
-                        <div class="price-row">
-                            <span class="price-label">Remaining balance:</span>
-                            <span id="remainingPriceStep3" class="price-value">$80</span>
-                        </div>
-                        <div id="discountInfoStep3" class="discount-info"></div>
                     </div>
                 </div>
             </div>
@@ -948,6 +1051,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
+        // Optimized JavaScript code
         const CONFIG = {
             prices: {2: 100, 3: 140, full: 250},
             minDate: new Date(2025, 11, 15),
@@ -962,7 +1066,7 @@
             selectedTime: null,
             currentStep: 1,
             init() { this.currentMonth.setDate(1); },
-            getBookingSummary() {
+            getBookingTitle() {
                 const sport = document.querySelector('.tab.active').dataset.sport;
                 const duration = document.getElementById('duration').value;
                 const people = document.getElementById('participants').value;
@@ -970,13 +1074,10 @@
                 
                 const durationText = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'}[duration];
                 const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
-                const peopleText = people > 1 ? `${people} Persons` : '1 Person';
-                const daysText = days > 1 ? `${days} Days` : '1 Day';
+                const peopleText = people > 1 ? ` with ${people} Persons` : '';
+                const daysText = days > 1 ? ` x ${days} Days` : '';
                 
-                return {
-                    title: `${durationText} ${sportText} Lesson`,
-                    details: `${peopleText} × ${daysText}`
-                };
+                return `${durationText} ${sportText} Lesson${peopleText}${daysText}`;
             }
         };
 
@@ -987,7 +1088,8 @@
             initPhone();
             setupEvents();
             renderCalendar();
-            updateAllDisplays();
+            updateAllSummaries();
+            updatePrices();
             initPayPal();
         });
 
@@ -1010,11 +1112,11 @@
                 },
                 createOrder: function(data, actions) {
                     const depositAmount = document.getElementById('depositPriceStep3').textContent.replace('$', '');
-                    const bookingDetails = State.getBookingSummary();
+                    const bookingDetails = getBookingDetails();
                     
                     return actions.order.create({
                         purchase_units: [{
-                            description: `Booking Deposit - ${bookingDetails.title} Reservation`,
+                            description: `Booking Deposit - ${bookingDetails.sport} Lesson Reservation`,
                             amount: {
                                 value: depositAmount,
                                 currency_code: 'USD'
@@ -1055,18 +1157,24 @@
 
             if (paypalButtons.isEligible()) {
                 paypalButtons.render('#paypal-button-container');
+            } else {
+                document.getElementById('paypal-button-container').innerHTML = 
+                    '<p>PayPal is not available in your region. Please contact us directly.</p>';
             }
         }
 
         function setupEvents() {
+            // Tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
-                    updateAllDisplays();
+                    updateAllSummaries();
+                    updatePrices();
                 });
             });
 
+            // Inputs
             ['duration', 'participants', 'days'].forEach(id => {
                 document.getElementById(id).addEventListener('input', () => {
                     if (id === 'participants') {
@@ -1077,22 +1185,27 @@
                         const val = document.getElementById('days').value;
                         document.getElementById('daysValue').textContent = val + ' Day' + (val > 1 ? 's' : '');
                     }
-                    updateAllDisplays();
+                    updateAllSummaries();
+                    updatePrices();
                 });
             });
 
+            // Navigation
             document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
             document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
             document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
             document.getElementById('backToStep2').addEventListener('click', () => showStep(2));
             document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
             document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
-            
-            document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (validateForm()) {
-                    // PayPal will handle the submission
-                }
+        }
+
+        function updateAllSummaries() {
+            const title = State.getBookingTitle();
+            ['1', '2', '3'].forEach(step => {
+                const titleElement = document.getElementById(`step${step}SummaryTitle`);
+                const detailsElement = document.getElementById(`step${step}SummaryDetails`);
+                if (titleElement) titleElement.textContent = 'Your Lesson';
+                if (detailsElement) detailsElement.textContent = title;
             });
         }
 
@@ -1102,36 +1215,15 @@
             State.currentStep = step;
             
             if (step === 2 || step === 3) {
-                updateDateTimeDisplay(step);
+                const dateTimeElement = document.getElementById(`step${step}DateTime`);
+                const selectedDateTime = document.getElementById('selectedDateTime').textContent;
+                if (dateTimeElement && selectedDateTime !== 'Please select a date first') {
+                    dateTimeElement.textContent = selectedDateTime;
+                    dateTimeElement.style.display = 'block';
+                }
             }
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function updateAllDisplays() {
-            const summary = State.getBookingSummary();
-            
-            // Update summary displays on all steps
-            for (let i = 1; i <= 3; i++) {
-                const titleElement = document.getElementById(`step${i}SummaryTitle`);
-                const detailsElement = document.getElementById(`step${i}SummaryDetails`);
-                if (titleElement) titleElement.textContent = summary.title;
-                if (detailsElement) detailsElement.textContent = summary.details;
-            }
-            
-            updatePrices();
-        }
-
-        function updateDateTimeDisplay(step) {
-            const dateTimeElement = document.getElementById(`step${step}DateTimeDisplay`);
-            const selectedDateTime = document.getElementById('selectedDateTime').textContent;
-            
-            if (selectedDateTime !== 'Please select a date first') {
-                dateTimeElement.textContent = selectedDateTime;
-                dateTimeElement.style.display = 'block';
-            } else {
-                dateTimeElement.style.display = 'none';
-            }
         }
 
         function showPaymentProcessing() {
@@ -1168,6 +1260,8 @@
             });
         }
 
+        // ... остальные функции остаются без изменений (calculatePrice, renderCalendar, createDay, navigateMonth, updateTimeSlots, createTimeSlot, updateSelectedDateTime, getFormData, sendEmail, etc.)
+
         function calculatePrice() {
             const duration = document.getElementById('duration').value;
             const people = parseInt(document.getElementById('participants').value);
@@ -1193,6 +1287,20 @@
                 `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
             
             return { total, deposit, remaining, discountText };
+        }
+
+        function getBookingDetails() {
+            const sport = document.querySelector('.tab.active').dataset.sport;
+            const duration = document.getElementById('duration').value;
+            const people = document.getElementById('participants').value;
+            const days = document.getElementById('days').value;
+            
+            return {
+                sport: sport.charAt(0).toUpperCase() + sport.slice(1),
+                duration: duration,
+                people: people,
+                days: days
+            };
         }
 
         function generateBookingId() {
@@ -1251,7 +1359,6 @@
                     updateTimeSlots();
                     updateSelectedDateTime();
                     document.getElementById('nextToStep3').disabled = !State.selectedTime;
-                    updateDateTimeDisplay(2);
                 });
             }
             
@@ -1298,7 +1405,6 @@
                 this.classList.add('selected');
                 updateSelectedDateTime();
                 document.getElementById('nextToStep3').disabled = false;
-                updateDateTimeDisplay(2);
             });
             
             document.getElementById('timeSlots').appendChild(slot);
@@ -1316,52 +1422,24 @@
             }
         }
 
-        function validateForm() {
-            let isValid = true;
-            
-            if (!document.getElementById('fullName').value.trim()) {
-                showError('fullNameError', 'Please enter your full name');
-                isValid = false;
-            } else {
-                hideError('fullNameError');
-            }
-            
-            if (!window.phoneInput.isValidNumber()) {
-                showError('phoneError', 'Please enter a valid phone number');
-                isValid = false;
-            } else {
-                hideError('phoneError');
-            }
-            
-            if (!document.getElementById('email').value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                showError('emailError', 'Please enter a valid email address');
-                isValid = false;
-            } else {
-                hideError('emailError');
-            }
-            
-            if (!document.getElementById('skillLevel').value) {
-                showError('skillLevelError', 'Please select your skill level');
-                isValid = false;
-            } else {
-                hideError('skillLevelError');
-            }
-            
-            return isValid;
-        }
-
         function getFormData() {
-            const summary = State.getBookingSummary();
             const duration = document.getElementById('duration').value;
             const people = document.getElementById('participants').value;
             const days = document.getElementById('days').value;
+            const sport = document.querySelector('.tab.active').dataset.sport;
+            
+            const durationText = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'}[duration];
+            const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
+            const peopleText = people + ' Person' + (people > 1 ? 's' : '');
             
             const price = calculatePrice();
             
             return {
-                subject: `Booking: ${summary.title} with ${summary.details}`,
-                title: summary.title,
-                details: summary.details,
+                subject: `Booking: ${durationText} ${sportText} Lesson with ${peopleText} x ${days} days`,
+                durationText,
+                sportText,
+                peopleText,
+                days,
                 dateTime: document.getElementById('selectedDateTime').textContent,
                 fullName: document.getElementById('fullName').value,
                 phone: window.phoneInput.getNumber(),
@@ -1382,7 +1460,7 @@
                 `Payment Status: ❌ ${paymentStatus.toUpperCase()}\nError: ${formData.error || 'N/A'}`;
 
             const body = `
-${formData.title} with ${formData.details}
+${formData.durationText} ${formData.sportText} Lesson with ${formData.peopleText} x ${formData.days} days
 ${formData.dateTime}
 
 ${paymentInfo}
@@ -1406,7 +1484,7 @@ Google Calendar Link: ${generateCalendarLink(formData)}
             emailjs.init('gb9ZTULk6-ghDtZuV');
             emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
                 to_email: toEmail,
-                subject: `${emailType}: ${formData.title}`,
+                subject: `${emailType}: ${formData.durationText} ${formData.sportText} Lesson`,
                 message: body,
                 from_name: formData.fullName,
                 from_email: formData.email,
