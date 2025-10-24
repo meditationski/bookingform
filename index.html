@@ -191,17 +191,11 @@
             }
             
             .step1-right {
-                flex: 0 0 18em;
+                flex: 0 0 22em;
                 margin-top: 4.5em;
             }
         }
 
-        @media (min-width: 1024px) {
-            .step1-right {
-                flex: 0 0 22em;
-            }
-        }
-        
         /* Step 2 Layout */
         .step2-layout {
             display: flex;
@@ -216,46 +210,20 @@
             }
             
             .step2-left {
-                flex: 1;
+                flex: 2; /* 2/3 ширины */
             }
             
             .step2-right {
-                flex: 0 0 18em;
+                flex: 1; /* 1/3 ширины */
                 margin-top: 4.5em;
             }
         }
 
-        @media (min-width: 1024px) {
-            .step2-right {
-                flex: 0 0 22em;
-            }
-        }
-        
-        .calendar-time-compact {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5em;
-        }
-        
-        @media (min-width: 768px) {
-            .calendar-time-compact {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-            
-            .calendar-compact {
-                flex: 1;
-            }
-            
-            .time-compact {
-                flex: 0 0 16em;
-            }
-        }
-        
-        .calendar {
+        .calendar-full {
             background: var(--bg-secondary);
             border-radius: var(--border-radius-sm);
             padding: 1.5em;
+            margin-bottom: 1.5em;
         }
         
         .calendar-header {
@@ -325,7 +293,7 @@
             font-weight: 500;
             border-radius: var(--border-radius-sm);
             cursor: pointer;
-            min-height: 3em;
+            min-height: 3.5em;
             transition: var(--transition);
         }
         
@@ -354,16 +322,22 @@
             display: none; 
         }
         
-        .time-selection { 
+        .time-selection-full { 
             background: var(--bg-secondary); 
             border-radius: var(--border-radius-sm); 
             padding: 1.5em; 
         }
         
-        .time-slots-compact { 
+        .time-slots-full { 
             display: grid; 
-            grid-template-columns: 1fr 1fr; 
+            grid-template-columns: repeat(4, 1fr); 
             gap: 0.75em; 
+        }
+        
+        @media (max-width: 1024px) {
+            .time-slots-full {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
         
         .time-slot { 
@@ -731,8 +705,12 @@
                 margin: 0.75em 0;
             }
             
-            .calendar, .time-selection {
+            .calendar-full, .time-selection-full {
                 padding: 1em;
+            }
+            
+            .time-slots-full {
+                grid-template-columns: repeat(2, 1fr);
             }
             
             .price-card {
@@ -772,7 +750,7 @@
                 font-size: 14px;
             }
             
-            .time-slots-compact {
+            .time-slots-full {
                 grid-template-columns: 1fr 1fr;
             }
             
@@ -807,22 +785,17 @@
             
             .step1-right,
             .step2-right {
-                flex: 0 0 16em;
+                flex: 0 0 18em;
                 margin-top: 4em;
-            }
-            
-            .time-compact {
-                flex: 0 0 14em;
             }
             
             .form-group {
                 margin-bottom: 1.25em;
             }
-        }
-
-        /* Hide price card on step 2 */
-        .step2-layout .price-card {
-            display: none;
+            
+            .time-slots-full {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
@@ -901,42 +874,49 @@
                 <div class="step2-left">
                     <div class="form-group">
                         <h2 class="subsection-title">Select Date & Time</h2>
-                        <div class="calendar-time-compact">
-                            <div class="calendar-compact">
-                                <div class="calendar">
-                                    <div class="calendar-header">
-                                        <div class="calendar-nav">
-                                            <button id="prevMonth">‹</button>
-                                        </div>
-                                        <div class="calendar-month">December 2025</div>
-                                        <div class="calendar-nav">
-                                            <button id="nextMonth">›</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="weekdays">
-                                        <div>Mon</div><div>Tue</div><div>Wed</div>
-                                        <div>Thu</div><div>Fri</div><div>Sat</div>
-                                        <div>Sun</div>
-                                    </div>
-                                    
-                                    <div class="days" id="calendarDays"></div>
+                        <div class="calendar-full">
+                            <div class="calendar-header">
+                                <div class="calendar-nav">
+                                    <button id="prevMonth">‹</button>
+                                </div>
+                                <div class="calendar-month">December 2025</div>
+                                <div class="calendar-nav">
+                                    <button id="nextMonth">›</button>
                                 </div>
                             </div>
                             
-                            <div class="time-compact">
-                                <div class="time-selection">
-                                    <div class="time-slots-compact" id="timeSlots"></div>
-                                    <div class="selected-info" id="selectedDateTime">Please select a date first</div>
-                                </div>
+                            <div class="weekdays">
+                                <div>Mon</div><div>Tue</div><div>Wed</div>
+                                <div>Thu</div><div>Fri</div><div>Sat</div>
+                                <div>Sun</div>
                             </div>
+                            
+                            <div class="days" id="calendarDays"></div>
+                        </div>
+                        
+                        <div class="time-selection-full">
+                            <div class="time-slots-full" id="timeSlots"></div>
+                            <div class="selected-info" id="selectedDateTime">Please select a date first</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="step2-right">
-                    <!-- Price card hidden on step 2 -->
-                    <div class="price-card" style="display: none;"></div>
+                    <div class="price-card">
+                        <div class="price-row">
+                            <span class="price-label">Total amount:</span>
+                            <span id="totalPriceStep2" class="total-price">$100</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">20% deposit:</span>
+                            <span id="depositPriceStep2" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Remaining balance:</span>
+                            <span id="remainingPriceStep2" class="price-value">$80</span>
+                        </div>
+                        <div id="discountInfoStep2" class="discount-info"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1039,7 +1019,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // Optimized JavaScript code
         const CONFIG = {
             prices: {2: 100, 3: 140, full: 250},
             minDate: new Date(2025, 11, 15),
@@ -1151,7 +1130,6 @@
         }
 
         function setupEvents() {
-            // Tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1160,7 +1138,6 @@
                 });
             });
 
-            // Inputs
             ['duration', 'participants', 'days'].forEach(id => {
                 document.getElementById(id).addEventListener('input', () => {
                     if (id === 'participants') {
@@ -1175,7 +1152,6 @@
                 });
             });
 
-            // Navigation
             document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
             document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
             document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
@@ -1183,7 +1159,6 @@
             document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
             document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
             
-            // Terms
             document.getElementById('termsAgreement').addEventListener('change', function() {
                 hideError('termsError');
             });
