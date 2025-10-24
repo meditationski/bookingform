@@ -15,7 +15,7 @@
     --text-primary: #ffffff;
     --text-secondary: #d0d8e2;
     --text-muted: #7a8596;
-    --accent-blue: #008cff;   /* Яркий неоново-синий */
+    --accent-blue: #00A3FF;   /* Яркий неоново-синий */
     --accent-orange: #ff6b00; /* Яркий оранжевый */
     
     --gradient-primary: linear-gradient(106deg, #00A3FF 0%, #F59A47 100%);
@@ -543,10 +543,9 @@
             flex: 1;
         }
 
-        .form-input { 
-            background: var(--bg-primary); 
-            border: 0.125em solid var(--bg-tertiary);
-        }
+.form-input { 
+    background: rgba(34, 37, 41, 0.5); /* 50% прозрачности */
+    border: 0.125em solid var(--bg-tertiary);        }
         
         .form-input:focus { 
             outline: none; 
