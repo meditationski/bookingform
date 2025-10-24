@@ -24,7 +24,7 @@
             --gradient-alt-hover: linear-gradient(135deg, #FFB470 0%, #F59A47 100%);
             --border-radius: 2.5em;
             --border-radius-sm: 1.5em;
-            --transition: all 0.3s ease;
+            --transition: all 0.2s ease;
         }
 
         * { 
@@ -86,7 +86,7 @@
             border-radius: var(--border-radius-sm); 
             cursor: pointer; 
             font-size: 1em;
-            transition: var(--transition);
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
         
         .tab.active { 
@@ -103,7 +103,7 @@
             background: var(--bg-secondary);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
-            transition: var(--transition);
+            transition: border-color 0.2s ease;
         }
         
         .custom-select:focus, .form-input:focus {
@@ -142,7 +142,7 @@
             border-radius: 1em; 
             margin: 1em 0; 
             -webkit-appearance: none;
-            transition: var(--transition);
+            transition: background-color 0.2s ease;
         }
         
         input[type="range"]:hover {
@@ -158,11 +158,6 @@
             border-radius: 50%;
             cursor: pointer;
             border: 0.25em solid var(--bg-primary);
-            transition: var(--transition);
-        }
-        
-        input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
         }
         
         .slider-labels { 
@@ -183,7 +178,7 @@
         @media (min-width: 768px) {
             .step-layout {
                 flex-direction: row;
-                align-items: flex-start;
+                align-items: stretch;
             }
             
             .step-left {
@@ -193,6 +188,8 @@
             .step-right {
                 flex: 1;
                 margin-left: 1.5em;
+                display: flex;
+                flex-direction: column;
             }
         }
         
@@ -243,7 +240,7 @@
             border-radius: var(--border-radius-sm);
             cursor: pointer;
             font-size: 1.125em;
-            transition: var(--transition);
+            transition: background-color 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -251,7 +248,6 @@
         
         .calendar-nav button:hover {
             background: var(--accent-blue);
-            transform: scale(1.05);
         }
         
         .weekdays {
@@ -284,19 +280,17 @@
             border-radius: var(--border-radius-sm);
             cursor: pointer;
             min-height: 3em;
-            transition: var(--transition);
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
         
         .day:hover:not(.disabled):not(.selected) { 
             background: var(--bg-tertiary); 
             color: var(--text-primary);
-            transform: scale(1.05);
         }
         
         .day.selected { 
             background: var(--gradient-primary); 
             color: var(--text-primary); 
-            transform: scale(1.05);
         }
         
         .day.today { 
@@ -340,17 +334,15 @@
             font-weight: 500;
             cursor: pointer; 
             text-align: center; 
-            transition: var(--transition);
+            transition: background-color 0.2s ease;
         }
         
         .time-slot:hover:not(.disabled):not(.selected) {
             background: var(--accent-blue);
-            transform: scale(1.05);
         }
         
         .time-slot.selected { 
             background: var(--gradient-primary); 
-            transform: scale(1.05);
         }
         
         .selected-info { 
@@ -370,6 +362,7 @@
             display: flex;
             flex-direction: column;
             gap: 1.25em;
+            height: 100%;
         }
 
         .form-row-compact {
@@ -395,6 +388,7 @@
             padding: 1.75em; 
             border-radius: var(--border-radius-sm); 
             border: 0.125em solid var(--bg-tertiary);
+            flex: 1;
         }
         
         .booking-summary-compact {
@@ -485,7 +479,7 @@
             font-size: 1em;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
+            transition: background-color 0.2s ease, color 0.2s ease;
             height: 3.75em;
             display: inline-flex;
             align-items: center;
@@ -505,7 +499,6 @@
         .btn-back:hover {
             background: var(--bg-tertiary);
             color: var(--text-primary);
-            transform: translateY(-0.125em);
         }
 
         .btn-next { 
@@ -515,13 +508,11 @@
 
         .btn-next:hover {
             background: var(--gradient-hover);
-            transform: translateY(-0.25em);
         }
 
         .btn-next:disabled { 
             background: var(--bg-tertiary); 
             cursor: not-allowed;
-            transform: none;
         }
 
         .btn-book {
@@ -531,7 +522,6 @@
 
         .btn-book:hover {
             background: var(--gradient-alt-hover);
-            transform: translateY(-0.25em);
         }
 
         .paypal-container {
