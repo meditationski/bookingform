@@ -777,14 +777,23 @@ input[type="range"]::-webkit-slider-thumb {
                             <div class="tabs">
                                 <div class="tab active" data-sport="ski">Ski</div>
                                 <div class="tab" data-sport="snowboard">Snowboard</div>
+                                <div class="tab" data-sport="kids">Kids Ski Club</div>
                             </div>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group" id="durationGroup">
+                            <!-- Regular duration options -->
                             <select class="custom-select" id="duration">
                                 <option value="2">2 Hours Lesson - $100</option>
                                 <option value="3">3 Hours Lesson - $140</option>
                                 <option value="full">Full Day Lesson - $250</option>
+                            </select>
+                            
+                            <!-- Kids Ski Club duration options -->
+                            <select class="custom-select" id="kidsDuration" style="display: none;">
+                                <option value="full">Full Day (10:30 - 16:30) - $130</option>
+                                <option value="half-lunch">Half Day With Lunch (10:30 - 14:30) - $90</option>
+                                <option value="half-no-lunch">Half Day No Lunch (10:30 - 13:30) - $70</option>
                             </select>
                         </div>
                         
@@ -923,6 +932,13 @@ input[type="range"]::-webkit-slider-thumb {
                                 <div class="error" id="emailError">Please enter a valid email address</div>
                             </div>
                             <div class="form-field">
+                                <input type="number" id="age" class="form-input" placeholder="Age *" min="5" max="80" required>
+                                <div class="error" id="ageError">Please enter a valid age (5-80)</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row-compact">
+                            <div class="form-field">
                                 <select id="skillLevel" class="custom-select" required>
                                     <option value="">Skill Level *</option>
                                     <option value="first-time">First Time</option>
@@ -932,6 +948,7 @@ input[type="range"]::-webkit-slider-thumb {
                                 </select>
                                 <div class="error" id="skillLevelError">Please select your skill level</div>
                             </div>
+                            <div class="form-field"></div> <!-- Empty cell for grid alignment -->
                         </div>
 
                         <div class="full-width">
@@ -994,6 +1011,7 @@ input[type="range"]::-webkit-slider-thumb {
     <script>
         const CONFIG = {
             prices: {2: 100, 3: 140, full: 250},
+            kidsPrices: {full: 130, 'half-lunch': 90, 'half-no-lunch': 70},
             minDate: new Date(2025, 11, 15),
             maxDate: new Date(2026, 3, 30),
             resortCloseHour: 17,
@@ -1008,17 +1026,38 @@ input[type="range"]::-webkit-slider-thumb {
             init() { this.currentMonth.setDate(1); },
             getBookingSummary() {
                 const sport = document.querySelector('.tab.active').dataset.sport;
-                const duration = document.getElementById('duration').value;
-                const people = document.getElementById('participants').value;
-                const days = document.getElementById('days').value;
+                let duration, durationText, peopleText, daysText;
                 
-                const durationText = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'}[duration];
-                const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
-                const peopleText = people > 1 ? `${people} Persons` : '1 Person';
-                const daysText = days > 1 ? `${days} Days` : '1 Day';
+                if (sport === 'kids') {
+                    duration = document.getElementById('kidsDuration').value;
+                    const people = document.getElementById('participants').value;
+                    const days = document.getElementById('days').value;
+                    
+                    // Kids duration texts
+                    const kidsDurationTexts = {
+                        'full': 'Full Day Kids Ski Club',
+                        'half-lunch': 'Half Day Kids Ski Club With Lunch',
+                        'half-no-lunch': 'Half Day Kids Ski Club No Lunch'
+                    };
+                    
+                    durationText = kidsDurationTexts[duration];
+                    peopleText = people > 1 ? `${people} Kids` : '1 Kid';
+                    daysText = days > 1 ? `${days} Days` : '1 Day';
+                } else {
+                    duration = document.getElementById('duration').value;
+                    const people = document.getElementById('participants').value;
+                    const days = document.getElementById('days').value;
+                    
+                    const durationTexts = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'};
+                    durationText = durationTexts[duration];
+                    peopleText = people > 1 ? `${people} Persons` : '1 Person';
+                    daysText = days > 1 ? `${days} Days` : '1 Day';
+                }
+                
+                const sportText = sport === 'kids' ? '' : sport.charAt(0).toUpperCase() + sport.slice(1) + ' Lesson';
                 
                 return {
-                    title: `${durationText} ${sportText} Lesson`,
+                    title: sport === 'kids' ? durationText : `${durationText} ${sportText}`,
                     details: `${peopleText} × ${daysText}`
                 };
             }
@@ -1107,15 +1146,37 @@ input[type="range"]::-webkit-slider-thumb {
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
+                    
+                    // Show/hide appropriate duration selectors
+                    const isKids = this.dataset.sport === 'kids';
+                    document.getElementById('duration').style.display = isKids ? 'none' : 'block';
+                    document.getElementById('kidsDuration').style.display = isKids ? 'block' : 'none';
+                    
+                    // Update participants label for kids
+                    const participantsValue = document.getElementById('participantsValue');
+                    if (isKids) {
+                        participantsValue.textContent = '1 Kid';
+                        document.getElementById('participants').min = 1;
+                        document.getElementById('participants').max = 8;
+                        updateSliderLabels('participants', 1, 8);
+                    } else {
+                        participantsValue.textContent = '1 Person';
+                        document.getElementById('participants').min = 1;
+                        document.getElementById('participants').max = 5;
+                        updateSliderLabels('participants', 1, 5);
+                    }
+                    
                     updateAllDisplays();
                 });
             });
 
-            ['duration', 'participants', 'days'].forEach(id => {
+            ['duration', 'kidsDuration', 'participants', 'days'].forEach(id => {
                 document.getElementById(id).addEventListener('input', () => {
                     if (id === 'participants') {
                         const val = document.getElementById('participants').value;
-                        document.getElementById('participantsValue').textContent = val + ' Person' + (val > 1 ? 's' : '');
+                        const isKids = document.querySelector('.tab.active').dataset.sport === 'kids';
+                        const label = isKids ? 'Kid' : 'Person';
+                        document.getElementById('participantsValue').textContent = val + ' ' + label + (val > 1 ? 's' : '');
                     }
                     if (id === 'days') {
                         const val = document.getElementById('days').value;
@@ -1137,6 +1198,18 @@ input[type="range"]::-webkit-slider-thumb {
                 if (validateForm()) {
                 }
             });
+        }
+
+        function updateSliderLabels(sliderId, min, max) {
+            const slider = document.getElementById(sliderId);
+            const labelsContainer = slider.parentNode.querySelector('.slider-labels');
+            labelsContainer.innerHTML = '';
+            
+            for (let i = min; i <= max; i++) {
+                const span = document.createElement('span');
+                span.textContent = i;
+                labelsContainer.appendChild(span);
+            }
         }
 
         function showStep(step) {
@@ -1211,12 +1284,22 @@ input[type="range"]::-webkit-slider-thumb {
         }
 
         function calculatePrice() {
-            const duration = document.getElementById('duration').value;
+            const sport = document.querySelector('.tab.active').dataset.sport;
             const people = parseInt(document.getElementById('participants').value);
             const days = parseInt(document.getElementById('days').value);
             
-            const basePrice = CONFIG.prices[duration];
-            const pricePerDay = basePrice + (people - 1) * 40;
+            let basePrice;
+            if (sport === 'kids') {
+                const duration = document.getElementById('kidsDuration').value;
+                basePrice = CONFIG.kidsPrices[duration];
+            } else {
+                const duration = document.getElementById('duration').value;
+                basePrice = CONFIG.prices[duration];
+            }
+            
+            // For kids, price is simply basePrice * people
+            // For regular lessons, additional people cost $40 extra per person
+            const pricePerDay = sport === 'kids' ? basePrice * people : basePrice + (people - 1) * 40;
             
             let total = 0;
             let maxDiscount = 0;
@@ -1315,14 +1398,22 @@ input[type="range"]::-webkit-slider-thumb {
                 return;
             }
 
-            const duration = document.getElementById('duration').value;
+            const sport = document.querySelector('.tab.active').dataset.sport;
             
-            if (duration === 'full') {
-                createTimeSlot('10:00', '10:00 (Full day)');
+            // For Kids Ski Club, only show 10:30 time slot
+            if (sport === 'kids') {
+                createTimeSlot('10:30', '10:30');
             } else {
-                const hours = parseInt(duration);
-                for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - hours; hour++) {
-                    createTimeSlot(`${hour}:00`);
+                // For regular lessons, show time slots based on duration
+                const duration = document.getElementById('duration').value;
+                
+                if (duration === 'full') {
+                    createTimeSlot('10:00', '10:00 (Full day)');
+                } else {
+                    const hours = parseInt(duration);
+                    for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - hours; hour++) {
+                        createTimeSlot(`${hour}:00`);
+                    }
                 }
             }
         }
@@ -1382,11 +1473,45 @@ input[type="range"]::-webkit-slider-thumb {
                 hideError('emailError');
             }
             
-            if (!document.getElementById('skillLevel').value) {
-                showError('skillLevelError', 'Please select your skill level');
-                isValid = false;
+            const age = parseInt(document.getElementById('age').value);
+            const isKids = document.querySelector('.tab.active').dataset.sport === 'kids';
+            
+            if (isKids) {
+                // For Kids Ski Club, age must be between 6 and 12
+                if (!age || age < 6 || age > 12) {
+                    showError('ageError', 'Please enter a valid age for Kids Ski Club (6-12)');
+                    isValid = false;
+                } else {
+                    hideError('ageError');
+                }
             } else {
-                hideError('skillLevelError');
+                // For regular lessons, age must be between 5 and 80
+                if (!age || age < 5 || age > 80) {
+                    showError('ageError', 'Please enter a valid age (5-80)');
+                    isValid = false;
+                } else {
+                    hideError('ageError');
+                }
+            }
+            
+            // Skill level validation
+            const skillLevel = document.getElementById('skillLevel').value;
+            if (isKids) {
+                // For Kids Ski Club, only Beginner and Intermediate are allowed
+                if (!skillLevel || (skillLevel !== 'beginner' && skillLevel !== 'intermediate')) {
+                    showError('skillLevelError', 'For Kids Ski Club, please select Beginner or Intermediate');
+                    isValid = false;
+                } else {
+                    hideError('skillLevelError');
+                }
+            } else {
+                // For regular lessons, all skill levels are allowed
+                if (!skillLevel) {
+                    showError('skillLevelError', 'Please select your skill level');
+                    isValid = false;
+                } else {
+                    hideError('skillLevelError');
+                }
             }
             
             return isValid;
@@ -1394,7 +1519,15 @@ input[type="range"]::-webkit-slider-thumb {
 
         function getFormData() {
             const summary = State.getBookingSummary();
-            const duration = document.getElementById('duration').value;
+            const sport = document.querySelector('.tab.active').dataset.sport;
+            let duration;
+            
+            if (sport === 'kids') {
+                duration = document.getElementById('kidsDuration').value;
+            } else {
+                duration = document.getElementById('duration').value;
+            }
+            
             const people = document.getElementById('participants').value;
             const days = document.getElementById('days').value;
             
@@ -1408,6 +1541,7 @@ input[type="range"]::-webkit-slider-thumb {
                 fullName: document.getElementById('fullName').value,
                 phone: window.phoneInput.getNumber(),
                 email: document.getElementById('email').value,
+                age: document.getElementById('age').value,
                 skillLevel: document.getElementById('skillLevel').options[document.getElementById('skillLevel').selectedIndex].text,
                 additionalInfo: document.getElementById('additionalInfo').value,
                 total: price.total,
@@ -1433,6 +1567,7 @@ Booking ID: ${formData.bookingId}
 Full Name: ${formData.fullName}
 Phone (WhatsApp): https://wa.me/${formData.phone.replace('+', '')}
 Email: ${formData.email}
+Age: ${formData.age}
 Skill level: ${formData.skillLevel}
 Additional information: ${formData.additionalInfo || 'None'}
 
@@ -1465,15 +1600,28 @@ Google Calendar Link: ${generateCalendarLink(formData)}
             start.setHours(parseInt(hours), 0, 0);
             
             const end = new Date(start);
-            const duration = document.getElementById('duration').value;
+            const sport = document.querySelector('.tab.active').dataset.sport;
             const days = parseInt(document.getElementById('days').value);
             
-            end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
+            if (sport === 'kids') {
+                const duration = document.getElementById('kidsDuration').value;
+                if (duration === 'full') {
+                    end.setHours(16, 30, 0); // 10:30 - 16:30
+                } else if (duration === 'half-lunch') {
+                    end.setHours(14, 30, 0); // 10:30 - 14:30
+                } else {
+                    end.setHours(13, 30, 0); // 10:30 - 13:30
+                }
+            } else {
+                const duration = document.getElementById('duration').value;
+                end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
+            }
             
             const details = `
 Full Name: ${data.fullName}
 Phone: ${data.phone}
 Email: ${data.email}
+Age: ${data.age}
 Skill level: ${data.skillLevel}
 Additional info: ${data.additionalInfo || 'None'}
 
