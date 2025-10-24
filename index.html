@@ -18,10 +18,10 @@
     --accent-blue: #008cff;   /* Яркий неоново-синий */
     --accent-orange: #ff6b00; /* Яркий оранжевый */
     
-    --gradient-primary: linear-gradient(135deg, #008cff 0%, #0055cc 100%);
-    --gradient-alt: linear-gradient(135deg, #ff6b00 0%, #cc5500 100%);
-    --gradient-hover: linear-gradient(135deg, #0077e0 0%, #0044a0 100%);
-    --gradient-alt-hover: linear-gradient(135deg, #ff7a1a 0%, #ff6b00 100%);
+    --gradient-primary: linear-gradient(106deg, #00A3FF 0%, #F59A47 100%);
+    --gradient-alt: linear-gradient(106deg, #F59A47 0%, #00A3FF 100%);
+    --gradient-hover: linear-gradient(106deg, #00A3FF 0%, #FFB470 100%);
+    --gradient-alt-hover: linear-gradient(106deg, #FFB470 0%, #00A3FF 100%);
             --border-radius: 2.5em;
             --border-radius-sm: 1.5em;
             --transition: all 0.3s ease;
@@ -41,11 +41,12 @@
             font-weight: 400;
         }
         
-        .container { 
-            max-width: 75em; 
-            margin: 0 auto; 
-            padding: 1em; 
-        }
+.container { 
+    max-width: 75em; 
+    margin: 0 auto; 
+    padding: 1em; 
+    background: rgba(34, 37, 41, 0.5); /* 50% прозрачности для всего контейнера */
+}
         
         .form-section { 
             display: none; 
@@ -466,15 +467,15 @@
         }
 
         /* Buttons */
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1.75em;
-            padding-top: 1.75em;
-            border-top: 0.125em solid var(--bg-tertiary);
-            gap: 1em;
-        }
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.75em;
+    padding-top: 1.75em;
+    border-top: 0.125em solid #ffffff; /* Белая полоска */
+    gap: 1em;
+}
 
         .btn {
             border: none;
@@ -494,39 +495,42 @@
             min-width: 0;
         }
 
-        .btn-back { 
-            background: transparent; 
-            color: var(--text-secondary);
-            border: 0.125em solid var(--bg-tertiary);
-        }
+.btn-next { 
+    background: var(--gradient-primary); 
+    color: var(--text-primary); 
+    border: 0.125em solid #ffffff; /* Белая ободка */
+}
 
-        .btn-back:hover {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
+.btn-next:hover {
+    background: var(--gradient-hover);
+}
 
-        .btn-next { 
-            background: var(--gradient-primary); 
-            color: var(--text-primary); 
-        }
+.btn-book {
+    background: var(--gradient-alt);
+    color: var(--text-primary);
+    border: 0.125em solid #ffffff; /* Белая ободка */
+}
 
-        .btn-next:hover {
-            background: var(--gradient-hover);
-        }
+.btn-book:hover {
+    background: var(--gradient-alt-hover);
+}
+
+.btn-back { 
+    background: transparent; 
+    color: var(--text-secondary);
+    border: 0.125em solid #ffffff; /* Белая ободка для кнопки Back */
+}
+
+.btn-back:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
 
         .btn-next:disabled { 
             background: var(--bg-tertiary); 
             cursor: not-allowed;
         }
 
-        .btn-book {
-            background: var(--gradient-alt);
-            color: var(--text-primary);
-        }
-
-        .btn-book:hover {
-            background: var(--gradient-alt-hover);
-        }
 
         .paypal-container {
             display: flex;
