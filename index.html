@@ -10,8 +10,8 @@
     <style>
 :root {
     --bg-primary: #0f1217;
-    --bg-secondary: rgba(30, 34, 40, 0.6);  /* 30% прозрачности */
-    --bg-tertiary: rgba(52, 56, 64, 0.6) /* 30% прозрачности */
+    --bg-secondary: rgba(30, 34, 40, 0.6);
+    --bg-tertiary: rgba(52, 56, 64, 0.6);
     --text-primary: #ffffff;
     --text-secondary: #d0d8e2;
     --text-muted: #7a8596;
@@ -536,8 +536,9 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .form-input { 
-    background: var(--bg-secondary); /* Используем ту же прозрачность */
+    background: var(--bg-secondary);
     border: 0.1em solid var(--bg-tertiary);
+}
 
 .form-input:focus { 
     outline: none; 
@@ -703,6 +704,35 @@ input[type="range"]::-webkit-slider-thumb {
     #step3 .step-right {
         display: block;
     }
+
+    /* Исправление календаря для мобильных */
+    .calendar-large {
+        padding: 0.75em;
+        overflow: hidden;
+    }
+    
+    .days {
+        gap: 0.0625em;
+    }
+    
+    .day {
+        min-height: 2.5em;
+        font-size: 0.875em;
+        padding: 0.25em;
+    }
+    
+    .weekdays {
+        font-size: 0.75em;
+        gap: 0.0625em;
+    }
+    
+    .calendar-header {
+        margin-bottom: 1em;
+    }
+    
+    .calendar-month {
+        font-size: 1.125em;
+    }
 }
 
 @media (max-width: 480px) {
@@ -718,6 +748,20 @@ input[type="range"]::-webkit-slider-thumb {
     .btn {
         flex: 1 1 calc(50% - 0.5em);
         min-width: 140px;
+    }
+    
+    /* Дополнительные исправления для очень маленьких экранов */
+    .calendar-large {
+        padding: 0.5em;
+    }
+    
+    .day {
+        min-height: 2.25em;
+        font-size: 0.8em;
+    }
+    
+    .weekdays {
+        font-size: 0.7em;
     }
 }
     </style>
