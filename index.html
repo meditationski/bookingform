@@ -10,8 +10,8 @@
     <style>
 :root {
     --bg-primary: #0f1217;
-    --bg-secondary: #1e2228;
-    --bg-tertiary: #2d323a;
+    --bg-secondary: rgba(30, 34, 40, 0.3);  /* 30% прозрачности */
+    --bg-tertiary: rgba(255, 255, 255, 0.3); /* 30% прозрачности */
     --text-primary: #ffffff;
     --text-secondary: #d0d8e2;
     --text-muted: #7a8596;
@@ -536,9 +536,8 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .form-input { 
-    background: rgba(34, 37, 41, 100%);
+    background: var(--bg-secondary); /* Используем ту же прозрачность */
     border: 0.1em solid var(--bg-tertiary);
-}
 
 .form-input:focus { 
     outline: none; 
