@@ -312,6 +312,7 @@ input[type="range"]::-webkit-slider-thumb {
     background: var(--bg-secondary); 
     border-radius: var(--border-radius-sm); 
     padding: 1.25em; 
+    margin-top: 1.25em; /* Добавлен отступ сверху */
 }
 
 .time-slots-compact { 
@@ -349,6 +350,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .selected-info { 
     text-align: center; 
+    margin-top: 1.25em; 
     font-size: 1.125em; 
     color: var(--text-primary); 
     font-weight: 600; 
@@ -404,6 +406,13 @@ input[type="range"]::-webkit-slider-thumb {
 .summary-details {
     color: var(--text-secondary);
     line-height: 1.5;
+    font-size: 1em;
+}
+
+.summary-datetime {
+    color: var(--accent-blue);
+    font-weight: 600;
+    margin: 0.5em 0;
     font-size: 1em;
 }
 
@@ -683,6 +692,12 @@ input[type="range"]::-webkit-slider-thumb {
         margin-top: 1.5em;
     }
 
+    /* Отображение выбранной даты и времени в мобильной версии */
+    .step-right .selected-info {
+        display: block !important;
+        margin-bottom: 1.25em;
+    }
+
     .step-layout {
         flex-direction: column-reverse;
     }
@@ -801,23 +816,6 @@ input[type="range"]::-webkit-slider-thumb {
         padding: 0.6em 0.4em;
     }
 }
-
-/* Стили для блока даты и времени внутри калькуляции */
-.date-time-in-summary {
-    text-align: center;
-    margin-bottom: 1.25em;
-    padding: 0.875em;
-    background: rgba(0, 163, 255, 0.1);
-    border-radius: var(--border-radius-sm);
-    border: 0.125em solid rgba(0, 163, 255, 0.3);
-    font-size: 1em;
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.date-time-in-summary.empty {
-    display: none;
-}
     </style>
 </head>
 <body>
@@ -903,11 +901,12 @@ input[type="range"]::-webkit-slider-thumb {
                 </div>
 
                 <div class="step-right">
+                    <div class="selected-info" id="step1DateTimeDisplay" style="display: none;"></div>
                     <div class="price-card">
-                        <div class="date-time-in-summary empty" id="step1DateTimeDisplay"></div>
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step1SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step1SummaryDetails">1 Person × 1 Day</div>
+                            <div class="summary-datetime" id="step1DateTimeText"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -965,11 +964,12 @@ input[type="range"]::-webkit-slider-thumb {
                 </div>
 
                 <div class="step-right">
+                    <div class="selected-info" id="step2DateTimeDisplay" style="display: none;"></div>
                     <div class="price-card">
-                        <div class="date-time-in-summary empty" id="step2DateTimeDisplay"></div>
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step2SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step2SummaryDetails">1 Person × 1 Day</div>
+                            <div class="summary-datetime" id="step2DateTimeText"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -1042,11 +1042,12 @@ input[type="range"]::-webkit-slider-thumb {
                 </div>
 
                 <div class="step-right">
+                    <div class="selected-info" id="step3DateTimeDisplay" style="margin-bottom: 1.25em;"></div>
                     <div class="price-card">
-                        <div class="date-time-in-summary empty" id="step3DateTimeDisplay"></div>
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step3SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step3SummaryDetails">1 Person × 1 Day</div>
+                            <div class="summary-datetime" id="step3DateTimeText"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -1278,7 +1279,12 @@ input[type="range"]::-webkit-slider-thumb {
 
             document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
             document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
-            document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
+            document.getElementById('backToStep1').addEventListener('click', () => {
+                // Сбрасываем выбранную дату и время при возврате на первый шаг
+                State.selectedDate = null;
+                State.selectedTime = null;
+                showStep(1);
+            });
             document.getElementById('backToStep2').addEventListener('click', () => showStep(2));
             document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
             document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
@@ -1303,8 +1309,10 @@ input[type="range"]::-webkit-slider-thumb {
             document.getElementById('skiSnowboardDays').style.display = isKids ? 'none' : 'block';
             document.getElementById('kidsDays').style.display = isKids ? 'block' : 'none';
             
-            // Обновляем валидацию возраста и skill level
+            // Обновляем валидацию возраста
             updateAgeValidation();
+            
+            // Обновляем опции Skill Level для Kids Ski Club
             updateSkillLevelOptions();
         }
 
@@ -1327,30 +1335,35 @@ input[type="range"]::-webkit-slider-thumb {
 
         function updateSkillLevelOptions() {
             const skillLevelSelect = document.getElementById('skillLevel');
-            const currentValue = skillLevelSelect.value;
-            
-            // Сохраняем текущее значение
-            skillLevelSelect.innerHTML = '<option value="">Skill Level *</option>';
             
             if (State.currentSport === 'kids') {
-                // Для Kids Ski Club только Beginner и Intermediate
-                skillLevelSelect.innerHTML += `
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                `;
+                // Сохраняем текущее значение
+                const currentValue = skillLevelSelect.value;
+                
+                // Удаляем опции First Time и Advanced
+                const firstTimeOption = skillLevelSelect.querySelector('option[value="first-time"]');
+                const advancedOption = skillLevelSelect.querySelector('option[value="advanced"]');
+                
+                if (firstTimeOption) firstTimeOption.style.display = 'none';
+                if (advancedOption) advancedOption.style.display = 'none';
+                
+                // Показываем только Beginner и Intermediate
+                const beginnerOption = skillLevelSelect.querySelector('option[value="beginner"]');
+                const intermediateOption = skillLevelSelect.querySelector('option[value="intermediate"]');
+                
+                if (beginnerOption) beginnerOption.style.display = '';
+                if (intermediateOption) intermediateOption.style.display = '';
+                
+                // Если текущее значение недопустимо, сбрасываем выбор
+                if (currentValue === 'first-time' || currentValue === 'advanced') {
+                    skillLevelSelect.value = '';
+                }
             } else {
-                // Для других занятий все варианты
-                skillLevelSelect.innerHTML += `
-                    <option value="first-time">First Time</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                `;
-            }
-            
-            // Восстанавливаем предыдущее значение, если оно допустимо
-            if (currentValue && skillLevelSelect.querySelector(`option[value="${currentValue}"]`)) {
-                skillLevelSelect.value = currentValue;
+                // Показываем все опции
+                const allOptions = skillLevelSelect.querySelectorAll('option');
+                allOptions.forEach(option => {
+                    option.style.display = '';
+                });
             }
         }
 
@@ -1376,6 +1389,7 @@ input[type="range"]::-webkit-slider-thumb {
                 if (detailsElement) detailsElement.textContent = summary.details;
             }
             
+            updateDateTimeText();
             updatePrices();
         }
 
@@ -1385,10 +1399,25 @@ input[type="range"]::-webkit-slider-thumb {
             
             if (selectedDateTime !== 'Please select a date first') {
                 dateTimeElement.textContent = selectedDateTime;
-                dateTimeElement.classList.remove('empty');
+                dateTimeElement.style.display = 'block';
             } else {
-                dateTimeElement.textContent = '';
-                dateTimeElement.classList.add('empty');
+                dateTimeElement.style.display = 'none';
+            }
+        }
+
+        function updateDateTimeText() {
+            const selectedDateTime = document.getElementById('selectedDateTime').textContent;
+            
+            for (let i = 1; i <= 3; i++) {
+                const dateTimeTextElement = document.getElementById(`step${i}DateTimeText`);
+                if (dateTimeTextElement) {
+                    if (selectedDateTime !== 'Please select a date first') {
+                        dateTimeTextElement.textContent = selectedDateTime;
+                        dateTimeTextElement.style.display = 'block';
+                    } else {
+                        dateTimeTextElement.style.display = 'none';
+                    }
+                }
             }
         }
 
@@ -1523,7 +1552,7 @@ input[type="range"]::-webkit-slider-thumb {
                     document.getElementById('nextToStep3').disabled = !State.selectedTime;
                     updateDateTimeDisplay(1);
                     updateDateTimeDisplay(2);
-                    updateDateTimeDisplay(3);
+                    updateDateTimeText();
                 });
             }
             
@@ -1577,7 +1606,7 @@ input[type="range"]::-webkit-slider-thumb {
                 document.getElementById('nextToStep3').disabled = false;
                 updateDateTimeDisplay(1);
                 updateDateTimeDisplay(2);
-                updateDateTimeDisplay(3);
+                updateDateTimeText();
             });
             
             document.getElementById('timeSlots').appendChild(slot);
