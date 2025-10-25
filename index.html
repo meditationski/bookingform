@@ -312,7 +312,6 @@ input[type="range"]::-webkit-slider-thumb {
     background: var(--bg-secondary); 
     border-radius: var(--border-radius-sm); 
     padding: 1.25em; 
-    margin-top: 1.25em; /* Добавлен отступ сверху */
 }
 
 .time-slots-compact { 
@@ -346,18 +345,6 @@ input[type="range"]::-webkit-slider-thumb {
 
 .time-slot.selected { 
     background: var(--gradient-primary); 
-}
-
-.selected-info { 
-    text-align: center; 
-    margin-top: 1.25em; 
-    font-size: 1.125em; 
-    color: var(--text-primary); 
-    font-weight: 600; 
-    padding: 1.125em;
-    background: rgba(0, 163, 255, 0.1);
-    border-radius: var(--border-radius-sm);
-    border: 0.125em solid rgba(0, 163, 255, 0.3);
 }
 
 .step3-form {
@@ -407,13 +394,18 @@ input[type="range"]::-webkit-slider-thumb {
     color: var(--text-secondary);
     line-height: 1.5;
     font-size: 1em;
+    margin-bottom: 0.75em;
 }
 
-.summary-datetime {
+.summary-date-time {
     color: var(--accent-blue);
     font-weight: 600;
-    margin: 0.5em 0;
     font-size: 1em;
+    margin-bottom: 1em;
+    padding: 0.75em;
+    background: rgba(0, 163, 255, 0.1);
+    border-radius: var(--border-radius-sm);
+    text-align: center;
 }
 
 .price-row { 
@@ -692,12 +684,6 @@ input[type="range"]::-webkit-slider-thumb {
         margin-top: 1.5em;
     }
 
-    /* Отображение выбранной даты и времени в мобильной версии */
-    .step-right .selected-info {
-        display: block !important;
-        margin-bottom: 1.25em;
-    }
-
     .step-layout {
         flex-direction: column-reverse;
     }
@@ -901,12 +887,11 @@ input[type="range"]::-webkit-slider-thumb {
                 </div>
 
                 <div class="step-right">
-                    <div class="selected-info" id="step1DateTimeDisplay" style="display: none;"></div>
                     <div class="price-card">
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step1SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step1SummaryDetails">1 Person × 1 Day</div>
-                            <div class="summary-datetime" id="step1DateTimeText"></div>
+                            <div class="summary-date-time" id="step1DateTimeDisplay" style="display: none;"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -958,18 +943,16 @@ input[type="range"]::-webkit-slider-thumb {
                         
                         <div class="time-selection">
                             <div class="time-slots-compact" id="timeSlots"></div>
-                            <div class="selected-info" id="selectedDateTime">Please select a date first</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="step-right">
-                    <div class="selected-info" id="step2DateTimeDisplay" style="display: none;"></div>
                     <div class="price-card">
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step2SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step2SummaryDetails">1 Person × 1 Day</div>
-                            <div class="summary-datetime" id="step2DateTimeText"></div>
+                            <div class="summary-date-time" id="step2DateTimeDisplay" style="display: none;"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -1042,12 +1025,11 @@ input[type="range"]::-webkit-slider-thumb {
                 </div>
 
                 <div class="step-right">
-                    <div class="selected-info" id="step3DateTimeDisplay" style="margin-bottom: 1.25em;"></div>
                     <div class="price-card">
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step3SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step3SummaryDetails">1 Person × 1 Day</div>
-                            <div class="summary-datetime" id="step3DateTimeText"></div>
+                            <div class="summary-date-time" id="step3DateTimeDisplay" style="display: none;"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -1280,7 +1262,7 @@ input[type="range"]::-webkit-slider-thumb {
             document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
             document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
             document.getElementById('backToStep1').addEventListener('click', () => {
-                // Сбрасываем выбранную дату и время при возврате на первый шаг
+                // Сбрасываем выбранную дату и время при возврате на шаг 1
                 State.selectedDate = null;
                 State.selectedTime = null;
                 showStep(1);
@@ -1309,10 +1291,8 @@ input[type="range"]::-webkit-slider-thumb {
             document.getElementById('skiSnowboardDays').style.display = isKids ? 'none' : 'block';
             document.getElementById('kidsDays').style.display = isKids ? 'block' : 'none';
             
-            // Обновляем валидацию возраста
+            // Обновляем валидацию возраста и skill level
             updateAgeValidation();
-            
-            // Обновляем опции Skill Level для Kids Ski Club
             updateSkillLevelOptions();
         }
 
@@ -1335,35 +1315,30 @@ input[type="range"]::-webkit-slider-thumb {
 
         function updateSkillLevelOptions() {
             const skillLevelSelect = document.getElementById('skillLevel');
+            const currentValue = skillLevelSelect.value;
+            
+            // Сохраняем текущее значение
+            skillLevelSelect.innerHTML = '<option value="">Skill Level *</option>';
             
             if (State.currentSport === 'kids') {
-                // Сохраняем текущее значение
-                const currentValue = skillLevelSelect.value;
-                
-                // Удаляем опции First Time и Advanced
-                const firstTimeOption = skillLevelSelect.querySelector('option[value="first-time"]');
-                const advancedOption = skillLevelSelect.querySelector('option[value="advanced"]');
-                
-                if (firstTimeOption) firstTimeOption.style.display = 'none';
-                if (advancedOption) advancedOption.style.display = 'none';
-                
-                // Показываем только Beginner и Intermediate
-                const beginnerOption = skillLevelSelect.querySelector('option[value="beginner"]');
-                const intermediateOption = skillLevelSelect.querySelector('option[value="intermediate"]');
-                
-                if (beginnerOption) beginnerOption.style.display = '';
-                if (intermediateOption) intermediateOption.style.display = '';
-                
-                // Если текущее значение недопустимо, сбрасываем выбор
-                if (currentValue === 'first-time' || currentValue === 'advanced') {
-                    skillLevelSelect.value = '';
-                }
+                // Для Kids Ski Club только Beginner и Intermediate
+                skillLevelSelect.innerHTML += `
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                `;
             } else {
-                // Показываем все опции
-                const allOptions = skillLevelSelect.querySelectorAll('option');
-                allOptions.forEach(option => {
-                    option.style.display = '';
-                });
+                // Для других занятий все опции
+                skillLevelSelect.innerHTML += `
+                    <option value="first-time">First Time</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                `;
+            }
+            
+            // Восстанавливаем выбранное значение, если оно допустимо
+            if (currentValue && skillLevelSelect.querySelector(`option[value="${currentValue}"]`)) {
+                skillLevelSelect.value = currentValue;
             }
         }
 
@@ -1389,35 +1364,23 @@ input[type="range"]::-webkit-slider-thumb {
                 if (detailsElement) detailsElement.textContent = summary.details;
             }
             
-            updateDateTimeText();
             updatePrices();
+            updateDateTimeDisplay(1);
+            updateDateTimeDisplay(2);
+            updateDateTimeDisplay(3);
         }
 
         function updateDateTimeDisplay(step) {
             const dateTimeElement = document.getElementById(`step${step}DateTimeDisplay`);
-            const selectedDateTime = document.getElementById('selectedDateTime').textContent;
             
-            if (selectedDateTime !== 'Please select a date first') {
-                dateTimeElement.textContent = selectedDateTime;
+            if (State.selectedDate && State.selectedTime) {
+                const dateStr = State.selectedDate.toLocaleDateString('en-US', {
+                    month: 'long', day: 'numeric', year: 'numeric'
+                });
+                dateTimeElement.textContent = `${dateStr} at ${State.selectedTime}`;
                 dateTimeElement.style.display = 'block';
             } else {
                 dateTimeElement.style.display = 'none';
-            }
-        }
-
-        function updateDateTimeText() {
-            const selectedDateTime = document.getElementById('selectedDateTime').textContent;
-            
-            for (let i = 1; i <= 3; i++) {
-                const dateTimeTextElement = document.getElementById(`step${i}DateTimeText`);
-                if (dateTimeTextElement) {
-                    if (selectedDateTime !== 'Please select a date first') {
-                        dateTimeTextElement.textContent = selectedDateTime;
-                        dateTimeTextElement.style.display = 'block';
-                    } else {
-                        dateTimeTextElement.style.display = 'none';
-                    }
-                }
             }
         }
 
@@ -1548,11 +1511,8 @@ input[type="range"]::-webkit-slider-thumb {
                     State.selectedDate = date;
                     renderCalendar();
                     updateTimeSlots();
-                    updateSelectedDateTime();
+                    updateAllDisplays();
                     document.getElementById('nextToStep3').disabled = !State.selectedTime;
-                    updateDateTimeDisplay(1);
-                    updateDateTimeDisplay(2);
-                    updateDateTimeText();
                 });
             }
             
@@ -1602,26 +1562,11 @@ input[type="range"]::-webkit-slider-thumb {
                 document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
                 State.selectedTime = time;
                 this.classList.add('selected');
-                updateSelectedDateTime();
+                updateAllDisplays();
                 document.getElementById('nextToStep3').disabled = false;
-                updateDateTimeDisplay(1);
-                updateDateTimeDisplay(2);
-                updateDateTimeText();
             });
             
             document.getElementById('timeSlots').appendChild(slot);
-        }
-
-        function updateSelectedDateTime() {
-            const selectedDateTimeElement = document.getElementById('selectedDateTime');
-            if (State.selectedDate && State.selectedTime) {
-                const dateStr = State.selectedDate.toLocaleDateString('en-US', {
-                    month: 'long', day: 'numeric', year: 'numeric'
-                });
-                selectedDateTimeElement.textContent = `${dateStr} at ${State.selectedTime}`;
-            } else {
-                selectedDateTimeElement.textContent = 'Please select a date first';
-            }
         }
 
         function validateForm() {
@@ -1695,7 +1640,9 @@ input[type="range"]::-webkit-slider-thumb {
                 subject: `Booking: ${summary.title} with ${summary.details}`,
                 title: summary.title,
                 details: summary.details,
-                dateTime: document.getElementById('selectedDateTime').textContent,
+                dateTime: State.selectedDate && State.selectedTime ? 
+                    `${State.selectedDate.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})} at ${State.selectedTime}` : 
+                    'Not selected',
                 fullName: document.getElementById('fullName').value,
                 phone: window.phoneInput.getNumber(),
                 email: document.getElementById('email').value,
@@ -1753,6 +1700,8 @@ Google Calendar Link: ${generateCalendarLink(formData)}
         }
 
         function generateCalendarLink(data) {
+            if (!State.selectedDate || !State.selectedTime) return '';
+            
             const start = new Date(State.selectedDate);
             const [hours] = State.selectedTime.split(':');
             start.setHours(parseInt(hours), 0, 0);
