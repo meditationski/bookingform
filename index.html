@@ -612,7 +612,6 @@ input[type="range"]::-webkit-slider-thumb {
     padding-left: 5em !important; 
 }
 
-/* Мобильная версия */
 @media (max-width: 767px) {
     .container {
         padding: 0.5em;
@@ -702,7 +701,6 @@ input[type="range"]::-webkit-slider-thumb {
         display: block;
     }
 
-    /* Исправление календаря для мобильных */
     .calendar-large {
         padding: 0.75em;
         overflow: hidden;
@@ -731,7 +729,6 @@ input[type="range"]::-webkit-slider-thumb {
         font-size: 1.125em;
     }
     
-    /* Уменьшение слайдеров в мобильной версии */
     .slider-container {
         padding: 0.5em;
     }
@@ -755,7 +752,6 @@ input[type="range"]::-webkit-slider-thumb {
         font-size: 0.75em;
     }
     
-    /* Адаптация вкладок для мобильной версии */
     .tabs {
         flex-wrap: wrap;
     }
@@ -783,7 +779,6 @@ input[type="range"]::-webkit-slider-thumb {
         min-width: 140px;
     }
     
-    /* Дополнительные исправления для очень маленьких экранов */
     .calendar-large {
         padding: 0.5em;
     }
@@ -819,7 +814,6 @@ input[type="range"]::-webkit-slider-thumb {
                             </div>
                         </div>
                         
-                        <!-- Для Ski и Snowboard -->
                         <div class="form-group" id="skiSnowboardDuration">
                             <select class="custom-select" id="duration">
                                 <option value="2">2 Hours Lesson - $100</option>
@@ -828,7 +822,6 @@ input[type="range"]::-webkit-slider-thumb {
                             </select>
                         </div>
                         
-                        <!-- Для Kids Ski Club -->
                         <div class="form-group" id="kidsDuration" style="display: none;">
                             <select class="custom-select" id="kidsDurationSelect">
                                 <option value="full">Full Day (10:30 - 16:30) - $130</option>
@@ -837,7 +830,6 @@ input[type="range"]::-webkit-slider-thumb {
                             </select>
                         </div>
                         
-                        <!-- Для Ski и Snowboard -->
                         <div class="form-group" id="skiSnowboardParticipants">
                             <div class="slider-container">
                                 <div class="slider-value" id="participantsValue">1 Person</div>
@@ -848,7 +840,6 @@ input[type="range"]::-webkit-slider-thumb {
                             </div>
                         </div>
                         
-                        <!-- Для Kids Ski Club -->
                         <div class="form-group" id="kidsParticipants" style="display: none;">
                             <div class="slider-container">
                                 <div class="slider-value" id="kidsValue">1 Kid</div>
@@ -860,7 +851,6 @@ input[type="range"]::-webkit-slider-thumb {
                             </div>
                         </div>
                         
-                        <!-- Для Ski и Snowboard -->
                         <div class="form-group" id="skiSnowboardDays">
                             <div class="slider-container">
                                 <div class="slider-value" id="daysValue">1 Day</div>
@@ -872,7 +862,6 @@ input[type="range"]::-webkit-slider-thumb {
                             </div>
                         </div>
                         
-                        <!-- Для Kids Ski Club -->
                         <div class="form-group" id="kidsDays" style="display: none;">
                             <div class="slider-container">
                                 <div class="slider-value" id="kidsDaysValue">1 Day</div>
@@ -1015,7 +1004,7 @@ input[type="range"]::-webkit-slider-thumb {
                                 </select>
                                 <div class="error" id="skillLevelError">Please select your skill level</div>
                             </div>
-                            <div class="form-field"></div> <!-- Empty cell for grid alignment -->
+                            <div class="form-field"></div>
                         </div>
 
                         <div class="full-width">
@@ -1060,7 +1049,7 @@ input[type="range"]::-webkit-slider-thumb {
             <div class="success-screen">
                 <div class="success-icon">✅</div>
                 <h1 class="success-title">Booking Confirmed!</h1>
-                <p class="success-message">Thank you for your booking! Your lesson has been scheduled! We're excited to see you on the slopes!</p>
+                <p class="success-message">Thank you для your booking! Your lesson has been scheduled! We're excited to see you on the slopes!</p>
             </div>
         </div>
 
@@ -1119,7 +1108,7 @@ input[type="range"]::-webkit-slider-thumb {
                     const daysText = days > 1 ? `${days} Days` : '1 Day';
                     
                     return {
-                        title: `${durationText} Kids Ski Club`,
+                        title: `Kids Ski Club ${durationText}`,
                         details: `${peopleText} × ${daysText}`
                     };
                 } else {
@@ -1229,7 +1218,6 @@ input[type="range"]::-webkit-slider-thumb {
                 });
             });
 
-            // Обработчики для Ski/Snowboard
             ['duration', 'participants', 'days'].forEach(id => {
                 document.getElementById(id).addEventListener('input', () => {
                     if (id === 'participants') {
@@ -1244,7 +1232,6 @@ input[type="range"]::-webkit-slider-thumb {
                 });
             });
 
-            // Обработчики для Kids Ski Club
             document.getElementById('kidsDurationSelect').addEventListener('change', updateAllDisplays);
             
             document.getElementById('kids').addEventListener('input', () => {
@@ -1262,7 +1249,6 @@ input[type="range"]::-webkit-slider-thumb {
             document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
             document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
             document.getElementById('backToStep1').addEventListener('click', () => {
-                // Сбрасываем выбранную дату и время при возврате на шаг 1
                 State.selectedDate = null;
                 State.selectedTime = null;
                 showStep(1);
@@ -1281,7 +1267,6 @@ input[type="range"]::-webkit-slider-thumb {
         function updateSportControls() {
             const isKids = State.currentSport === 'kids';
             
-            // Показываем/скрываем соответствующие элементы управления
             document.getElementById('skiSnowboardDuration').style.display = isKids ? 'none' : 'block';
             document.getElementById('kidsDuration').style.display = isKids ? 'block' : 'none';
             
@@ -1291,7 +1276,6 @@ input[type="range"]::-webkit-slider-thumb {
             document.getElementById('skiSnowboardDays').style.display = isKids ? 'none' : 'block';
             document.getElementById('kidsDays').style.display = isKids ? 'block' : 'none';
             
-            // Обновляем валидацию возраста и skill level
             updateAgeValidation();
             updateSkillLevelOptions();
         }
@@ -1317,17 +1301,14 @@ input[type="range"]::-webkit-slider-thumb {
             const skillLevelSelect = document.getElementById('skillLevel');
             const currentValue = skillLevelSelect.value;
             
-            // Сохраняем текущее значение
             skillLevelSelect.innerHTML = '<option value="">Skill Level *</option>';
             
             if (State.currentSport === 'kids') {
-                // Для Kids Ski Club только Beginner и Intermediate
                 skillLevelSelect.innerHTML += `
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
                 `;
             } else {
-                // Для других занятий все опции
                 skillLevelSelect.innerHTML += `
                     <option value="first-time">First Time</option>
                     <option value="beginner">Beginner</option>
@@ -1336,7 +1317,6 @@ input[type="range"]::-webkit-slider-thumb {
                 `;
             }
             
-            // Восстанавливаем выбранное значение, если оно допустимо
             if (currentValue && skillLevelSelect.querySelector(`option[value="${currentValue}"]`)) {
                 skillLevelSelect.value = currentValue;
             }
@@ -1433,7 +1413,6 @@ input[type="range"]::-webkit-slider-thumb {
                 basePrice = CONFIG.prices[duration];
             }
             
-            // Для Kids Ski Club цена просто умножается на количество детей
             const pricePerDay = State.currentSport === 'kids' ? 
                 basePrice * people : 
                 basePrice + (people - 1) * 40;
@@ -1534,7 +1513,6 @@ input[type="range"]::-webkit-slider-thumb {
                 return;
             }
 
-            // Для Kids Ski Club всегда показываем 10:30
             if (State.currentSport === 'kids') {
                 createTimeSlot('10:30', '10:30');
             } else {
@@ -1604,7 +1582,6 @@ input[type="range"]::-webkit-slider-thumb {
                 hideError('ageError');
             }
             
-            // Для Kids Ski Club ограничиваем уровни навыков
             const skillLevel = document.getElementById('skillLevel');
             if (!skillLevel.value) {
                 showError('skillLevelError', 'Please select your skill level');
@@ -1714,13 +1691,12 @@ Google Calendar Link: ${generateCalendarLink(formData)}
                 duration = document.getElementById('kidsDurationSelect').value;
                 days = parseInt(document.getElementById('kidsDaysSlider').value);
                 
-                // Устанавливаем продолжительность для Kids Ski Club
                 if (duration === 'full') {
-                    end.setHours(start.getHours() + 6); // 10:30-16:30
+                    end.setHours(start.getHours() + 6);
                 } else if (duration === 'half-lunch') {
-                    end.setHours(start.getHours() + 4); // 10:30-14:30
+                    end.setHours(start.getHours() + 4);
                 } else {
-                    end.setHours(start.getHours() + 3); // 10:30-13:30
+                    end.setHours(start.getHours() + 3);
                 }
             } else {
                 duration = document.getElementById('duration').value;
