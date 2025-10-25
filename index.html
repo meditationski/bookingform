@@ -87,6 +87,9 @@ body {
     cursor: pointer; 
     font-size: 1em;
     transition: background-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .tab.active { 
@@ -630,6 +633,17 @@ input[type="range"]::-webkit-slider-thumb {
         margin-bottom: 0.75em;
     }
     
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab {
+        flex: 1 1 calc(33.333% - 0.5em);
+        min-width: 0;
+        font-size: 0.85em;
+        padding: 0.75em 0.5em;
+    }
+    
     .btn {
         padding: 1.125em 1.5em;
         font-size: 1em;
@@ -781,28 +795,39 @@ input[type="range"]::-webkit-slider-thumb {
                             </div>
                         </div>
                         
-                        <div class="form-group" id="durationGroup">
-                            <!-- Regular duration options -->
+                        <div class="form-group" id="regular-duration-container">
                             <select class="custom-select" id="duration">
                                 <option value="2">2 Hours Lesson - $100</option>
                                 <option value="3">3 Hours Lesson - $140</option>
                                 <option value="full">Full Day Lesson - $250</option>
                             </select>
-                            
-                            <!-- Kids Ski Club duration options -->
-                            <select class="custom-select" id="kidsDuration" style="display: none;">
+                        </div>
+                        
+                        <div class="form-group" id="kids-duration-container" style="display: none;">
+                            <select class="custom-select" id="kidsDuration">
                                 <option value="full">Full Day (10:30 - 16:30) - $130</option>
                                 <option value="half-lunch">Half Day With Lunch (10:30 - 14:30) - $90</option>
-                                <option value="half-no-lunch">Half Day No Lunch (10:30 - 13:30) - $70</option>
+                                <option value="half-nolunch">Half Day No Lunch (10:30 - 13:30) - $70</option>
                             </select>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group" id="regular-participants-container">
                             <div class="slider-container">
                                 <div class="slider-value" id="participantsValue">1 Person</div>
                                 <input type="range" id="participants" min="1" max="5" value="1" step="1">
                                 <div class="slider-labels">
                                     <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="kids-participants-container" style="display: none;">
+                            <div class="slider-container">
+                                <div class="slider-value" id="kidsValue">1 Kid</div>
+                                <input type="range" id="kids" min="1" max="8" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                    <span>6</span><span>7</span><span>8</span>
                                 </div>
                             </div>
                         </div>
@@ -1010,12 +1035,21 @@ input[type="range"]::-webkit-slider-thumb {
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         const CONFIG = {
-            prices: {2: 100, 3: 140, full: 250},
-            kidsPrices: {full: 130, 'half-lunch': 90, 'half-no-lunch': 70},
+            prices: {
+                2: 100, 
+                3: 140, 
+                full: 250,
+                kids: {
+                    'full': 130,
+                    'half-lunch': 90,
+                    'half-nolunch': 70
+                }
+            },
             minDate: new Date(2025, 11, 15),
             maxDate: new Date(2026, 3, 30),
             resortCloseHour: 17,
-            lessonStartHour: 10
+            lessonStartHour: 10,
+            kidsStartHour: 10.5 // 10:30
         };
 
         const State = {
@@ -1026,40 +1060,40 @@ input[type="range"]::-webkit-slider-thumb {
             init() { this.currentMonth.setDate(1); },
             getBookingSummary() {
                 const sport = document.querySelector('.tab.active').dataset.sport;
-                let duration, durationText, peopleText, daysText;
                 
                 if (sport === 'kids') {
-                    duration = document.getElementById('kidsDuration').value;
-                    const people = document.getElementById('participants').value;
+                    const duration = document.getElementById('kidsDuration').value;
+                    const kids = document.getElementById('kids').value;
                     const days = document.getElementById('days').value;
                     
-                    // Kids duration texts
-                    const kidsDurationTexts = {
+                    const durationText = {
                         'full': 'Full Day Kids Ski Club',
                         'half-lunch': 'Half Day Kids Ski Club With Lunch',
-                        'half-no-lunch': 'Half Day Kids Ski Club No Lunch'
-                    };
+                        'half-nolunch': 'Half Day Kids Ski Club No Lunch'
+                    }[duration];
                     
-                    durationText = kidsDurationTexts[duration];
-                    peopleText = people > 1 ? `${people} Kids` : '1 Kid';
-                    daysText = days > 1 ? `${days} Days` : '1 Day';
+                    const kidsText = kids > 1 ? `${kids} Kids` : '1 Kid';
+                    const daysText = days > 1 ? `${days} Days` : '1 Day';
+                    
+                    return {
+                        title: durationText,
+                        details: `${kidsText} × ${daysText}`
+                    };
                 } else {
-                    duration = document.getElementById('duration').value;
+                    const duration = document.getElementById('duration').value;
                     const people = document.getElementById('participants').value;
                     const days = document.getElementById('days').value;
                     
-                    const durationTexts = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'};
-                    durationText = durationTexts[duration];
-                    peopleText = people > 1 ? `${people} Persons` : '1 Person';
-                    daysText = days > 1 ? `${days} Days` : '1 Day';
+                    const durationText = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'}[duration];
+                    const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
+                    const peopleText = people > 1 ? `${people} Persons` : '1 Person';
+                    const daysText = days > 1 ? `${days} Days` : '1 Day';
+                    
+                    return {
+                        title: `${durationText} ${sportText} Lesson`,
+                        details: `${peopleText} × ${daysText}`
+                    };
                 }
-                
-                const sportText = sport === 'kids' ? '' : sport.charAt(0).toUpperCase() + sport.slice(1) + ' Lesson';
-                
-                return {
-                    title: sport === 'kids' ? durationText : `${durationText} ${sportText}`,
-                    details: `${peopleText} × ${daysText}`
-                };
             }
         };
 
@@ -1147,36 +1181,39 @@ input[type="range"]::-webkit-slider-thumb {
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
-                    // Show/hide appropriate duration selectors
-                    const isKids = this.dataset.sport === 'kids';
-                    document.getElementById('duration').style.display = isKids ? 'none' : 'block';
-                    document.getElementById('kidsDuration').style.display = isKids ? 'block' : 'none';
-                    
-                    // Update participants label for kids
-                    const participantsValue = document.getElementById('participantsValue');
-                    if (isKids) {
-                        participantsValue.textContent = '1 Kid';
-                        document.getElementById('participants').min = 1;
-                        document.getElementById('participants').max = 8;
-                        updateSliderLabels('participants', 1, 8);
+                    // Show/hide appropriate controls based on selected sport
+                    const sport = this.dataset.sport;
+                    if (sport === 'kids') {
+                        document.getElementById('regular-duration-container').style.display = 'none';
+                        document.getElementById('kids-duration-container').style.display = 'block';
+                        document.getElementById('regular-participants-container').style.display = 'none';
+                        document.getElementById('kids-participants-container').style.display = 'block';
+                        
+                        // Update skill level options for kids
+                        updateSkillLevelForKids();
                     } else {
-                        participantsValue.textContent = '1 Person';
-                        document.getElementById('participants').min = 1;
-                        document.getElementById('participants').max = 5;
-                        updateSliderLabels('participants', 1, 5);
+                        document.getElementById('regular-duration-container').style.display = 'block';
+                        document.getElementById('kids-duration-container').style.display = 'none';
+                        document.getElementById('regular-participants-container').style.display = 'block';
+                        document.getElementById('kids-participants-container').style.display = 'none';
+                        
+                        // Restore skill level options for adults
+                        restoreSkillLevelOptions();
                     }
                     
                     updateAllDisplays();
                 });
             });
 
-            ['duration', 'kidsDuration', 'participants', 'days'].forEach(id => {
+            ['duration', 'kidsDuration', 'participants', 'kids', 'days'].forEach(id => {
                 document.getElementById(id).addEventListener('input', () => {
                     if (id === 'participants') {
                         const val = document.getElementById('participants').value;
-                        const isKids = document.querySelector('.tab.active').dataset.sport === 'kids';
-                        const label = isKids ? 'Kid' : 'Person';
-                        document.getElementById('participantsValue').textContent = val + ' ' + label + (val > 1 ? 's' : '');
+                        document.getElementById('participantsValue').textContent = val + ' Person' + (val > 1 ? 's' : '');
+                    }
+                    if (id === 'kids') {
+                        const val = document.getElementById('kids').value;
+                        document.getElementById('kidsValue').textContent = val + ' Kid' + (val > 1 ? 's' : '');
                     }
                     if (id === 'days') {
                         const val = document.getElementById('days').value;
@@ -1200,16 +1237,42 @@ input[type="range"]::-webkit-slider-thumb {
             });
         }
 
-        function updateSliderLabels(sliderId, min, max) {
-            const slider = document.getElementById(sliderId);
-            const labelsContainer = slider.parentNode.querySelector('.slider-labels');
-            labelsContainer.innerHTML = '';
+        function updateSkillLevelForKids() {
+            const skillLevelSelect = document.getElementById('skillLevel');
+            skillLevelSelect.innerHTML = '';
             
-            for (let i = min; i <= max; i++) {
-                const span = document.createElement('span');
-                span.textContent = i;
-                labelsContainer.appendChild(span);
-            }
+            const options = [
+                {value: '', text: 'Skill Level *'},
+                {value: 'beginner', text: 'Beginner'},
+                {value: 'intermediate', text: 'Intermediate'}
+            ];
+            
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.text;
+                skillLevelSelect.appendChild(optionElement);
+            });
+        }
+
+        function restoreSkillLevelOptions() {
+            const skillLevelSelect = document.getElementById('skillLevel');
+            skillLevelSelect.innerHTML = '';
+            
+            const options = [
+                {value: '', text: 'Skill Level *'},
+                {value: 'first-time', text: 'First Time'},
+                {value: 'beginner', text: 'Beginner'},
+                {value: 'intermediate', text: 'Intermediate'},
+                {value: 'advanced', text: 'Advanced'}
+            ];
+            
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.text;
+                skillLevelSelect.appendChild(optionElement);
+            });
         }
 
         function showStep(step) {
@@ -1285,39 +1348,58 @@ input[type="range"]::-webkit-slider-thumb {
 
         function calculatePrice() {
             const sport = document.querySelector('.tab.active').dataset.sport;
-            const people = parseInt(document.getElementById('participants').value);
-            const days = parseInt(document.getElementById('days').value);
             
-            let basePrice;
             if (sport === 'kids') {
                 const duration = document.getElementById('kidsDuration').value;
-                basePrice = CONFIG.kidsPrices[duration];
+                const kids = parseInt(document.getElementById('kids').value);
+                const days = parseInt(document.getElementById('days').value);
+                
+                const basePrice = CONFIG.prices.kids[duration];
+                const pricePerDay = basePrice * kids;
+                
+                let total = 0;
+                let maxDiscount = 0;
+                
+                for (let day = 1; day <= days; day++) {
+                    const discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                    total += pricePerDay * (1 - discount);
+                    if (discount > maxDiscount) maxDiscount = discount;
+                }
+                
+                total = Math.round(total);
+                const deposit = Math.round(total * 0.20);
+                const remaining = total - deposit;
+                
+                const discountText = maxDiscount > 0 ? 
+                    `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+                
+                return { total, deposit, remaining, discountText };
             } else {
                 const duration = document.getElementById('duration').value;
-                basePrice = CONFIG.prices[duration];
+                const people = parseInt(document.getElementById('participants').value);
+                const days = parseInt(document.getElementById('days').value);
+                
+                const basePrice = CONFIG.prices[duration];
+                const pricePerDay = basePrice + (people - 1) * 40;
+                
+                let total = 0;
+                let maxDiscount = 0;
+                
+                for (let day = 1; day <= days; day++) {
+                    const discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                    total += pricePerDay * (1 - discount);
+                    if (discount > maxDiscount) maxDiscount = discount;
+                }
+                
+                total = Math.round(total);
+                const deposit = Math.round(total * 0.20);
+                const remaining = total - deposit;
+                
+                const discountText = maxDiscount > 0 ? 
+                    `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+                
+                return { total, deposit, remaining, discountText };
             }
-            
-            // For kids, price is simply basePrice * people
-            // For regular lessons, additional people cost $40 extra per person
-            const pricePerDay = sport === 'kids' ? basePrice * people : basePrice + (people - 1) * 40;
-            
-            let total = 0;
-            let maxDiscount = 0;
-            
-            for (let day = 1; day <= days; day++) {
-                const discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
-                total += pricePerDay * (1 - discount);
-                if (discount > maxDiscount) maxDiscount = discount;
-            }
-            
-            total = Math.round(total);
-            const deposit = Math.round(total * 0.20);
-            const remaining = total - deposit;
-            
-            const discountText = maxDiscount > 0 ? 
-                `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
-            
-            return { total, deposit, remaining, discountText };
         }
 
         function generateBookingId() {
@@ -1400,11 +1482,10 @@ input[type="range"]::-webkit-slider-thumb {
 
             const sport = document.querySelector('.tab.active').dataset.sport;
             
-            // For Kids Ski Club, only show 10:30 time slot
             if (sport === 'kids') {
-                createTimeSlot('10:30', '10:30');
+                // Kids Ski Club always starts at 10:30
+                createTimeSlot('10:30', '10:30 (Kids Ski Club)');
             } else {
-                // For regular lessons, show time slots based on duration
                 const duration = document.getElementById('duration').value;
                 
                 if (duration === 'full') {
@@ -1473,19 +1554,19 @@ input[type="range"]::-webkit-slider-thumb {
                 hideError('emailError');
             }
             
+            const sport = document.querySelector('.tab.active').dataset.sport;
             const age = parseInt(document.getElementById('age').value);
-            const isKids = document.querySelector('.tab.active').dataset.sport === 'kids';
             
-            if (isKids) {
-                // For Kids Ski Club, age must be between 6 and 12
+            if (sport === 'kids') {
+                // Kids age validation (6-12)
                 if (!age || age < 6 || age > 12) {
-                    showError('ageError', 'Please enter a valid age for Kids Ski Club (6-12)');
+                    showError('ageError', 'Please enter a valid age for kids (6-12)');
                     isValid = false;
                 } else {
                     hideError('ageError');
                 }
             } else {
-                // For regular lessons, age must be between 5 and 80
+                // Regular age validation (5-80)
                 if (!age || age < 5 || age > 80) {
                     showError('ageError', 'Please enter a valid age (5-80)');
                     isValid = false;
@@ -1494,24 +1575,11 @@ input[type="range"]::-webkit-slider-thumb {
                 }
             }
             
-            // Skill level validation
-            const skillLevel = document.getElementById('skillLevel').value;
-            if (isKids) {
-                // For Kids Ski Club, only Beginner and Intermediate are allowed
-                if (!skillLevel || (skillLevel !== 'beginner' && skillLevel !== 'intermediate')) {
-                    showError('skillLevelError', 'For Kids Ski Club, please select Beginner or Intermediate');
-                    isValid = false;
-                } else {
-                    hideError('skillLevelError');
-                }
+            if (!document.getElementById('skillLevel').value) {
+                showError('skillLevelError', 'Please select your skill level');
+                isValid = false;
             } else {
-                // For regular lessons, all skill levels are allowed
-                if (!skillLevel) {
-                    showError('skillLevelError', 'Please select your skill level');
-                    isValid = false;
-                } else {
-                    hideError('skillLevelError');
-                }
+                hideError('skillLevelError');
             }
             
             return isValid;
@@ -1520,15 +1588,17 @@ input[type="range"]::-webkit-slider-thumb {
         function getFormData() {
             const summary = State.getBookingSummary();
             const sport = document.querySelector('.tab.active').dataset.sport;
-            let duration;
+            
+            let duration, people;
             
             if (sport === 'kids') {
                 duration = document.getElementById('kidsDuration').value;
+                people = document.getElementById('kids').value;
             } else {
                 duration = document.getElementById('duration').value;
+                people = document.getElementById('participants').value;
             }
             
-            const people = document.getElementById('participants').value;
             const days = document.getElementById('days').value;
             
             const price = calculatePrice();
@@ -1596,15 +1666,18 @@ Google Calendar Link: ${generateCalendarLink(formData)}
 
         function generateCalendarLink(data) {
             const start = new Date(State.selectedDate);
-            const [hours] = State.selectedTime.split(':');
-            start.setHours(parseInt(hours), 0, 0);
+            const [hours, minutes] = State.selectedTime.split(':');
+            start.setHours(parseInt(hours), parseInt(minutes || 0), 0);
             
             const end = new Date(start);
             const sport = document.querySelector('.tab.active').dataset.sport;
+            const duration = sport === 'kids' ? 
+                document.getElementById('kidsDuration').value : 
+                document.getElementById('duration').value;
             const days = parseInt(document.getElementById('days').value);
             
             if (sport === 'kids') {
-                const duration = document.getElementById('kidsDuration').value;
+                // Kids Ski Club durations
                 if (duration === 'full') {
                     end.setHours(16, 30, 0); // 10:30 - 16:30
                 } else if (duration === 'half-lunch') {
@@ -1613,8 +1686,12 @@ Google Calendar Link: ${generateCalendarLink(formData)}
                     end.setHours(13, 30, 0); // 10:30 - 13:30
                 }
             } else {
-                const duration = document.getElementById('duration').value;
-                end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
+                // Regular lessons
+                if (duration === 'full') {
+                    end.setHours(start.getHours() + 8); // Full day
+                } else {
+                    end.setHours(start.getHours() + parseInt(duration));
+                }
             }
             
             const details = `
