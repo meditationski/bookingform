@@ -1619,41 +1619,79 @@ input[type="range"]::-webkit-slider-thumb {
             return isValid;
         }
 
-        function getFormData() {
-            const summary = State.getBookingSummary();
-            let duration, people, days;
-            
-            if (State.currentSport === 'kids') {
-                duration = document.getElementById('kidsDurationSelect').value;
-                people = document.getElementById('kids').value;
-                days = document.getElementById('kidsDaysSlider').value;
-            } else {
-                duration = document.getElementById('duration').value;
-                people = document.getElementById('participants').value;
-                days = document.getElementById('days').value;
-            }
-            
-            const price = calculatePrice();
-            
-            return {
-                subject: `Booking: ${summary.title} with ${summary.details}`,
-                title: summary.title,
-                details: summary.details,
-                dateTime: State.selectedDate && State.selectedTime ? 
-                    `${State.selectedDate.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})} at ${State.selectedTime}` : 
-                    'Not selected',
-                fullName: document.getElementById('fullName').value,
-                phone: window.phoneInput.getNumber(),
-                email: document.getElementById('email').value,
-                age: document.getElementById('age').value,
-                skillLevel: document.getElementById('skillLevel').options[document.getElementById('skillLevel').selectedIndex].text,
-                additionalInfo: document.getElementById('additionalInfo').value,
-                total: price.total,
-                deposit: price.deposit,
-                remaining: price.remaining,
-                bookingId: generateBookingId()
-            };
-        }
+  function getFormData() {
+    const summary = State.getBookingSummary();
+    let duration, people, days, sport;
+    
+    if (State.currentSport === 'kids') {
+        duration = document.getElementById('kidsDurationSelect').value;
+        people = document.getElementById('kids').value;
+        days = document.getElementById('kidsDaysSlider').value;
+        sport = 'Kids Ski Club';
+        
+        // Преобразуем значение duration в читаемый текст
+        const durationTexts = {
+            'full': 'Full Day',
+            'half-lunch': 'Half Day With Lunch', 
+            'half-nolunch': 'Half Day No Lunch'
+        };
+        duration = durationTexts[duration] || duration;
+    } else {
+        duration = document.getElementById('duration').value;
+        people = document.getElementById('participants').value;
+        days = document.getElementById('days').value;
+        sport = State.currentSport;
+        
+        // Преобразуем значение duration в читаемый текст
+        const durationTexts = {
+            '2': '2 Hours',
+            '3': '3 Hours',
+            'full': 'Full Day'
+        };
+        duration = durationTexts[duration] || duration;
+    }
+    
+    const price = calculatePrice();
+    
+    // Форматируем дату и время
+    let formattedDate = '';
+    let formattedTime = '';
+    
+    if (State.selectedDate) {
+        formattedDate = State.selectedDate.toLocaleDateString('en-US', {
+            month: 'long', 
+            day: 'numeric', 
+            year: 'numeric'
+        });
+    }
+    
+    if (State.selectedTime) {
+        formattedTime = State.selectedTime;
+    }
+    
+    return {
+        subject: `Booking: ${summary.title} with ${summary.details}`,
+        title: summary.title,
+        details: summary.details,
+        dateTime: formattedDate && formattedTime ? 
+            `${formattedDate} at ${formattedTime}` : 'Not selected',
+        fullName: document.getElementById('fullName').value,
+        phone: window.phoneInput.getNumber(),
+        email: document.getElementById('email').value,
+        age: document.getElementById('age').value,
+        sport: sport, // ✅ ДОБАВЛЕНО
+        duration: duration, // ✅ ДОБАВЛЕНО
+        participants: parseInt(people), // ✅ ДОБАВЛЕНО
+        days: parseInt(days), // ✅ ДОБАВЛЕНО
+        date: formattedDate, // ✅ ДОБАВЛЕНО
+        time: formattedTime, // ✅ ДОБАВЛЕНО
+        total: price.total,
+        instructorPrice: price.deposit, // ✅ ДОБАВЛЕНО (используем депозит как часть инструктора)
+        skillLevel: document.getElementById('skillLevel').options[document.getElementById('skillLevel').selectedIndex].text,
+        additionalInfo: document.getElementById('additionalInfo').value,
+        paymentStatus: 'completed', // ✅ ДОБАВЛЕНО
+        bookingId: generateBookingId()
+    };
 
         function sendEmail(formData, emailType) {
             const paymentStatus = formData.paymentStatus || 'unknown';
