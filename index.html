@@ -824,9 +824,9 @@ input[type="range"]::-webkit-slider-thumb {
                         
                         <div class="form-group" id="kidsDuration" style="display: none;">
                             <select class="custom-select" id="kidsDurationSelect">
-                                <option value="full">Full Day (10:30 - 16:30) - $130</option>
-                                <option value="half-lunch">Half Day With Lunch (10:30 - 14:30) - $90</option>
-                                <option value="half-nolunch">Half Day No Lunch (10:30 - 13:30) - $70</option>
+                                <option value="full">Full Day (10:30 - 16:30) - $150</option>
+                                <option value="half-lunch">Half Day With Lunch (10:30 - 14:30) - $110</option>
+                                <option value="half-nolunch">Half Day No Lunch (10:30 - 13:30) - $90</option>
                             </select>
                         </div>
                         
@@ -843,10 +843,10 @@ input[type="range"]::-webkit-slider-thumb {
                         <div class="form-group" id="kidsParticipants" style="display: none;">
                             <div class="slider-container">
                                 <div class="slider-value" id="kidsValue">1 Kid</div>
-                                <input type="range" id="kids" min="1" max="8" value="1" step="1">
+                                <input type="range" id="kids" min="1" max="6" value="1" step="1">
                                 <div class="slider-labels">
                                     <span>1</span><span>2</span><span>3</span><span>4</span>
-                                    <span>5</span><span>6</span><span>7</span><span>8</span>
+                                    <span>5</span><span>6</span>
                                 </div>
                             </div>
                         </div>
@@ -1063,6 +1063,7 @@ input[type="range"]::-webkit-slider-thumb {
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         const CONFIG = {
             prices: {
@@ -1070,9 +1071,9 @@ input[type="range"]::-webkit-slider-thumb {
                 3: 140, 
                 full: 250,
                 kids: {
-                    'full': 130,
-                    'half-lunch': 90,
-                    'half-nolunch': 70
+                    'full': 150,
+                    'half-lunch': 110,
+                    'half-nolunch': 90
                 }
             },
             minDate: new Date(2025, 11, 15),
@@ -1182,14 +1183,24 @@ input[type="range"]::-webkit-slider-thumb {
                         formData.paymentId = details.id;
                         formData.payerEmail = details.payer.email_address;
                         
-                        // Отправляем данные на сервер
-                        sendBookingToServer(formData);
+                        // Отправка данных в бот через вебхук
+                        sendToBot(formData);
+                        
+                        sendEmail(formData, 'Booking Confirmation');
+                        setTimeout(showSuccess, 1000);
                     });
                 },
                 onCancel: function(data) {
+                    const formData = getFormData();
+                    formData.paymentStatus = 'cancelled';
+                    sendEmail(formData, 'Booking Incomplete');
                     alert('Payment was cancelled. Please try again to complete your booking.');
                 },
                 onError: function(err) {
+                    const formData = getFormData();
+                    formData.paymentStatus = 'failed';
+                    formData.error = err.toString();
+                    sendEmail(formData, 'Booking Incomplete');
                     alert('An error occurred with the payment. Please try again.');
                     showStep(3);
                 }
@@ -1200,58 +1211,51 @@ input[type="range"]::-webkit-slider-thumb {
             }
         }
 
-// Функция отправки данных на сервер
-function sendBookingToServer(formData) {
-    console.log('📍 Current URL:', window.location.href);
-console.log('📍 Current origin:', window.location.origin);
-console.log('📍 Current hostname:', window.location.hostname);
+        // Функция отправки данных в бот
+        function sendToBot(formData) {
+            const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
+            
+            const bookingData = {
+                fullName: formData.fullName,
+                phone: formData.phone,
+                email: formData.email,
+                age: formData.age,
+                skillLevel: formData.skillLevel,
+                additionalInfo: formData.additionalInfo,
+                sport: State.currentSport,
+                duration: State.currentSport === 'kids' ? 
+                    document.getElementById('kidsDurationSelect').value : 
+                    document.getElementById('duration').value,
+                participants: State.currentSport === 'kids' ? 
+                    document.getElementById('kids').value : 
+                    document.getElementById('participants').value,
+                days: State.currentSport === 'kids' ? 
+                    document.getElementById('kidsDaysSlider').value : 
+                    document.getElementById('days').value,
+                date: State.selectedDate ? State.selectedDate.toISOString().split('T')[0] : '',
+                time: State.selectedTime || '',
+                total: formData.total,
+                deposit: formData.deposit,
+                remaining: formData.remaining,
+                bookingId: formData.bookingId,
+                paymentStatus: formData.paymentStatus
+            };
 
-// Проверим доступность endpoint
-const testUrl = `${window.location.origin}/api/test`;
-console.log('🧪 Testing endpoint:', testUrl);
-
-fetch(testUrl)
-    .then(response => response.json())
-    .then(data => console.log('🧪 Test endpoint response:', data))
-    .catch(err => console.error('🧪 Test endpoint failed:', err));    // Получаем базовый URL автоматически
-    const baseUrl = window.location.origin;
-    const webhookUrl = `${baseUrl}/api/booking`;
-    
-    console.log('📤 Sending booking to:', webhookUrl);
-    console.log('📦 Booking data:', formData);
-
-    fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => {
-        console.log('📥 Response status:', response.status, response.statusText);
-        if (!response.ok) {
-            // Получаем текст ошибки если есть
-            return response.text().then(text => {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}. ${text}`);
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookingData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Booking data sent to bot successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error sending booking data to bot:', error);
             });
         }
-        return response.json();
-    })
-    .then(data => {
-        console.log('✅ Server response:', data);
-        if (data.success) {
-            setTimeout(showSuccess, 1000);
-        } else {
-            alert('Error saving booking: ' + (data.error || 'Unknown error'));
-            showStep(3);
-        }
-    })
-    .catch(error => {
-        console.error('❌ Fetch error:', error);
-        alert('Error saving booking: ' + error.message);
-        showStep(3);
-    });
-}
 
         function setupEvents() {
             document.querySelectorAll('.tab').forEach(tab => {
@@ -1466,8 +1470,20 @@ fetch(testUrl)
             let total = 0;
             let maxDiscount = 0;
             
+            // Новая логика скидок для Kids Ski Club
             for (let day = 1; day <= days; day++) {
-                const discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                let discount = 0;
+                
+                if (State.currentSport === 'kids') {
+                    // Kids Ski Club скидки: 10% с 5 дня, 15% с 7 дня, 20% с 9 дня
+                    if (day >= 9) discount = 0.20;
+                    else if (day >= 7) discount = 0.15;
+                    else if (day >= 5) discount = 0.10;
+                } else {
+                    // Старые скидки для взрослых
+                    discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                }
+                
                 total += pricePerDay * (1 - discount);
                 if (discount > maxDiscount) maxDiscount = discount;
             }
@@ -1476,8 +1492,20 @@ fetch(testUrl)
             const deposit = Math.round(total * 0.20);
             const remaining = total - deposit;
             
-            const discountText = maxDiscount > 0 ? 
-                `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}` : '';
+            let discountText = '';
+            if (maxDiscount > 0) {
+                if (State.currentSport === 'kids') {
+                    if (maxDiscount === 0.20) {
+                        discountText = '🎉 You save 20% on days 9+';
+                    } else if (maxDiscount === 0.15) {
+                        discountText = '🎉 You save 15% on days 7-8';
+                    } else if (maxDiscount === 0.10) {
+                        discountText = '🎉 You save 10% on days 5-6';
+                    }
+                } else {
+                    discountText = `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}`;
+                }
+            }
             
             return { total, deposit, remaining, discountText };
         }
@@ -1660,23 +1688,127 @@ fetch(testUrl)
             const price = calculatePrice();
             
             return {
-                sport: State.currentSport,
-                duration: duration,
-                participants: parseInt(people),
-                days: parseInt(days),
-                date: State.selectedDate ? State.selectedDate.toISOString().split('T')[0] : null,
-                time: State.selectedTime,
+                subject: `Booking: ${summary.title} with ${summary.details}`,
+                title: summary.title,
+                details: summary.details,
+                dateTime: State.selectedDate && State.selectedTime ? 
+                    `${State.selectedDate.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})} at ${State.selectedTime}` : 
+                    'Not selected',
                 fullName: document.getElementById('fullName').value,
                 phone: window.phoneInput.getNumber(),
                 email: document.getElementById('email').value,
-                age: parseInt(document.getElementById('age').value),
-                skillLevel: document.getElementById('skillLevel').value,
+                age: document.getElementById('age').value,
+                skillLevel: document.getElementById('skillLevel').options[document.getElementById('skillLevel').selectedIndex].text,
                 additionalInfo: document.getElementById('additionalInfo').value,
                 total: price.total,
                 deposit: price.deposit,
                 remaining: price.remaining,
                 bookingId: generateBookingId()
             };
+        }
+
+        function sendEmail(formData, emailType) {
+            const paymentStatus = formData.paymentStatus || 'unknown';
+            const paymentInfo = paymentStatus === 'completed' ? 
+                `Payment Status: ✅ COMPLETED\nPayment ID: ${formData.paymentId}\nPayer Email: ${formData.payerEmail}` :
+                `Payment Status: ❌ ${paymentStatus.toUpperCase()}\nError: ${formData.error || 'N/A'}`;
+
+            const body = `
+${formData.title} with ${formData.details}
+${formData.dateTime}
+
+${paymentInfo}
+
+Booking ID: ${formData.bookingId}
+Full Name: ${formData.fullName}
+Phone (WhatsApp): https://wa.me/${formData.phone.replace('+', '')}
+Email: ${formData.email}
+Age: ${formData.age}
+Skill level: ${formData.skillLevel}
+Additional information: ${formData.additionalInfo || 'None'}
+
+Total amount: $${formData.total}
+20% deposit: $${formData.deposit}
+Remaining balance: $${formData.remaining}
+
+Google Calendar Link: ${generateCalendarLink(formData)}
+            `.trim();
+
+            const toEmail = 'info@skischool.ge';
+            
+            emailjs.init('gb9ZTULk6-ghDtZuV');
+            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
+                to_email: toEmail,
+                subject: `${emailType}: ${formData.title}`,
+                message: body,
+                from_name: formData.fullName,
+                from_email: formData.email,
+                phone: formData.phone
+            }).catch(() => {
+                const mailto = `mailto:${toEmail}?subject=${encodeURIComponent(emailType + ': ' + formData.subject)}&body=${encodeURIComponent(body)}`;
+                window.open(mailto, '_blank');
+            });
+        }
+
+        function generateCalendarLink(data) {
+            if (!State.selectedDate || !State.selectedTime) return '';
+            
+            const start = new Date(State.selectedDate);
+            const [hours] = State.selectedTime.split(':');
+            start.setHours(parseInt(hours), 0, 0);
+            
+            const end = new Date(start);
+            let duration;
+            let days;
+            
+            if (State.currentSport === 'kids') {
+                duration = document.getElementById('kidsDurationSelect').value;
+                days = parseInt(document.getElementById('kidsDaysSlider').value);
+                
+                if (duration === 'full') {
+                    end.setHours(start.getHours() + 6);
+                } else if (duration === 'half-lunch') {
+                    end.setHours(start.getHours() + 4);
+                } else {
+                    end.setHours(start.getHours() + 3);
+                }
+            } else {
+                duration = document.getElementById('duration').value;
+                days = parseInt(document.getElementById('days').value);
+                
+                end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
+            }
+            
+            const details = `
+Full Name: ${data.fullName}
+Phone: ${data.phone}
+Email: ${data.email}
+Age: ${data.age}
+Skill level: ${data.skillLevel}
+Additional info: ${data.additionalInfo || 'None'}
+
+Total: $${data.total}
+Deposit: $${data.deposit}
+Balance: $${data.remaining}
+            `.trim();
+
+            const params = new URLSearchParams({
+                action: 'TEMPLATE',
+                text: data.subject,
+                dates: `${formatDate(start)}/${formatDate(end)}`,
+                details: details,
+                location: 'Gudauri Ski Resort'
+            });
+
+            if (days > 1) {
+                params.append('recur', `RRULE:FREQ=DAILY;COUNT=${days}`);
+            }
+
+            return `https://calendar.google.com/calendar/render?${params}`;
+        }
+
+        function formatDate(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         }
 
         function showError(id, msg) {
