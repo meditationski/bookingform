@@ -1373,6 +1373,28 @@ input[type="range"]::-webkit-slider-thumb {
             document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
             document.getElementById('successScreen').classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+              setTimeout(() => {
+        const formData = getFormData();
+        formData.paymentStatus = 'completed'; // Важно: только предоплаченные заказы
+        
+        // Отправка на ваш Railway сервер
+        fetch('https://skischoolgebot-production.up.railway.app/webhook/booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Order sent to bot:', data);
+        })
+        .catch(error => {
+            console.error('Error sending to bot:', error);
+        });
+    }, 1500);
+            
         }
 
         function updatePrices() {
