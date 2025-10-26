@@ -1183,7 +1183,7 @@ input[type="range"]::-webkit-slider-thumb {
                         formData.paymentId = details.id;
                         formData.payerEmail = details.payer.email_address;
                         
-                        // Отправка данных в MongoDB бот через вебхук
+                        // Отправка данных в бот через вебхук
                         sendToBot(formData);
                         
                         sendEmail(formData, 'Booking Confirmation');
@@ -1211,7 +1211,7 @@ input[type="range"]::-webkit-slider-thumb {
             }
         }
 
-        // Функция отправки данных в MongoDB бот
+        // Функция отправки данных в бот
         function sendToBot(formData) {
             const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
             
@@ -1219,29 +1219,27 @@ input[type="range"]::-webkit-slider-thumb {
                 fullName: formData.fullName,
                 phone: formData.phone,
                 email: formData.email,
-                age: parseInt(formData.age),
+                age: formData.age,
                 skillLevel: formData.skillLevel,
                 additionalInfo: formData.additionalInfo,
                 sport: State.currentSport,
                 duration: State.currentSport === 'kids' ? 
                     document.getElementById('kidsDurationSelect').value : 
                     document.getElementById('duration').value,
-                participants: parseInt(State.currentSport === 'kids' ? 
+                participants: State.currentSport === 'kids' ? 
                     document.getElementById('kids').value : 
-                    document.getElementById('participants').value),
-                days: parseInt(State.currentSport === 'kids' ? 
+                    document.getElementById('participants').value,
+                days: State.currentSport === 'kids' ? 
                     document.getElementById('kidsDaysSlider').value : 
-                    document.getElementById('days').value),
+                    document.getElementById('days').value,
                 date: State.selectedDate ? State.selectedDate.toISOString().split('T')[0] : '',
                 time: State.selectedTime || '',
-                total: parseInt(formData.total),
-                deposit: parseInt(formData.deposit),
-                remaining: parseInt(formData.remaining),
+                total: formData.total,
+                deposit: formData.deposit,
+                remaining: formData.remaining,
                 bookingId: formData.bookingId,
                 paymentStatus: formData.paymentStatus
             };
-
-            console.log('Sending booking data to bot:', bookingData);
 
             fetch(webhookUrl, {
                 method: 'POST',
@@ -1250,19 +1248,12 @@ input[type="range"]::-webkit-slider-thumb {
                 },
                 body: JSON.stringify(bookingData)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log('Booking data sent to MongoDB bot successfully:', data);
+                console.log('Booking data sent to bot successfully:', data);
             })
             .catch(error => {
                 console.error('Error sending booking data to bot:', error);
-                // Fallback: try to send email anyway
-                sendEmail(formData, 'Booking Confirmation (Webhook Failed)');
             });
         }
 
