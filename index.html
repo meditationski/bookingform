@@ -1211,51 +1211,56 @@ input[type="range"]::-webkit-slider-thumb {
             }
         }
 
-        // Функция отправки данных в бот
-        function sendToBot(formData) {
-            const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
-            
-            const bookingData = {
-                fullName: formData.fullName,
-                phone: formData.phone,
-                email: formData.email,
-                age: formData.age,
-                skillLevel: formData.skillLevel,
-                additionalInfo: formData.additionalInfo,
-                sport: State.currentSport,
-                duration: State.currentSport === 'kids' ? 
-                    document.getElementById('kidsDurationSelect').value : 
-                    document.getElementById('duration').value,
-                participants: State.currentSport === 'kids' ? 
-                    document.getElementById('kids').value : 
-                    document.getElementById('participants').value,
-                days: State.currentSport === 'kids' ? 
-                    document.getElementById('kidsDaysSlider').value : 
-                    document.getElementById('days').value,
-                date: State.selectedDate ? State.selectedDate.toISOString().split('T')[0] : '',
-                time: State.selectedTime || '',
-                total: formData.total,
-                deposit: formData.deposit,
-                remaining: formData.remaining,
-                bookingId: formData.bookingId,
-                paymentStatus: formData.paymentStatus
-            };
+// Функция отправки данных в бот - ОБНОВЛЕННАЯ
+function sendToBot(formData) {
+    const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
+    
+    // Форматируем дату правильно
+    const formattedDate = State.selectedDate ? State.selectedDate.toISOString().split('T')[0] : '';
+    
+    const bookingData = {
+        fullName: formData.fullName,
+        phone: formData.phone.replace('+', ''), // Убираем + для WhatsApp
+        email: formData.email,
+        age: parseInt(formData.age),
+        skillLevel: formData.skillLevel,
+        additionalInfo: formData.additionalInfo || '',
+        sport: State.currentSport,
+        duration: State.currentSport === 'kids' ? 
+            document.getElementById('kidsDurationSelect').value : 
+            document.getElementById('duration').value,
+        participants: State.currentSport === 'kids' ? 
+            parseInt(document.getElementById('kids').value) : 
+            parseInt(document.getElementById('participants').value),
+        days: State.currentSport === 'kids' ? 
+            parseInt(document.getElementById('kidsDaysSlider').value) : 
+            parseInt(document.getElementById('days').value),
+        date: formattedDate,
+        time: State.selectedTime || '',
+        total: parseInt(formData.total),
+        deposit: parseInt(formData.deposit),
+        remaining: parseInt(formData.remaining),
+        bookingId: formData.bookingId,
+        paymentStatus: 'completed' // Всегда completed, так как оплата прошла
+    };
 
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bookingData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Booking data sent to bot successfully:', data);
-            })
-            .catch(error => {
-                console.error('Error sending booking data to bot:', error);
-            });
-        }
+    console.log('Sending to bot:', bookingData);
+
+    fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Booking data sent to bot successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error sending booking data to bot:', error);
+    });
+}
 
         function setupEvents() {
             document.querySelectorAll('.tab').forEach(tab => {
