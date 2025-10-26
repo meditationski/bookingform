@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Form</title>
+    <title>Booking Form - SkiSchool.ge</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <script src="https://www.paypal.com/sdk/js?client-id=AUFAuKE5jRCH1Ucd72VfmAn5xR0v9Nyg27zWWi1kCjyqKVxgb3bNxWgZ21WxoeC3dP8U122SfuhMu4Qm&currency=USD"></script>
@@ -1049,7 +1049,7 @@ input[type="range"]::-webkit-slider-thumb {
             <div class="success-screen">
                 <div class="success-icon">✅</div>
                 <h1 class="success-title">Booking Confirmed!</h1>
-                <p class="success-message">Thank you для your booking! Your lesson has been scheduled! We're excited to see you on the slopes!</p>
+                <p class="success-message">Thank you for your booking! Your lesson has been scheduled! We're excited to see you on the slopes!</p>
             </div>
         </div>
 
@@ -1202,25 +1202,38 @@ input[type="range"]::-webkit-slider-thumb {
 
         // Функция отправки данных на сервер
         function sendBookingToServer(formData) {
-            fetch('/webhook/booking', {
+            const webhookUrl = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000/webhook/booking'
+                : '/webhook/booking';
+
+            console.log('Sending booking to:', webhookUrl);
+            console.log('Booking data:', formData);
+
+            fetch(webhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('Server response:', data);
                 if (data.success) {
                     setTimeout(showSuccess, 1000);
                 } else {
-                    alert('Error saving booking: ' + data.error);
+                    alert('Error saving booking: ' + (data.error || 'Unknown error'));
                     showStep(3);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error saving booking. Please contact support.');
+                alert('Error saving booking. Please contact support. Error: ' + error.message);
                 showStep(3);
             });
         }
