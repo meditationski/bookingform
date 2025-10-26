@@ -8,13 +8,1059 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <script src="https://www.paypal.com/sdk/js?client-id=AUFAuKE5jRCH1Ucd72VfmAn5xR0v9Nyg27zWWi1kCjyqKVxgb3bNxWgZ21WxoeC3dP8U122SfuhMu4Qm&currency=USD"></script>
     <style>
-        /* Стили остаются такими же как в предыдущей версии */
-        /* ... весь CSS код ... */
+:root {
+    --bg-primary: #0f1217;
+    --bg-secondary: rgba(30, 34, 40, 0.8);
+    --bg-tertiary: rgba(52, 56, 64, 0.8); 
+    --text-primary: #ffffff;
+    --text-secondary: #d0d8e2;
+    --text-muted: #7a8596;
+    --accent-blue: #00A3FF;
+    --accent-orange: #F59A47;
+    
+    --gradient-primary: linear-gradient(106deg, #00A3FF 0%, #F59A47 100%);
+    --gradient-alt: linear-gradient(106deg, #F59A47 0%, #00A3FF 100%);
+    --gradient-hover: linear-gradient(106deg, #00A3FF 0%, #FFB470 100%);
+    --gradient-alt-hover: linear-gradient(106deg, #FFB470 0%, #00A3FF 100%);
+    --border-radius: 2.5em;
+    --border-radius-sm: 1.5em;
+    --transition: all 0.3s ease;
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    background: transparent; 
+    font-family: 'Inter', sans-serif; 
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+.container { 
+    max-width: 75em; 
+    margin: 0 auto; 
+    padding: 1em; 
+}
+
+.form-section { 
+    display: none; 
+}
+
+.form-section.active { 
+    display: block; 
+}
+
+.form-group { 
+    margin-bottom: 1.25em; 
+}
+
+.subsection-title {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75em;
+    text-align: center;
+}
+
+.tabs { 
+    display: flex; 
+    background: var(--bg-secondary); 
+    border-radius: var(--border-radius-sm); 
+    padding: 0.25em; 
+    gap: 0.25em;
+}
+
+.tab { 
+    flex: 1; 
+    padding: 1em 1.5em; 
+    text-align: center; 
+    background: transparent; 
+    border: none; 
+    color: var(--text-secondary); 
+    font-weight: 600; 
+    border-radius: var(--border-radius-sm); 
+    cursor: pointer; 
+    font-size: 1em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tab.active { 
+    background: var(--gradient-primary); 
+    color: var(--text-primary); 
+}
+
+.custom-select, .form-input {
+    width: 100%;
+    padding: 1.125em 1.5em;
+    border: 0.1em solid var(--bg-tertiary);
+    border-radius: var(--border-radius-sm);
+    font-size: 1em;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.3s ease;
+}
+
+.custom-select:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+.custom-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23a0a8b0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.5em center;
+    background-size: 1em;
+    padding-right: 3em;
+}
+
+.slider-container {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+    padding: 1em;
+}
+
+.slider-value { 
+    text-align: center; 
+    font-weight: 600; 
+    color: var(--text-primary); 
+    font-size: 1.25em; 
+    margin-bottom: 0.75em; 
+}
+
+input[type="range"] { 
+    width: 100%; 
+    height: 0.5em; 
+    background: var(--bg-tertiary); 
+    border-radius: 1em; 
+    margin: 1em 0; 
+    -webkit-appearance: none;
+    transition: background-color 0.3s ease;
+}
+
+input[type="range"]:hover {
+    background: var(--accent-blue);
+    opacity: 0.7;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 2em;
+    height: 2em;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 0.25em solid var(--bg-primary);
+    transition: background-color 0.3s ease;
+}
+
+.slider-labels { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 0.875em; 
+    color: var(--text-muted); 
+    font-weight: 500;
+}
+
+.step-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+}
+
+@media (min-width: 768px) {
+    .step-layout {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
+    .step-left {
+        flex: 2;
+    }
+    
+    .step-right {
+        flex: 1;
+        margin-left: 1.5em;
+    }
+
+    #step3 .step-right {
+        display: flex;
+        flex-direction: column;
+        height: fit-content;
+    }
+}
+
+.step1-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25em;
+}
+
+.calendar-time-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25em;
+}
+
+.calendar-large {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+    padding: 1.25em;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25em;
+}
+
+.calendar-month {
+    font-size: 1.25em;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.calendar-nav { 
+    display: flex; 
+    gap: 0.5em; 
+}
+
+.calendar-nav button {
+    background: var(--bg-tertiary);
+    border: none;
+    color: var(--text-primary);
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 1.125em;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-nav button:hover {
+    background: var(--accent-blue);
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 1em;
+    font-size: 0.875em;
+    color: var(--text-muted);
+    font-weight: 600;
+    gap: 0.125em;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.125em;
+}
+
+.day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.9375em;
+    font-weight: 500;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    min-height: 3em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.day:hover:not(.disabled):not(.selected) { 
+    background: var(--bg-tertiary); 
+    color: var(--text-primary);
+}
+
+.day.selected { 
+    background: var(--gradient-primary); 
+    color: var(--text-primary); 
+}
+
+.day.today { 
+    border: 0.125em solid var(--accent-blue); 
+}
+
+.day.disabled { 
+    opacity: 0.3; 
+    cursor: not-allowed; 
+}
+
+.day.other-month { 
+    display: none; 
+}
+
+.time-selection { 
+    background: var(--bg-secondary); 
+    border-radius: var(--border-radius-sm); 
+    padding: 1.25em; 
+}
+
+.time-slots-compact { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 0.75em; 
+}
+
+@media (min-width: 480px) {
+    .time-slots-compact { 
+        grid-template-columns: 1fr 1fr 1fr; 
+    }
+}
+
+.time-slot { 
+    padding: 1em; 
+    background: var(--bg-tertiary); 
+    border: none; 
+    border-radius: var(--border-radius-sm); 
+    color: var(--text-primary); 
+    font-size: 0.9375em; 
+    font-weight: 500;
+    cursor: pointer; 
+    text-align: center; 
+    transition: background-color 0.3s ease;
+}
+
+.time-slot:hover:not(.disabled):not(.selected) {
+    background: var(--accent-blue);
+}
+
+.time-slot.selected { 
+    background: var(--gradient-primary); 
+}
+
+.step3-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25em;
+}
+
+.form-row-compact {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25em;
+}
+
+@media (min-width: 768px) {
+    .form-row-compact {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.full-width { 
+    grid-column: 1 / -1; 
+}
+
+.price-card { 
+    background: var(--bg-secondary); 
+    color: var(--text-primary); 
+    padding: 1.75em; 
+    border-radius: var(--border-radius-sm); 
+    border: 0.125em solid var(--bg-tertiary);
+}
+
+.booking-summary-compact {
+    margin-bottom: 1.25em;
+    padding-bottom: 1.25em;
+    border-bottom: 0.125em solid var(--bg-tertiary);
+}
+
+.summary-title {
+    font-size: 1.25em;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.375em;
+}
+
+.summary-details {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 1em;
+    margin-bottom: 0.75em;
+}
+
+.summary-date-time {
+    color: var(--accent-blue);
+    font-weight: 600;
+    font-size: 1em;
+    margin-bottom: 1em;
+    padding: 0.75em;
+    background: rgba(0, 163, 255, 0.1);
+    border-radius: var(--border-radius-sm);
+    text-align: center;
+}
+
+.price-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: 1em; 
+    font-size: 1.125em; 
+}
+
+.price-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.price-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.total-price {
+    font-size: 2.25em;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.deposit-price {
+    font-size: 1.375em;
+    font-weight: 600;
+    color: var(--accent-orange);
+}
+
+.discount-info { 
+    text-align: center; 
+    margin-top: 1em; 
+    font-size: 1em; 
+    color: var(--accent-orange); 
+    font-weight: 600; 
+    padding: 0.875em;
+    background: rgba(245, 154, 71, 0.1);
+    border-radius: var(--border-radius-sm);
+    border: 0.125em solid rgba(245, 154, 71, 0.3);
+    display: none;
+}
+
+.discount-info.show {
+    display: block;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.75em;
+    padding-top: 1.75em;
+    border-top: 0.1em solid #FFFFFF80;
+    gap: 1em;
+}
+
+.btn {
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 1.125em 1.75em;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    height: 3.75em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    flex: 1;
+    min-width: 0;
+}
+
+.btn-next { 
+    background: var(--gradient-primary); 
+    color: var(--text-primary); 
+}
+
+.btn-next:hover {
+    background: var(--gradient-hover);
+}
+
+.btn-book {
+    background: var(--gradient-alt);
+    color: var(--text-primary);
+    border: 0.1em solid #ffffff;
+}
+
+.btn-book:hover {
+    background: var(--gradient-alt-hover);
+}
+
+.btn-back { 
+    background: transparent; 
+    color: var(--text-secondary);
+    border: 0.1em solid #FFFFFF80;
+}
+
+.btn-back:hover {
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.btn-next:disabled { 
+    background: var(--bg-tertiary); 
+    cursor: not-allowed;
+}
+
+.paypal-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex: 2;
+}
+
+#paypal-button-container {
+    min-width: 200px;
+    min-height: 55px;
+    flex: 1;
+}
+
+.form-input { 
+    background: var(--bg-secondary);
+    border: 0.1em solid var(--bg-tertiary);
+}
+
+.form-input:focus { 
+    outline: none; 
+    border-color: var(--accent-blue);
+}
+
+.error {
+    font-size: 0.875em;
+    color: #ff4757;
+    margin-top: 0.5em;
+    display: none;
+    font-weight: 500;
+}
+
+.error.show { 
+    display: block; 
+}
+
+.success-screen {
+    text-align: center;
+    padding: 3.5em 2em;
+}
+
+.success-icon { 
+    font-size: 5em; 
+    margin-bottom: 1.25em; 
+    color: #00ff88;
+}
+
+.success-title { 
+    font-size: 2.25em; 
+    font-weight: 700; 
+    color: var(--text-primary); 
+    margin-bottom: 0.875em; 
+    line-height: 1.2;
+}
+
+.success-message { 
+    font-size: 1.125em; 
+    color: var(--text-secondary); 
+    line-height: 1.6;
+    max-width: 35em;
+    margin: 0 auto;
+}
+
+.payment-processing {
+    text-align: center;
+    padding: 3.5em 2em;
+}
+
+.loading-spinner {
+    border: 0.25em solid var(--bg-tertiary);
+    border-top: 0.25em solid var(--accent-blue);
+    border-radius: 50%;
+    width: 4em;
+    height: 4em;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1.75em;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.iti { 
+    width: 100%; 
+}
+
+#phone { 
+    padding-left: 5em !important; 
+}
+
+@media (max-width: 767px) {
+    .container {
+        padding: 0.5em;
+    }
+    
+    body {
+        font-size: 14px;
+    }
+    
+    .form-group {
+        margin-bottom: 1em;
+    }
+    
+    .subsection-title {
+        font-size: 1.25em;
+        margin-bottom: 0.75em;
+    }
+    
+    .btn {
+        padding: 1.125em 1.5em;
+        font-size: 1em;
+        height: 3.5em;
+    }
+    
+    .total-price {
+        font-size: 2em;
+    }
+    
+    .custom-select, .form-input {
+        padding: 1em 1.25em;
+        font-size: 1em;
+    }
+    
+    .slider-container {
+        padding: 0.75em;
+    }
+    
+    .calendar-large, .time-selection {
+        padding: 1em;
+    }
+    
+    .price-card {
+        padding: 1.5em;
+    }
+    
+    .buttons {
+        margin-top: 1.5em;
+        padding-top: 1.5em;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        flex: 1 1 calc(50% - 0.5em);
+        min-width: 140px;
+    }
+    
+    .paypal-container {
+        flex: 1 1 100%;
+        justify-content: center;
+        margin-top: 1em;
+    }
+    
+    #paypal-button-container {
+        min-width: 100%;
+    }
+
+    .step-right {
+        margin-left: 0;
+        margin-top: 1.5em;
+    }
+
+    .step-layout {
+        flex-direction: column-reverse;
+    }
+    
+    .step-left {
+        order: 2;
+    }
+    
+    .step-right {
+        order: 1;
+        margin-top: 0;
+        margin-bottom: 1.25em;
+    }
+
+    #step3 .step-right {
+        display: block;
+    }
+
+    .calendar-large {
+        padding: 0.75em;
+        overflow: hidden;
+    }
+    
+    .days {
+        gap: 0.0625em;
+    }
+    
+    .day {
+        min-height: 2.5em;
+        font-size: 0.875em;
+        padding: 0.25em;
+    }
+    
+    .weekdays {
+        font-size: 0.75em;
+        gap: 0.0625em;
+    }
+    
+    .calendar-header {
+        margin-bottom: 1em;
+    }
+    
+    .calendar-month {
+        font-size: 1.125em;
+    }
+    
+    .slider-container {
+        padding: 0.5em;
+    }
+    
+    .slider-value {
+        font-size: 1em;
+        margin-bottom: 0.5em;
+    }
+    
+    input[type="range"] {
+        height: 0.4em;
+        margin: 0.75em 0;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+        width: 1.5em;
+        height: 1.5em;
+    }
+    
+    .slider-labels {
+        font-size: 0.75em;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab {
+        flex: 1 1 calc(33.333% - 0.5em);
+        min-width: 0;
+        padding: 0.75em 0.5em;
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 480px) {
+    .time-slots-compact {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        flex: 1 1 calc(50% - 0.5em);
+        min-width: 140px;
+    }
+    
+    .calendar-large {
+        padding: 0.5em;
+    }
+    
+    .day {
+        min-height: 2.25em;
+        font-size: 0.8em;
+    }
+    
+    .weekdays {
+        font-size: 0.7em;
+    }
+    
+    .tab {
+        font-size: 0.75em;
+        padding: 0.6em 0.4em;
+    }
+}
     </style>
 </head>
 <body>
-    <!-- HTML структура остается такой же -->
-    <!-- ... весь HTML код ... -->
+    <div class="container">
+        <div class="form-section active" id="step1">
+            <h2 class="subsection-title">Lesson Details</h2>
+            <div class="step-layout">
+                <div class="step-left">
+                    <div class="step1-controls">
+                        <div class="form-group">
+                            <div class="tabs">
+                                <div class="tab active" data-sport="ski">Ski</div>
+                                <div class="tab" data-sport="snowboard">Snowboard</div>
+                                <div class="tab" data-sport="kids">Kids Ski Club</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="skiSnowboardDuration">
+                            <select class="custom-select" id="duration">
+                                <option value="2">2 Hours Lesson - $100</option>
+                                <option value="3">3 Hours Lesson - $140</option>
+                                <option value="full">Full Day Lesson - $250</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="kidsDuration" style="display: none;">
+                            <select class="custom-select" id="kidsDurationSelect">
+                                <option value="full">Full Day (10:30 - 16:30) - $150</option>
+                                <option value="half-lunch">Half Day With Lunch (10:30 - 14:30) - $110</option>
+                                <option value="half-nolunch">Half Day No Lunch (10:30 - 13:30) - $90</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="skiSnowboardParticipants">
+                            <div class="slider-container">
+                                <div class="slider-value" id="participantsValue">1 Person</div>
+                                <input type="range" id="participants" min="1" max="5" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="kidsParticipants" style="display: none;">
+                            <div class="slider-container">
+                                <div class="slider-value" id="kidsValue">1 Kid</div>
+                                <input type="range" id="kids" min="1" max="6" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span>
+                                    <span>5</span><span>6</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="skiSnowboardDays">
+                            <div class="slider-container">
+                                <div class="slider-value" id="daysValue">1 Day</div>
+                                <input type="range" id="days" min="1" max="10" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="kidsDays" style="display: none;">
+                            <div class="slider-container">
+                                <div class="slider-value" id="kidsDaysValue">1 Day</div>
+                                <input type="range" id="kidsDaysSlider" min="1" max="10" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-right">
+                    <div class="price-card">
+                        <div class="booking-summary-compact">
+                            <div class="summary-title" id="step1SummaryTitle">2 Hours Ski Lesson</div>
+                            <div class="summary-details" id="step1SummaryDetails">1 Person × 1 Day</div>
+                            <div class="summary-date-time" id="step1DateTimeDisplay" style="display: none;"></div>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Total amount:</span>
+                            <span id="totalPrice" class="total-price">$100</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">20% deposit:</span>
+                            <span id="depositPrice" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Remaining balance:</span>
+                            <span id="remainingPrice" class="price-value">$80</span>
+                        </div>
+                        <div id="discountInfo" class="discount-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <div></div>
+                <button class="btn btn-next" id="nextToStep2">Continue</button>
+            </div>
+        </div>
+
+        <div class="form-section" id="step2">
+            <h2 class="subsection-title">Select Date & Time</h2>
+            <div class="step-layout">
+                <div class="step-left">
+                    <div class="calendar-time-vertical">
+                        <div class="calendar-large">
+                            <div class="calendar-header">
+                                <div class="calendar-nav">
+                                    <button id="prevMonth">‹</button>
+                                </div>
+                                <div class="calendar-month">December 2025</div>
+                                <div class="calendar-nav">
+                                    <button id="nextMonth">›</button>
+                                </div>
+                            </div>
+                            
+                            <div class="weekdays">
+                                <div>Mon</div><div>Tue</div><div>Wed</div>
+                                <div>Thu</div><div>Fri</div><div>Sat</div>
+                                <div>Sun</div>
+                            </div>
+                            
+                            <div class="days" id="calendarDays"></div>
+                        </div>
+                        
+                        <div class="time-selection">
+                            <div class="time-slots-compact" id="timeSlots"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-right">
+                    <div class="price-card">
+                        <div class="booking-summary-compact">
+                            <div class="summary-title" id="step2SummaryTitle">2 Hours Ski Lesson</div>
+                            <div class="summary-details" id="step2SummaryDetails">1 Person × 1 Day</div>
+                            <div class="summary-date-time" id="step2DateTimeDisplay" style="display: none;"></div>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Total amount:</span>
+                            <span id="totalPriceStep2" class="total-price">$100</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">20% deposit:</span>
+                            <span id="depositPriceStep2" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Remaining balance:</span>
+                            <span id="remainingPriceStep2" class="price-value">$80</span>
+                        </div>
+                        <div id="discountInfoStep2" class="discount-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn btn-back" id="backToStep1">Back</button>
+                <button class="btn btn-next" id="nextToStep3" disabled>Continue</button>
+            </div>
+        </div>
+
+        <div class="form-section" id="step3">
+            <h2 class="subsection-title">Personal Information</h2>
+            <div class="step-layout">
+                <div class="step-left">
+                    <form id="personalInfoForm" class="step3-form">
+                        <div class="form-row-compact">
+                            <div class="form-field">
+                                <input type="text" id="fullName" class="form-input" placeholder="Full Name *" required>
+                                <div class="error" id="fullNameError">Please enter your full name</div>
+                            </div>
+                            <div class="form-field">
+                                <input type="tel" id="phone" class="form-input" placeholder="Phone (WhatsApp) *" required>
+                                <div class="error" id="phoneError">Please enter a valid phone number</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row-compact">
+                            <div class="form-field">
+                                <input type="email" id="email" class="form-input" placeholder="Email *" required>
+                                <div class="error" id="emailError">Please enter a valid email address</div>
+                            </div>
+                            <div class="form-field">
+                                <input type="number" id="age" class="form-input" placeholder="Age *" min="5" max="80" required>
+                                <div class="error" id="ageError">Please enter a valid age (5-80)</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row-compact">
+                            <div class="form-field">
+                                <select id="skillLevel" class="custom-select" required>
+                                    <option value="">Skill Level *</option>
+                                    <option value="first-time">First Time</option>
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                </select>
+                                <div class="error" id="skillLevelError">Please select your skill level</div>
+                            </div>
+                            <div class="form-field"></div>
+                        </div>
+
+                        <div class="full-width">
+                            <textarea id="additionalInfo" class="form-input" rows="3" placeholder="Additional Information (optional)"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="step-right">
+                    <div class="price-card">
+                        <div class="booking-summary-compact">
+                            <div class="summary-title" id="step3SummaryTitle">2 Hours Ski Lesson</div>
+                            <div class="summary-details" id="step3SummaryDetails">1 Person × 1 Day</div>
+                            <div class="summary-date-time" id="step3DateTimeDisplay" style="display: none;"></div>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Total amount:</span>
+                            <span id="totalPriceStep3" class="total-price">$100</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">20% deposit:</span>
+                            <span id="depositPriceStep3" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Remaining balance:</span>
+                            <span id="remainingPriceStep3" class="price-value">$80</span>
+                        </div>
+                        <div id="discountInfoStep3" class="discount-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn btn-back" id="backToStep2">Back</button>
+                <div class="paypal-container">
+                    <div id="paypal-button-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section" id="successScreen">
+            <div class="success-screen">
+                <div class="success-icon">✅</div>
+                <h1 class="success-title">Booking Confirmed!</h1>
+                <p class="success-message">Thank you for your booking! Your lesson has been scheduled! We're excited to see you on the slopes!</p>
+            </div>
+        </div>
+
+        <div class="form-section" id="paymentProcessing">
+            <div class="payment-processing">
+                <div class="loading-spinner"></div>
+                <h1 class="success-title">Processing Payment</h1>
+                <p class="success-message">Please wait while we securely process your payment...</p>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -36,7 +1082,71 @@
             lessonStartHour: 10
         };
 
-        // ... остальной JavaScript код формы ...
+        const State = {
+            currentMonth: new Date(Math.max(new Date(), CONFIG.minDate)),
+            selectedDate: null,
+            selectedTime: null,
+            currentStep: 1,
+            currentSport: 'ski',
+            init() { this.currentMonth.setDate(1); },
+            getBookingSummary() {
+                const sport = this.currentSport;
+                let duration, people, days;
+                
+                if (sport === 'kids') {
+                    duration = document.getElementById('kidsDurationSelect').value;
+                    people = document.getElementById('kids').value;
+                    days = document.getElementById('kidsDaysSlider').value;
+                    
+                    const durationText = {
+                        'full': 'Full Day',
+                        'half-lunch': 'Half Day With Lunch',
+                        'half-nolunch': 'Half Day No Lunch'
+                    }[duration];
+                    
+                    const peopleText = people > 1 ? `${people} Kids` : '1 Kid';
+                    const daysText = days > 1 ? `${days} Days` : '1 Day';
+                    
+                    return {
+                        title: `Kids Ski Club ${durationText}`,
+                        details: `${peopleText} × ${daysText}`
+                    };
+                } else {
+                    duration = document.getElementById('duration').value;
+                    people = document.getElementById('participants').value;
+                    days = document.getElementById('days').value;
+                    
+                    const durationText = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'}[duration];
+                    const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
+                    const peopleText = people > 1 ? `${people} Persons` : '1 Person';
+                    const daysText = days > 1 ? `${days} Days` : '1 Day';
+                    
+                    return {
+                        title: `${durationText} ${sportText} Lesson`,
+                        details: `${peopleText} × ${daysText}`
+                    };
+                }
+            }
+        };
+
+        let paypalButtons;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            State.init();
+            initPhone();
+            setupEvents();
+            renderCalendar();
+            updateAllDisplays();
+            initPayPal();
+        });
+
+        function initPhone() {
+            window.phoneInput = window.intlTelInput(document.getElementById('phone'), {
+                initialCountry: "auto",
+                preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+        }
 
         function initPayPal() {
             paypalButtons = paypal.Buttons({
@@ -73,12 +1183,10 @@
                         formData.paymentId = details.id;
                         formData.payerEmail = details.payer.email_address;
                         
-                        // Отправка данных в бот через вебхук
+                        // Отправка данных в MongoDB бот через вебхук
                         sendToBot(formData);
                         
-                        // Отправка email
                         sendEmail(formData, 'Booking Confirmation');
-                        
                         setTimeout(showSuccess, 1000);
                     });
                 },
@@ -103,36 +1211,34 @@
             }
         }
 
-        // Функция отправки данных в бот
+        // Функция отправки данных в MongoDB бот
         function sendToBot(formData) {
-            const webhookUrl = window.location.hostname === 'localhost' 
-                ? 'http://localhost:8080/webhook/booking'
-                : 'https://skischoolgebot-production.up.railway.app/webhook/booking';
+            const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
             
             const bookingData = {
                 fullName: formData.fullName,
                 phone: formData.phone,
                 email: formData.email,
-                age: formData.age,
+                age: parseInt(formData.age),
                 skillLevel: formData.skillLevel,
                 additionalInfo: formData.additionalInfo,
                 sport: State.currentSport,
                 duration: State.currentSport === 'kids' ? 
                     document.getElementById('kidsDurationSelect').value : 
                     document.getElementById('duration').value,
-                participants: State.currentSport === 'kids' ? 
+                participants: parseInt(State.currentSport === 'kids' ? 
                     document.getElementById('kids').value : 
-                    document.getElementById('participants').value,
-                days: State.currentSport === 'kids' ? 
+                    document.getElementById('participants').value),
+                days: parseInt(State.currentSport === 'kids' ? 
                     document.getElementById('kidsDaysSlider').value : 
-                    document.getElementById('days').value,
+                    document.getElementById('days').value),
                 date: State.selectedDate ? State.selectedDate.toISOString().split('T')[0] : '',
                 time: State.selectedTime || '',
-                total: formData.total,
-                deposit: formData.deposit,
-                remaining: formData.remaining,
+                total: parseInt(formData.total),
+                deposit: parseInt(formData.deposit),
+                remaining: parseInt(formData.remaining),
                 bookingId: formData.bookingId,
-                paymentStatus: 'completed'
+                paymentStatus: formData.paymentStatus
             };
 
             console.log('Sending booking data to bot:', bookingData);
@@ -146,24 +1252,583 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
             })
             .then(data => {
-                console.log('Booking data sent to bot successfully:', data);
-                if (!data.success) {
-                    console.error('Bot returned error:', data.error);
-                }
+                console.log('Booking data sent to MongoDB bot successfully:', data);
             })
             .catch(error => {
                 console.error('Error sending booking data to bot:', error);
-                // Показываем успех даже если отправка в бот не удалась
-                // Пользователь уже оплатил, это системная ошибка
+                // Fallback: try to send email anyway
+                sendEmail(formData, 'Booking Confirmation (Webhook Failed)');
             });
         }
 
-        // ... остальные функции формы ...
+        function setupEvents() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    State.currentSport = this.dataset.sport;
+                    updateSportControls();
+                    updateAllDisplays();
+                });
+            });
+
+            ['duration', 'participants', 'days'].forEach(id => {
+                document.getElementById(id).addEventListener('input', () => {
+                    if (id === 'participants') {
+                        const val = document.getElementById('participants').value;
+                        document.getElementById('participantsValue').textContent = val + ' Person' + (val > 1 ? 's' : '');
+                    }
+                    if (id === 'days') {
+                        const val = document.getElementById('days').value;
+                        document.getElementById('daysValue').textContent = val + ' Day' + (val > 1 ? 's' : '');
+                    }
+                    updateAllDisplays();
+                });
+            });
+
+            document.getElementById('kidsDurationSelect').addEventListener('change', updateAllDisplays);
+            
+            document.getElementById('kids').addEventListener('input', () => {
+                const val = document.getElementById('kids').value;
+                document.getElementById('kidsValue').textContent = val + ' Kid' + (val > 1 ? 's' : '');
+                updateAllDisplays();
+            });
+            
+            document.getElementById('kidsDaysSlider').addEventListener('input', () => {
+                const val = document.getElementById('kidsDaysSlider').value;
+                document.getElementById('kidsDaysValue').textContent = val + ' Day' + (val > 1 ? 's' : '');
+                updateAllDisplays();
+            });
+
+            document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
+            document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
+            document.getElementById('backToStep1').addEventListener('click', () => {
+                State.selectedDate = null;
+                State.selectedTime = null;
+                showStep(1);
+            });
+            document.getElementById('backToStep2').addEventListener('click', () => showStep(2));
+            document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
+            
+            document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (validateForm()) {
+                }
+            });
+        }
+
+        function updateSportControls() {
+            const isKids = State.currentSport === 'kids';
+            
+            document.getElementById('skiSnowboardDuration').style.display = isKids ? 'none' : 'block';
+            document.getElementById('kidsDuration').style.display = isKids ? 'block' : 'none';
+            
+            document.getElementById('skiSnowboardParticipants').style.display = isKids ? 'none' : 'block';
+            document.getElementById('kidsParticipants').style.display = isKids ? 'block' : 'none';
+            
+            document.getElementById('skiSnowboardDays').style.display = isKids ? 'none' : 'block';
+            document.getElementById('kidsDays').style.display = isKids ? 'block' : 'none';
+            
+            updateAgeValidation();
+            updateSkillLevelOptions();
+        }
+
+        function updateAgeValidation() {
+            const ageInput = document.getElementById('age');
+            const ageError = document.getElementById('ageError');
+            
+            if (State.currentSport === 'kids') {
+                ageInput.min = 6;
+                ageInput.max = 12;
+                ageInput.placeholder = "Age (6-12) *";
+                ageError.textContent = "Please enter a valid age (6-12)";
+            } else {
+                ageInput.min = 5;
+                ageInput.max = 80;
+                ageInput.placeholder = "Age *";
+                ageError.textContent = "Please enter a valid age (5-80)";
+            }
+        }
+
+        function updateSkillLevelOptions() {
+            const skillLevelSelect = document.getElementById('skillLevel');
+            const currentValue = skillLevelSelect.value;
+            
+            skillLevelSelect.innerHTML = '<option value="">Skill Level *</option>';
+            
+            if (State.currentSport === 'kids') {
+                skillLevelSelect.innerHTML += `
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                `;
+            } else {
+                skillLevelSelect.innerHTML += `
+                    <option value="first-time">First Time</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                `;
+            }
+            
+            if (currentValue && skillLevelSelect.querySelector(`option[value="${currentValue}"]`)) {
+                skillLevelSelect.value = currentValue;
+            }
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            State.currentStep = step;
+            
+            if (step === 2 || step === 3) {
+                updateDateTimeDisplay(step);
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateAllDisplays() {
+            const summary = State.getBookingSummary();
+            
+            for (let i = 1; i <= 3; i++) {
+                const titleElement = document.getElementById(`step${i}SummaryTitle`);
+                const detailsElement = document.getElementById(`step${i}SummaryDetails`);
+                if (titleElement) titleElement.textContent = summary.title;
+                if (detailsElement) detailsElement.textContent = summary.details;
+            }
+            
+            updatePrices();
+            updateDateTimeDisplay(1);
+            updateDateTimeDisplay(2);
+            updateDateTimeDisplay(3);
+        }
+
+        function updateDateTimeDisplay(step) {
+            const dateTimeElement = document.getElementById(`step${step}DateTimeDisplay`);
+            
+            if (State.selectedDate && State.selectedTime) {
+                const dateStr = State.selectedDate.toLocaleDateString('en-US', {
+                    month: 'long', day: 'numeric', year: 'numeric'
+                });
+                dateTimeElement.textContent = `${dateStr} at ${State.selectedTime}`;
+                dateTimeElement.style.display = 'block';
+            } else {
+                dateTimeElement.style.display = 'none';
+            }
+        }
+
+        function showPaymentProcessing() {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('paymentProcessing').classList.add('active');
+        }
+
+        function showSuccess() {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('successScreen').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updatePrices() {
+            const data = calculatePrice();
+            ['', 'Step2', 'Step3'].forEach(suffix => {
+                const totalElement = document.getElementById(`totalPrice${suffix}`);
+                const depositElement = document.getElementById(`depositPrice${suffix}`);
+                const remainingElement = document.getElementById(`remainingPrice${suffix}`);
+                const discountElement = document.getElementById(`discountInfo${suffix}`);
+                
+                if (totalElement) totalElement.textContent = `$${data.total}`;
+                if (depositElement) depositElement.textContent = `$${data.deposit}`;
+                if (remainingElement) remainingElement.textContent = `$${data.remaining}`;
+                
+                if (discountElement) {
+                    if (data.discountText) {
+                        discountElement.textContent = data.discountText;
+                        discountElement.classList.add('show');
+                    } else {
+                        discountElement.classList.remove('show');
+                    }
+                }
+            });
+        }
+
+        function calculatePrice() {
+            let basePrice, people, days;
+            
+            if (State.currentSport === 'kids') {
+                const duration = document.getElementById('kidsDurationSelect').value;
+                people = parseInt(document.getElementById('kids').value);
+                days = parseInt(document.getElementById('kidsDaysSlider').value);
+                basePrice = CONFIG.prices.kids[duration];
+            } else {
+                const duration = document.getElementById('duration').value;
+                people = parseInt(document.getElementById('participants').value);
+                days = parseInt(document.getElementById('days').value);
+                basePrice = CONFIG.prices[duration];
+            }
+            
+            const pricePerDay = State.currentSport === 'kids' ? 
+                basePrice * people : 
+                basePrice + (people - 1) * 40;
+            
+            let total = 0;
+            let maxDiscount = 0;
+            
+            // Новая логика скидок для Kids Ski Club
+            for (let day = 1; day <= days; day++) {
+                let discount = 0;
+                
+                if (State.currentSport === 'kids') {
+                    // Kids Ski Club скидки: 10% с 5 дня, 15% с 7 дня, 20% с 9 дня
+                    if (day >= 9) discount = 0.20;
+                    else if (day >= 7) discount = 0.15;
+                    else if (day >= 5) discount = 0.10;
+                } else {
+                    // Старые скидки для взрослых
+                    discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                }
+                
+                total += pricePerDay * (1 - discount);
+                if (discount > maxDiscount) maxDiscount = discount;
+            }
+            
+            total = Math.round(total);
+            const deposit = Math.round(total * 0.20);
+            const remaining = total - deposit;
+            
+            let discountText = '';
+            if (maxDiscount > 0) {
+                if (State.currentSport === 'kids') {
+                    if (maxDiscount === 0.20) {
+                        discountText = '🎉 You save 20% on days 9+';
+                    } else if (maxDiscount === 0.15) {
+                        discountText = '🎉 You save 15% on days 7-8';
+                    } else if (maxDiscount === 0.10) {
+                        discountText = '🎉 You save 10% on days 5-6';
+                    }
+                } else {
+                    discountText = `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}`;
+                }
+            }
+            
+            return { total, deposit, remaining, discountText };
+        }
+
+        function generateBookingId() {
+            return 'BK' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
+        }
+
+        function renderCalendar() {
+            const year = State.currentMonth.getFullYear();
+            const month = State.currentMonth.getMonth();
+            
+            document.querySelector('.calendar-month').textContent = 
+                State.currentMonth.toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            
+            document.getElementById('calendarDays').innerHTML = '';
+            
+            for (let i = 0; i < startDay; i++) {
+                createDay('', 'day other-month', true);
+            }
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                let className = 'day';
+                
+                if (date.toDateString() === today.toDateString()) className += ' today';
+                
+                if (date < CONFIG.minDate || date > CONFIG.maxDate || date < today) {
+                    createDay(day, className + ' disabled', true);
+                } else {
+                    if (State.selectedDate && State.selectedDate.toDateString() === date.toDateString()) {
+                        className += ' selected';
+                    }
+                    createDay(day, className, false, date);
+                }
+            }
+            
+            updateTimeSlots();
+        }
+
+        function createDay(day, className, disabled, date = null) {
+            const button = document.createElement('button');
+            button.className = className;
+            button.textContent = day;
+            button.disabled = disabled;
+            
+            if (!disabled && date) {
+                button.addEventListener('click', () => {
+                    State.selectedDate = date;
+                    renderCalendar();
+                    updateTimeSlots();
+                    updateAllDisplays();
+                    document.getElementById('nextToStep3').disabled = !State.selectedTime;
+                });
+            }
+            
+            document.getElementById('calendarDays').appendChild(button);
+        }
+
+        function navigateMonth(direction) {
+            State.currentMonth.setMonth(State.currentMonth.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function updateTimeSlots() {
+            const timeSlots = document.getElementById('timeSlots');
+            timeSlots.innerHTML = '';
+            
+            if (!State.selectedDate) {
+                timeSlots.innerHTML = '<div class="time-slot disabled">Select date first</div>';
+                document.getElementById('nextToStep3').disabled = true;
+                return;
+            }
+
+            if (State.currentSport === 'kids') {
+                createTimeSlot('10:30', '10:30');
+            } else {
+                const duration = document.getElementById('duration').value;
+                
+                if (duration === 'full') {
+                    createTimeSlot('10:00', '10:00 (Full day)');
+                } else {
+                    const hours = parseInt(duration);
+                    for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - hours; hour++) {
+                        createTimeSlot(`${hour}:00`);
+                    }
+                }
+            }
+        }
+
+        function createTimeSlot(time, display = null) {
+            const slot = document.createElement('button');
+            slot.className = 'time-slot';
+            slot.textContent = display || time;
+            
+            if (State.selectedTime === time) slot.classList.add('selected');
+            
+            slot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                State.selectedTime = time;
+                this.classList.add('selected');
+                updateAllDisplays();
+                document.getElementById('nextToStep3').disabled = false;
+            });
+            
+            document.getElementById('timeSlots').appendChild(slot);
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            if (!document.getElementById('fullName').value.trim()) {
+                showError('fullNameError', 'Please enter your full name');
+                isValid = false;
+            } else {
+                hideError('fullNameError');
+            }
+            
+            if (!window.phoneInput.isValidNumber()) {
+                showError('phoneError', 'Please enter a valid phone number');
+                isValid = false;
+            } else {
+                hideError('phoneError');
+            }
+            
+            if (!document.getElementById('email').value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError('emailError', 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                hideError('emailError');
+            }
+            
+            const age = parseInt(document.getElementById('age').value);
+            const minAge = State.currentSport === 'kids' ? 6 : 5;
+            const maxAge = State.currentSport === 'kids' ? 12 : 80;
+            
+            if (!age || age < minAge || age > maxAge) {
+                showError('ageError', `Please enter a valid age (${minAge}-${maxAge})`);
+                isValid = false;
+            } else {
+                hideError('ageError');
+            }
+            
+            const skillLevel = document.getElementById('skillLevel');
+            if (!skillLevel.value) {
+                showError('skillLevelError', 'Please select your skill level');
+                isValid = false;
+            } else if (State.currentSport === 'kids' && 
+                      (skillLevel.value === 'first-time' || skillLevel.value === 'advanced')) {
+                showError('skillLevelError', 'For Kids Ski Club, please select Beginner or Intermediate');
+                isValid = false;
+            } else {
+                hideError('skillLevelError');
+            }
+            
+            return isValid;
+        }
+
+        function getFormData() {
+            const summary = State.getBookingSummary();
+            let duration, people, days;
+            
+            if (State.currentSport === 'kids') {
+                duration = document.getElementById('kidsDurationSelect').value;
+                people = document.getElementById('kids').value;
+                days = document.getElementById('kidsDaysSlider').value;
+            } else {
+                duration = document.getElementById('duration').value;
+                people = document.getElementById('participants').value;
+                days = document.getElementById('days').value;
+            }
+            
+            const price = calculatePrice();
+            
+            return {
+                subject: `Booking: ${summary.title} with ${summary.details}`,
+                title: summary.title,
+                details: summary.details,
+                dateTime: State.selectedDate && State.selectedTime ? 
+                    `${State.selectedDate.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})} at ${State.selectedTime}` : 
+                    'Not selected',
+                fullName: document.getElementById('fullName').value,
+                phone: window.phoneInput.getNumber(),
+                email: document.getElementById('email').value,
+                age: document.getElementById('age').value,
+                skillLevel: document.getElementById('skillLevel').options[document.getElementById('skillLevel').selectedIndex].text,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                total: price.total,
+                deposit: price.deposit,
+                remaining: price.remaining,
+                bookingId: generateBookingId()
+            };
+        }
+
+        function sendEmail(formData, emailType) {
+            const paymentStatus = formData.paymentStatus || 'unknown';
+            const paymentInfo = paymentStatus === 'completed' ? 
+                `Payment Status: ✅ COMPLETED\nPayment ID: ${formData.paymentId}\nPayer Email: ${formData.payerEmail}` :
+                `Payment Status: ❌ ${paymentStatus.toUpperCase()}\nError: ${formData.error || 'N/A'}`;
+
+            const body = `
+${formData.title} with ${formData.details}
+${formData.dateTime}
+
+${paymentInfo}
+
+Booking ID: ${formData.bookingId}
+Full Name: ${formData.fullName}
+Phone (WhatsApp): https://wa.me/${formData.phone.replace('+', '')}
+Email: ${formData.email}
+Age: ${formData.age}
+Skill level: ${formData.skillLevel}
+Additional information: ${formData.additionalInfo || 'None'}
+
+Total amount: $${formData.total}
+20% deposit: $${formData.deposit}
+Remaining balance: $${formData.remaining}
+
+Google Calendar Link: ${generateCalendarLink(formData)}
+            `.trim();
+
+            const toEmail = 'info@skischool.ge';
+            
+            emailjs.init('gb9ZTULk6-ghDtZuV');
+            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
+                to_email: toEmail,
+                subject: `${emailType}: ${formData.title}`,
+                message: body,
+                from_name: formData.fullName,
+                from_email: formData.email,
+                phone: formData.phone
+            }).catch(() => {
+                const mailto = `mailto:${toEmail}?subject=${encodeURIComponent(emailType + ': ' + formData.subject)}&body=${encodeURIComponent(body)}`;
+                window.open(mailto, '_blank');
+            });
+        }
+
+        function generateCalendarLink(data) {
+            if (!State.selectedDate || !State.selectedTime) return '';
+            
+            const start = new Date(State.selectedDate);
+            const [hours] = State.selectedTime.split(':');
+            start.setHours(parseInt(hours), 0, 0);
+            
+            const end = new Date(start);
+            let duration;
+            let days;
+            
+            if (State.currentSport === 'kids') {
+                duration = document.getElementById('kidsDurationSelect').value;
+                days = parseInt(document.getElementById('kidsDaysSlider').value);
+                
+                if (duration === 'full') {
+                    end.setHours(start.getHours() + 6);
+                } else if (duration === 'half-lunch') {
+                    end.setHours(start.getHours() + 4);
+                } else {
+                    end.setHours(start.getHours() + 3);
+                }
+            } else {
+                duration = document.getElementById('duration').value;
+                days = parseInt(document.getElementById('days').value);
+                
+                end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
+            }
+            
+            const details = `
+Full Name: ${data.fullName}
+Phone: ${data.phone}
+Email: ${data.email}
+Age: ${data.age}
+Skill level: ${data.skillLevel}
+Additional info: ${data.additionalInfo || 'None'}
+
+Total: $${data.total}
+Deposit: $${data.deposit}
+Balance: $${data.remaining}
+            `.trim();
+
+            const params = new URLSearchParams({
+                action: 'TEMPLATE',
+                text: data.subject,
+                dates: `${formatDate(start)}/${formatDate(end)}`,
+                details: details,
+                location: 'Gudauri Ski Resort'
+            });
+
+            if (days > 1) {
+                params.append('recur', `RRULE:FREQ=DAILY;COUNT=${days}`);
+            }
+
+            return `https://calendar.google.com/calendar/render?${params}`;
+        }
+
+        function formatDate(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+
+        function hideError(id) {
+            document.getElementById(id).classList.remove('show');
+        }
     </script>
 </body>
 </html>
