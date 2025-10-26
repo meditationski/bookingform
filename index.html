@@ -1202,11 +1202,12 @@ input[type="range"]::-webkit-slider-thumb {
 
 // Функция отправки данных на сервер
 function sendBookingToServer(formData) {
-    const webhookUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:3000/api/booking'
-        : '/api/booking';
-
-    console.log('Sending booking to:', webhookUrl);
+    // Получаем базовый URL автоматически
+    const baseUrl = window.location.origin;
+    const webhookUrl = `${baseUrl}/api/booking`;
+    
+    console.log('📤 Sending booking to:', webhookUrl);
+    console.log('📦 Booking data:', formData);
 
     fetch(webhookUrl, {
         method: 'POST',
@@ -1216,14 +1217,17 @@ function sendBookingToServer(formData) {
         body: JSON.stringify(formData)
     })
     .then(response => {
-        console.log('Response status:', response.status);
+        console.log('📥 Response status:', response.status, response.statusText);
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // Получаем текст ошибки если есть
+            return response.text().then(text => {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}. ${text}`);
+            });
         }
         return response.json();
     })
     .then(data => {
-        console.log('Server response:', data);
+        console.log('✅ Server response:', data);
         if (data.success) {
             setTimeout(showSuccess, 1000);
         } else {
@@ -1232,8 +1236,8 @@ function sendBookingToServer(formData) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Error saving booking. Please contact support. Error: ' + error.message);
+        console.error('❌ Fetch error:', error);
+        alert('Error saving booking: ' + error.message);
         showStep(3);
     });
 }
