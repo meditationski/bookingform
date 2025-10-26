@@ -1200,43 +1200,43 @@ input[type="range"]::-webkit-slider-thumb {
             }
         }
 
-        // Функция отправки данных на сервер
-        function sendBookingToServer(formData) {
-            const webhookUrl = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3000/webhook/booking'
-                : '/webhook/booking';
+// Функция отправки данных на сервер
+function sendBookingToServer(formData) {
+    const webhookUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000/api/booking'
+        : '/api/booking';
 
-            console.log('Sending booking to:', webhookUrl);
-            console.log('Booking data:', formData);
+    console.log('Sending booking to:', webhookUrl);
 
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Server response:', data);
-                if (data.success) {
-                    setTimeout(showSuccess, 1000);
-                } else {
-                    alert('Error saving booking: ' + (data.error || 'Unknown error'));
-                    showStep(3);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error saving booking. Please contact support. Error: ' + error.message);
-                showStep(3);
-            });
+    fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Server response:', data);
+        if (data.success) {
+            setTimeout(showSuccess, 1000);
+        } else {
+            alert('Error saving booking: ' + (data.error || 'Unknown error'));
+            showStep(3);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving booking. Please contact support. Error: ' + error.message);
+        showStep(3);
+    });
+}
 
         function setupEvents() {
             document.querySelectorAll('.tab').forEach(tab => {
