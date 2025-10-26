@@ -1202,7 +1202,18 @@ input[type="range"]::-webkit-slider-thumb {
 
 // Функция отправки данных на сервер
 function sendBookingToServer(formData) {
-    // Получаем базовый URL автоматически
+    console.log('📍 Current URL:', window.location.href);
+console.log('📍 Current origin:', window.location.origin);
+console.log('📍 Current hostname:', window.location.hostname);
+
+// Проверим доступность endpoint
+const testUrl = `${window.location.origin}/api/test`;
+console.log('🧪 Testing endpoint:', testUrl);
+
+fetch(testUrl)
+    .then(response => response.json())
+    .then(data => console.log('🧪 Test endpoint response:', data))
+    .catch(err => console.error('🧪 Test endpoint failed:', err));    // Получаем базовый URL автоматически
     const baseUrl = window.location.origin;
     const webhookUrl = `${baseUrl}/api/booking`;
     
