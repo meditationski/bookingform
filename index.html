@@ -196,8 +196,7 @@ input[type="range"]::-webkit-slider-thumb {
         height: fit-content;
     }
 }
-
-.step1-controls {
+        .step1-controls {
     display: flex;
     flex-direction: column;
     gap: 1.25em;
@@ -611,8 +610,7 @@ input[type="range"]::-webkit-slider-thumb {
 #phone { 
     padding-left: 5em !important; 
 }
-
-@media (max-width: 767px) {
+        @media (max-width: 767px) {
     .container {
         padding: 0.5em;
     }
@@ -1065,7 +1063,7 @@ input[type="range"]::-webkit-slider-thumb {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        const CONFIG = {
+                const CONFIG = {
             prices: {
                 2: 100, 
                 3: 140, 
@@ -1148,6 +1146,85 @@ input[type="range"]::-webkit-slider-thumb {
             });
         }
 
+        // НОВАЯ ФУНКЦИЯ: Валидация всех полей перед оплатой
+        function validateAllFields() {
+            console.log('🔍 Validating all fields before payment...');
+            let isValid = true;
+            const errors = [];
+
+            // Проверка Full Name
+            const fullName = document.getElementById('fullName').value.trim();
+            if (!fullName || fullName.length < 2) {
+                showError('fullNameError', 'Please enter your full name (minimum 2 characters)');
+                errors.push('Full Name is empty or too short');
+                isValid = false;
+            } else {
+                hideError('fullNameError');
+            }
+
+            // Проверка Phone
+            if (!window.phoneInput.isValidNumber()) {
+                showError('phoneError', 'Please enter a valid international phone number');
+                errors.push('Phone number is invalid');
+                isValid = false;
+            } else {
+                hideError('phoneError');
+            }
+
+            // Проверка Email
+            const email = document.getElementById('email').value.trim();
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError('emailError', 'Please enter a valid email address');
+                errors.push('Email is invalid');
+                isValid = false;
+            } else {
+                hideError('emailError');
+            }
+
+            // Проверка Age
+            const age = parseInt(document.getElementById('age').value);
+            const minAge = State.currentSport === 'kids' ? 6 : 5;
+            const maxAge = State.currentSport === 'kids' ? 12 : 80;
+            
+            if (!age || age < minAge || age > maxAge) {
+                showError('ageError', `Please enter a valid age (${minAge}-${maxAge})`);
+                errors.push(`Age is invalid (required: ${minAge}-${maxAge})`);
+                isValid = false;
+            } else {
+                hideError('ageError');
+            }
+
+            // Проверка Skill Level
+            const skillLevel = document.getElementById('skillLevel').value;
+            if (!skillLevel) {
+                showError('skillLevelError', 'Please select your skill level');
+                errors.push('Skill level not selected');
+                isValid = false;
+            } else {
+                hideError('skillLevelError');
+            }
+
+            // Проверка Date
+            if (!State.selectedDate) {
+                errors.push('Date not selected');
+                isValid = false;
+            }
+
+            // Проверка Time
+            if (!State.selectedTime) {
+                errors.push('Time not selected');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                console.error('❌ Validation failed:', errors);
+            } else {
+                console.log('✅ All fields validated successfully');
+            }
+
+            return isValid;
+        }
+
         function initPayPal() {
             paypalButtons = paypal.Buttons({
                 style: {
@@ -1158,8 +1235,16 @@ input[type="range"]::-webkit-slider-thumb {
                     height: 55
                 },
                 createOrder: function(data, actions) {
+                    // КРИТИЧЕСКАЯ ПРОВЕРКА: Валидация ДО создания заказа
+                    if (!validateAllFields()) {
+                        alert('⚠️ Please fill in all required fields before proceeding with payment.');
+                        return Promise.reject(new Error('Validation failed'));
+                    }
+
                     const depositAmount = document.getElementById('depositPriceStep3').textContent.replace('$', '');
                     const bookingDetails = State.getBookingSummary();
+                    
+                    console.log('💳 Creating PayPal order with deposit:', depositAmount);
                     
                     return actions.order.create({
                         purchase_units: [{
@@ -1183,6 +1268,8 @@ input[type="range"]::-webkit-slider-thumb {
                         formData.paymentId = details.id;
                         formData.payerEmail = details.payer.email_address;
                         
+                        console.log('✅ Payment completed:', details.id);
+                        
                         // Отправка данных в бот через вебхук
                         sendToBot(formData);
                         
@@ -1197,6 +1284,7 @@ input[type="range"]::-webkit-slider-thumb {
                     alert('Payment was cancelled. Please try again to complete your booking.');
                 },
                 onError: function(err) {
+                    console.error('❌ PayPal error:', err);
                     const formData = getFormData();
                     formData.paymentStatus = 'failed';
                     formData.error = err.toString();
@@ -1211,9 +1299,11 @@ input[type="range"]::-webkit-slider-thumb {
             }
         }
 
-        // Функция отправки данных в бот
+        // НОВАЯ ФУНКЦИЯ: Отправка данных в бот с проверкой
         function sendToBot(formData) {
-            const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
+            const webhookUrl = 'https://skischoolgeobot-production.up.railway.app/webhook/booking';
+            
+            console.log('📤 Preparing to send booking data to bot...');
             
             const bookingData = {
                 fullName: formData.fullName,
@@ -1241,6 +1331,17 @@ input[type="range"]::-webkit-slider-thumb {
                 paymentStatus: formData.paymentStatus
             };
 
+            // КРИТИЧЕСКАЯ ПРОВЕРКА: Все обязательные поля заполнены
+            const requiredFields = ['fullName', 'phone', 'email', 'age', 'skillLevel', 'sport', 'duration', 'participants', 'days', 'date', 'time'];
+            const missingFields = requiredFields.filter(field => !bookingData[field]);
+            
+            if (missingFields.length > 0) {
+                console.error('❌ Cannot send to bot - missing required fields:', missingFields);
+                throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+            }
+
+            console.log('✅ All required fields present, sending to bot:', bookingData);
+
             fetch(webhookUrl, {
                 method: 'POST',
                 headers: {
@@ -1250,10 +1351,10 @@ input[type="range"]::-webkit-slider-thumb {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Booking data sent to bot successfully:', data);
+                console.log('✅ Booking data sent to bot successfully:', data);
             })
             .catch(error => {
-                console.error('Error sending booking data to bot:', error);
+                console.error('❌ Error sending booking data to bot:', error);
             });
         }
 
@@ -1371,8 +1472,7 @@ input[type="range"]::-webkit-slider-thumb {
                 skillLevelSelect.value = currentValue;
             }
         }
-
-        function showStep(step) {
+                function showStep(step) {
             document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
             document.getElementById(`step${step}`).classList.add('active');
             State.currentStep = step;
@@ -1470,7 +1570,7 @@ input[type="range"]::-webkit-slider-thumb {
             let total = 0;
             let maxDiscount = 0;
             
-            // Новая логика скидок для Kids Ski Club
+            // Новая логика скидки для Kids Ski Club
             for (let day = 1; day <= days; day++) {
                 let discount = 0;
                 
@@ -1661,7 +1761,7 @@ input[type="range"]::-webkit-slider-thumb {
                 showError('skillLevelError', 'Please select your skill level');
                 isValid = false;
             } else if (State.currentSport === 'kids' && 
-                      (skillLevel.value === 'first-time' || skillLevel.value === 'advanced')) {
+                       (skillLevel.value === 'first-time' || skillLevel.value === 'advanced')) {
                 showError('skillLevelError', 'For Kids Ski Club, please select Beginner or Intermediate');
                 isValid = false;
             } else {
@@ -1736,7 +1836,7 @@ Google Calendar Link: ${generateCalendarLink(formData)}
 
             const toEmail = 'info@skischool.ge';
             
-            emailjs.init('gb9ZTULk6-ghDtZuV');
+            emailjs.init('gb9ZTULk6-ghDTZuV');
             emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
                 to_email: toEmail,
                 subject: `${emailType}: ${formData.title}`,
