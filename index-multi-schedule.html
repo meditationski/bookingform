@@ -1786,6 +1786,7 @@ function sendToBot(bookingData) {
         email: bookingData.email,
         age: parseInt(bookingData.age),
         skillLevel: bookingData.skillLevel,
+        language: bookingData.language, // ← Добавляем язык
         additionalInfo: bookingData.additionalInfo || '',
         sport: bookingData.sport,
         duration: bookingData.duration,
