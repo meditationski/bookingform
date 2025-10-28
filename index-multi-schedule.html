@@ -568,7 +568,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* PayPal кнопка полукруглая */
-.paypal-button-container {
+.paypal-buttons {
     border-radius: var(--border-radius) !important;
 }
 
@@ -963,13 +963,13 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Success Screen - ИСПРАВЛЕНО СООБЩЕНИЕ -->
+        <!-- Success Screen -->
         <div class="form-section" id="successScreen">
             <div class="success-screen">
                 <div class="success-icon">✓</div>
                 <h2 class="success-title">Booking Confirmed!</h2>
                 <p class="success-message">
-                    Your lesson has been scheduled! We're excited to see you on the slopes!
+                    Thank you for your booking! Your lesson has been scheduled! We're excited to see you on the slopes!
                 </p>
             </div>
         </div>
@@ -989,7 +989,6 @@ const state = {
     currentMonth: new Date().getMonth(),
     currentYear: new Date().getFullYear(),
     
-    // Правильная структура цен
     prices: {
         ski: { 
             '2': { base: 100, additional: 40 },
@@ -1001,7 +1000,6 @@ const state = {
             '3': { base: 140, additional: 50 },
             'full': { base: 250, additional: 80 }
         },
-        // ИСПРАВЛЕНО: Kids Club - цена умножается на количество детей
         kids: { 
             'full': 150,
             'half-lunch': 110,
@@ -1009,7 +1007,6 @@ const state = {
         }
     },
     
-    // Новая система скидок: применяется только на последующие дни
     getDiscount: function() {
         if (this.days >= 8) return 0.20;
         if (this.days >= 6) return 0.15;
@@ -1017,10 +1014,9 @@ const state = {
         return 0;
     },
     
-    // Тайм-слоты с учетом длительности
     getTimeSlots: function() {
         if (this.sport === 'kids') {
-            return ['10:30']; // Только одно время для Kids Club
+            return ['10:30'];
         }
         
         if (this.duration === '2') {
@@ -1034,7 +1030,6 @@ const state = {
         return ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
     },
     
-    // Период бронирования: с 15 декабря 2025 по 30 апреля 2026
     bookingPeriod: {
         startDate: new Date('2025-12-15'),
         endDate: new Date('2026-04-30')
@@ -1042,8 +1037,9 @@ const state = {
 };
 
 let phoneInput;
+let paypalButtons;
 
-// Initialize EmailJS - ИСПРАВЛЕНО: используем правильный сервис из оригинального кода
+// Initialize EmailJS
 emailjs.init('gb9ZTULk6-ghDTZuV');
 
 // ============ INITIALIZATION ============
@@ -1145,16 +1141,13 @@ function initStep1() {
     });
 }
 
-// ИСПРАВЛЕНО: Калькуляция Kids Club
 function calculatePrice() {
     let totalPrice = 0;
     
     if (state.sport === 'kids') {
-        // Для Kids Club: цена × количество детей × количество дней
         const pricePerKid = state.prices.kids[state.duration];
         totalPrice = pricePerKid * state.participants * state.days;
     } else {
-        // Для Ski/Snowboard: первый участник базовая цена, остальные дополнительные
         const priceConfig = state.prices[state.sport][state.duration];
         let pricePerDay = priceConfig.base;
         
@@ -1162,11 +1155,9 @@ function calculatePrice() {
             pricePerDay += (state.participants - 1) * priceConfig.additional;
         }
         
-        // Первые 3 дня по полной цене
         const fullPriceDays = Math.min(3, state.days);
         totalPrice = pricePerDay * fullPriceDays;
         
-        // Последующие дни со скидкой
         if (state.days > 3) {
             const discountRate = state.getDiscount();
             const discountedDays = state.days - 3;
@@ -1254,7 +1245,6 @@ function updateSummary() {
 function initStep2() {
     console.log('Init Step 2, days:', state.days);
     
-    // Create lessons array
     state.lessons = [];
     for (let i = 0; i < state.days; i++) {
         state.lessons.push({
@@ -1360,7 +1350,6 @@ function renderCalendar() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    // Empty cells
     for (let i = 0; i < startDay; i++) {
         const emptyDay = document.createElement('button');
         emptyDay.className = 'day disabled other-month';
@@ -1368,7 +1357,6 @@ function renderCalendar() {
         calendarDays.appendChild(emptyDay);
     }
     
-    // Days
     for (let day = 1; day <= daysInMonth; day++) {
         const dayButton = document.createElement('button');
         dayButton.className = 'day';
@@ -1378,24 +1366,20 @@ function renderCalendar() {
         const currentDate = new Date(state.currentYear, state.currentMonth, day);
         currentDate.setHours(0, 0, 0, 0);
         
-        // Проверка периода бронирования: 15 декабря 2025 - 30 апреля 2026
         const bookingStart = new Date(state.bookingPeriod.startDate);
         bookingStart.setHours(0, 0, 0, 0);
         const bookingEnd = new Date(state.bookingPeriod.endDate);
         bookingEnd.setHours(0, 0, 0, 0);
         
-        // Запрет бронирования задним числом и вне периода
         if (currentDate < today || currentDate < bookingStart || currentDate > bookingEnd) {
             dayButton.classList.add('disabled');
             dayButton.disabled = true;
         }
         
-        // Mark today
         if (currentDate.getTime() === today.getTime()) {
             dayButton.classList.add('today');
         }
         
-        // Mark selected
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1406,7 +1390,6 @@ function renderCalendar() {
             }
         }
         
-        // Click handler
         if (!dayButton.disabled) {
             dayButton.addEventListener('click', function() {
                 selectDate(state.currentYear, state.currentMonth, day);
@@ -1434,7 +1417,6 @@ function isTimeSlotAvailable(time, currentLessonIndex) {
     const currentLesson = state.lessons[currentLessonIndex];
     if (!currentLesson.date) return true;
     
-    // Проверяем все другие занятия на ту же дату
     for (let i = 0; i < state.lessons.length; i++) {
         if (i === currentLessonIndex) continue;
         
@@ -1442,14 +1424,13 @@ function isTimeSlotAvailable(time, currentLessonIndex) {
         if (!otherLesson.date || !otherLesson.time) continue;
         if (otherLesson.date !== currentLesson.date) continue;
         
-        // Занятия в тот же день - проверяем конфликты времени
         const otherStartTime = parseInt(otherLesson.time.split(':')[0]);
         const currentStartTime = parseInt(time.split(':')[0]);
         
         let otherDuration = 1;
         if (state.duration === '2') otherDuration = 2;
         else if (state.duration === '3') otherDuration = 3;
-        else if (state.duration === 'full') otherDuration = 7; // Full day
+        else if (state.duration === 'full') otherDuration = 7;
         
         let currentDuration = 1;
         if (state.duration === '2') currentDuration = 2;
@@ -1459,7 +1440,6 @@ function isTimeSlotAvailable(time, currentLessonIndex) {
         const otherEndTime = otherStartTime + otherDuration;
         const currentEndTime = currentStartTime + currentDuration;
         
-        // Проверка пересечения
         if (currentStartTime < otherEndTime && currentEndTime > otherStartTime) {
             return false;
         }
@@ -1472,7 +1452,6 @@ function renderTimeSlots() {
     const container = document.getElementById('timeSlots');
     container.innerHTML = '';
     
-    // Получаем тайм-слоты с учетом типа занятия и длительности
     const timeSlots = state.getTimeSlots();
     
     const lesson = state.lessons[state.currentLessonIndex];
@@ -1488,7 +1467,6 @@ function renderTimeSlots() {
             btn.classList.add('disabled');
             btn.disabled = true;
         } else {
-            // Проверяем доступность с учетом уже забронированных слотов
             if (!isTimeSlotAvailable(time, state.currentLessonIndex)) {
                 btn.classList.add('disabled');
                 btn.disabled = true;
@@ -1519,7 +1497,6 @@ function selectTime(time) {
     updateStep2DatesList();
     checkStep2Complete();
     
-    // Auto-select next incomplete lesson
     const nextIncomplete = state.lessons.findIndex((l, i) => 
         i > state.currentLessonIndex && (!l.date || !l.time)
     );
@@ -1643,11 +1620,11 @@ function validateForm() {
 function initPayPal() {
     const prices = calculatePrice();
     
-    paypal.Buttons({
+    paypalButtons = paypal.Buttons({
         style: {
             layout: 'vertical',
             color: 'gold',
-            shape: 'pill', // Полукруглая кнопка как в старой форме
+            shape: 'pill',
             label: 'paypal',
             height: 55
         },
@@ -1671,12 +1648,11 @@ function initPayPal() {
             });
         },
         onApprove: function(data, actions) {
+            showPaymentProcessing();
             return actions.order.capture().then(function(details) {
                 console.log('Payment successful:', details);
-                showStep('paymentProcessing');
-                
-                // Send notifications
                 sendBookingNotifications(details);
+                setTimeout(showSuccess, 1000);
             });
         },
         onCancel: function(data) {
@@ -1686,7 +1662,11 @@ function initPayPal() {
             console.error('PayPal Error:', err);
             alert('An error occurred with your payment. Please try again.');
         }
-    }).render('#paypal-button-container');
+    });
+
+    if (paypalButtons.isEligible()) {
+        paypalButtons.render('#paypal-button-container');
+    }
 }
 
 // ============ NOTIFICATION FUNCTIONS ============
@@ -1698,7 +1678,6 @@ function generateBookingId() {
 function sendBookingNotifications(paypalDetails) {
     const prices = calculatePrice();
     
-    // Prepare booking data in format compatible with current bot
     const bookingData = {
         bookingId: generateBookingId(),
         fullName: document.getElementById('fullName').value,
@@ -1712,10 +1691,8 @@ function sendBookingNotifications(paypalDetails) {
         duration: state.duration,
         participants: state.participants,
         days: state.days,
-        // Format dates for bot compatibility
-        date: state.lessons[0].date, // First date for main record
-        time: state.lessons[0].time, // First time for main record
-        // All dates for detailed information
+        date: state.lessons[0].date,
+        time: state.lessons[0].time,
         selectedDates: state.lessons.map(lesson => ({
             date: lesson.date,
             time: lesson.time
@@ -1728,18 +1705,13 @@ function sendBookingNotifications(paypalDetails) {
         payerEmail: paypalDetails.payer.email_address
     };
     
-    console.log('Sending booking data to bot:', bookingData);
+    console.log('Sending booking data:', bookingData);
     
-    // Send to bot webhook
+    // Send to bot
     sendToBot(bookingData);
     
-    // Send email notification
+    // Send email
     sendEmailNotification(bookingData);
-    
-    // Show success screen after short delay
-    setTimeout(() => {
-        showStep('successScreen');
-    }, 2000);
 }
 
 function sendToBot(bookingData) {
@@ -1758,13 +1730,10 @@ function sendToBot(bookingData) {
     })
     .catch(error => {
         console.error('❌ Error sending booking data to bot:', error);
-        // Fallback: try to send via email only
-        console.log('🔄 Falling back to email only notification');
     });
 }
 
 function sendEmailNotification(data) {
-    // Format dates for email display
     let datesText = '';
     if (data.selectedDates && data.selectedDates.length > 0) {
         datesText = data.selectedDates.map((dt, index) => 
@@ -1806,13 +1775,10 @@ Additional information: ${data.additionalInfo || 'None'}
 Total amount: $${data.total}
 20% deposit: $${data.deposit}
 Remaining balance: $${data.remaining}
-
-Google Calendar Links: ${generateCalendarLinks(data)}
     `.trim();
 
     const toEmail = 'info@skischool.ge';
     
-    // Use the same EmailJS configuration as old form
     emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
         to_email: toEmail,
         subject: `Booking Confirmation: ${durationText} ${sportName} Lesson`,
@@ -1824,51 +1790,9 @@ Google Calendar Links: ${generateCalendarLinks(data)}
         console.log('✅ Email sent successfully:', response.status, response.text);
     }).catch(function(error) {
         console.error('❌ Email sending failed:', error);
-        // Fallback: open mail client
         const mailto = `mailto:${toEmail}?subject=${encodeURIComponent('Booking Confirmation: ' + durationText + ' ' + sportName + ' Lesson')}&body=${encodeURIComponent(body)}`;
         window.open(mailto, '_blank');
     });
-}
-
-function generateCalendarLinks(data) {
-    if (!data.selectedDates || data.selectedDates.length === 0) return '';
-    
-    return data.selectedDates.map((lesson, index) => {
-        const start = new Date(lesson.date + 'T' + lesson.time + ':00');
-        const end = new Date(start);
-        
-        // Calculate end time based on duration
-        let durationHours = 2;
-        if (data.duration === '3') durationHours = 3;
-        else if (data.duration === 'full') durationHours = 6; // Full day for kids
-        else if (data.duration.includes('half')) durationHours = 3; // Half day
-        
-        end.setHours(start.getHours() + durationHours);
-        
-        const title = `${data.sport.toUpperCase()} Lesson - ${data.fullName} - Day ${index + 1}`;
-        const description = `Client: ${data.fullName}
-Phone: ${data.phone}
-Email: ${data.email}
-Participants: ${data.participants}
-Level: ${data.skillLevel}
-Day: ${index + 1} of ${data.days}
-
-Additional info: ${data.additionalInfo || 'None'}`;
-
-        const params = new URLSearchParams({
-            action: 'TEMPLATE',
-            text: title,
-            dates: `${formatGoogleDate(start)}/${formatGoogleDate(end)}`,
-            details: description,
-            location: 'Gudauri Ski Resort'
-        });
-
-        return `https://calendar.google.com/calendar/render?${params}`;
-    }).join('\n');
-}
-
-function formatGoogleDate(date) {
-    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 }
 
 // ============ UTILITIES ============
@@ -1878,6 +1802,20 @@ function showStep(stepId) {
         section.classList.remove('active');
     });
     document.getElementById(stepId).classList.add('active');
+}
+
+function showPaymentProcessing() {
+    document.querySelectorAll('.form-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById('paymentProcessing').classList.add('active');
+}
+
+function showSuccess() {
+    document.querySelectorAll('.form-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById('successScreen').classList.add('active');
 }
     </script>
 </body>
