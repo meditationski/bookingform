@@ -17,16 +17,21 @@
     --text-muted: #7a8596;
     --accent-blue: #00A3FF;
     --accent-orange: #F59A47;
-    --accent-green: #00ff88;
+    
     --gradient-primary: linear-gradient(106deg, #00A3FF 0%, #F59A47 100%);
     --gradient-alt: linear-gradient(106deg, #F59A47 0%, #00A3FF 100%);
     --gradient-hover: linear-gradient(106deg, #00A3FF 0%, #FFB470 100%);
     --gradient-alt-hover: linear-gradient(106deg, #FFB470 0%, #00A3FF 100%);
     --border-radius: 2.5em;
     --border-radius-sm: 1.5em;
+    --transition: all 0.3s ease;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
 
 body { 
     background: transparent; 
@@ -36,10 +41,23 @@ body {
     font-weight: 400;
 }
 
-.container { max-width: 75em; margin: 0 auto; padding: 1em; }
-.form-section { display: none; }
-.form-section.active { display: block; }
-.form-group { margin-bottom: 1.25em; }
+.container { 
+    max-width: 75em; 
+    margin: 0 auto; 
+    padding: 1em; 
+}
+
+.form-section { 
+    display: none; 
+}
+
+.form-section.active { 
+    display: block; 
+}
+
+.form-group { 
+    margin-bottom: 1.25em; 
+}
 
 .subsection-title {
     font-size: 1.5em;
@@ -68,7 +86,7 @@ body {
     border-radius: var(--border-radius-sm); 
     cursor: pointer; 
     font-size: 1em;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .tab.active { 
@@ -85,6 +103,7 @@ body {
     background: var(--bg-secondary);
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
+    transition: border-color 0.3s ease;
 }
 
 .custom-select:focus, .form-input:focus {
@@ -123,6 +142,7 @@ input[type="range"] {
     border-radius: 1em; 
     margin: 1em 0; 
     -webkit-appearance: none;
+    transition: background-color 0.3s ease;
 }
 
 input[type="range"]:hover {
@@ -138,15 +158,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 50%;
     cursor: pointer;
     border: 0.25em solid var(--bg-primary);
-}
-
-input[type="range"]::-moz-range-thumb {
-    width: 2em;
-    height: 2em;
-    background: var(--gradient-primary);
-    border-radius: 50%;
-    cursor: pointer;
-    border: 0.25em solid var(--bg-primary);
+    transition: background-color 0.3s ease;
 }
 
 .slider-labels { 
@@ -168,8 +180,16 @@ input[type="range"]::-moz-range-thumb {
         flex-direction: row;
         align-items: flex-start;
     }
-    .step-left { flex: 2; }
-    .step-right { flex: 1; margin-left: 1.5em; }
+    
+    .step-left {
+        flex: 2;
+    }
+    
+    .step-right {
+        flex: 1;
+        margin-left: 1.5em;
+    }
+
     #step3 .step-right {
         display: flex;
         flex-direction: column;
@@ -183,70 +203,6 @@ input[type="range"]::-moz-range-thumb {
     gap: 1.25em;
 }
 
-/* Компактный список дней - вынесен отдельно */
-.days-compact-section {
-    background: var(--bg-secondary);
-    border-radius: var(--border-radius-sm);
-    padding: 1em;
-    margin-top: 1.5em;
-}
-
-.days-compact-title {
-    font-size: 0.875em;
-    color: var(--text-muted);
-    margin-bottom: 0.75em;
-    text-align: center;
-    font-weight: 600;
-}
-
-.days-compact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 0.5em;
-}
-
-.day-compact-btn {
-    padding: 0.75em;
-    background: var(--bg-tertiary);
-    border: 0.125em solid var(--bg-tertiary);
-    border-radius: var(--border-radius-sm);
-    color: var(--text-secondary);
-    font-size: 0.875em;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.day-compact-btn:hover {
-    border-color: var(--accent-blue);
-}
-
-.day-compact-btn.selected {
-    border-color: var(--accent-blue);
-    background: rgba(0, 163, 255, 0.15);
-    color: var(--accent-blue);
-}
-
-.day-compact-btn.completed {
-    border-color: var(--accent-green);
-    background: rgba(0, 255, 136, 0.15);
-    color: var(--accent-green);
-}
-
-.day-compact-number {
-    font-size: 1.1em;
-    display: block;
-}
-
-.day-compact-status {
-    font-size: 0.7em;
-    margin-top: 0.25em;
-    display: block;
-    opacity: 0.8;
-}
-
-/* Календарь и время */
 .calendar-time-vertical {
     display: flex;
     flex-direction: column;
@@ -272,7 +228,10 @@ input[type="range"]::-moz-range-thumb {
     color: var(--text-primary);
 }
 
-.calendar-nav { display: flex; gap: 0.5em; }
+.calendar-nav { 
+    display: flex; 
+    gap: 0.5em; 
+}
 
 .calendar-nav button {
     background: var(--bg-tertiary);
@@ -336,9 +295,18 @@ input[type="range"]::-moz-range-thumb {
     color: var(--text-primary); 
 }
 
-.day.today { border: 0.125em solid var(--accent-blue); }
-.day.disabled { opacity: 0.3; cursor: not-allowed; }
-.day.other-month { display: none; }
+.day.today { 
+    border: 0.125em solid var(--accent-blue); 
+}
+
+.day.disabled { 
+    opacity: 0.3; 
+    cursor: not-allowed; 
+}
+
+.day.other-month { 
+    display: none; 
+}
 
 .time-selection { 
     background: var(--bg-secondary); 
@@ -348,8 +316,14 @@ input[type="range"]::-moz-range-thumb {
 
 .time-slots-compact { 
     display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: 1fr 1fr; 
     gap: 0.75em; 
+}
+
+@media (min-width: 480px) {
+    .time-slots-compact { 
+        grid-template-columns: 1fr 1fr 1fr; 
+    }
 }
 
 .time-slot { 
@@ -369,8 +343,9 @@ input[type="range"]::-moz-range-thumb {
     background: var(--accent-blue);
 }
 
-.time-slot.selected { background: var(--gradient-primary); }
-.time-slot.disabled { opacity: 0.3; cursor: not-allowed; }
+.time-slot.selected { 
+    background: var(--gradient-primary); 
+}
 
 .step3-form {
     display: flex;
@@ -385,10 +360,14 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @media (min-width: 768px) {
-    .form-row-compact { grid-template-columns: 1fr 1fr; }
+    .form-row-compact {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
-.full-width { grid-column: 1 / -1; }
+.full-width { 
+    grid-column: 1 / -1; 
+}
 
 .price-card { 
     background: var(--bg-secondary); 
@@ -427,23 +406,6 @@ input[type="range"]::-moz-range-thumb {
     background: rgba(0, 163, 255, 0.1);
     border-radius: var(--border-radius-sm);
     text-align: center;
-}
-
-.summary-dates-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5em;
-    margin-top: 1em;
-}
-
-.summary-date-item {
-    padding: 0.5em;
-    background: rgba(0, 163, 255, 0.08);
-    border-radius: var(--border-radius-sm);
-    font-size: 0.75em;
-    text-align: center;
-    color: var(--accent-blue);
-    font-weight: 600;
 }
 
 .price-row { 
@@ -493,7 +455,9 @@ input[type="range"]::-moz-range-thumb {
     display: none;
 }
 
-.discount-info.show { display: block; }
+.discount-info.show {
+    display: block;
+}
 
 .buttons {
     display: flex;
@@ -528,7 +492,9 @@ input[type="range"]::-moz-range-thumb {
     color: var(--text-primary); 
 }
 
-.btn-next:hover { background: var(--gradient-hover); }
+.btn-next:hover {
+    background: var(--gradient-hover);
+}
 
 .btn-book {
     background: var(--gradient-alt);
@@ -536,7 +502,9 @@ input[type="range"]::-moz-range-thumb {
     border: 0.1em solid #ffffff;
 }
 
-.btn-book:hover { background: var(--gradient-alt-hover); }
+.btn-book:hover {
+    background: var(--gradient-alt-hover);
+}
 
 .btn-back { 
     background: transparent; 
@@ -552,7 +520,6 @@ input[type="range"]::-moz-range-thumb {
 .btn-next:disabled { 
     background: var(--bg-tertiary); 
     cursor: not-allowed;
-    opacity: 0.5;
 }
 
 .paypal-container {
@@ -568,6 +535,16 @@ input[type="range"]::-moz-range-thumb {
     flex: 1;
 }
 
+.form-input { 
+    background: var(--bg-secondary);
+    border: 0.1em solid var(--bg-tertiary);
+}
+
+.form-input:focus { 
+    outline: none; 
+    border-color: var(--accent-blue);
+}
+
 .error {
     font-size: 0.875em;
     color: #ff4757;
@@ -576,7 +553,9 @@ input[type="range"]::-moz-range-thumb {
     font-weight: 500;
 }
 
-.error.show { display: block; }
+.error.show { 
+    display: block; 
+}
 
 .success-screen {
     text-align: center;
@@ -625,71 +604,213 @@ input[type="range"]::-moz-range-thumb {
     100% { transform: rotate(360deg); }
 }
 
-.iti { width: 100%; }
-#phone { padding-left: 5em !important; }
+.iti { 
+    width: 100%; 
+}
+
+#phone { 
+    padding-left: 5em !important; 
+}
 
 @media (max-width: 767px) {
-    .container { padding: 0.5em; }
-    body { font-size: 14px; }
-    .form-group { margin-bottom: 1em; }
-    .subsection-title { font-size: 1.25em; margin-bottom: 0.75em; }
-    .btn { padding: 1.125em 1.5em; font-size: 1em; height: 3.5em; }
-    .total-price { font-size: 2em; }
-    .custom-select, .form-input { padding: 1em 1.25em; font-size: 1em; }
-    .slider-container { padding: 0.75em; }
-    .calendar-large, .time-selection { padding: 1em; }
-    .price-card { padding: 1.5em; }
-    .buttons { margin-top: 1.5em; padding-top: 1.5em; flex-wrap: wrap; }
-    .btn { flex: 1 1 calc(50% - 0.5em); min-width: 140px; }
-    .paypal-container { flex: 1 1 100%; justify-content: center; margin-top: 1em; }
-    #paypal-button-container { min-width: 100%; }
-    .step-right { margin-left: 0; margin-top: 1.5em; }
-    .step-layout { flex-direction: column-reverse; }
-    .step-left { order: 2; }
-    .step-right { order: 1; margin-top: 0; margin-bottom: 1.25em; }
-    #step3 .step-right { display: block; }
-    .calendar-large { padding: 0.75em; overflow: hidden; }
-    .days { gap: 0.0625em; }
-    .day { min-height: 2.5em; font-size: 0.875em; padding: 0.25em; }
-    .weekdays { font-size: 0.75em; gap: 0.0625em; }
-    .calendar-header { margin-bottom: 1em; }
-    .calendar-month { font-size: 1.125em; }
-    .slider-container { padding: 0.5em; }
-    .slider-value { font-size: 1em; margin-bottom: 0.5em; }
-    input[type="range"] { height: 0.4em; margin: 0.75em 0; }
-    input[type="range"]::-webkit-slider-thumb { width: 1.5em; height: 1.5em; }
-    .slider-labels { font-size: 0.75em; }
-    .tabs { flex-wrap: wrap; }
-    .tab { flex: 1 1 calc(33.333% - 0.5em); min-width: 0; padding: 0.75em 0.5em; font-size: 0.85em; }
-    .time-slots-compact { grid-template-columns: repeat(2, 1fr); }
-    .days-compact-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
-    .summary-dates-list { grid-template-columns: 1fr 1fr; }
+    .container {
+        padding: 0.5em;
+    }
+    
+    body {
+        font-size: 14px;
+    }
+    
+    .form-group {
+        margin-bottom: 1em;
+    }
+    
+    .subsection-title {
+        font-size: 1.25em;
+        margin-bottom: 0.75em;
+    }
+    
+    .btn {
+        padding: 1.125em 1.5em;
+        font-size: 1em;
+        height: 3.5em;
+    }
+    
+    .total-price {
+        font-size: 2em;
+    }
+    
+    .custom-select, .form-input {
+        padding: 1em 1.25em;
+        font-size: 1em;
+    }
+    
+    .slider-container {
+        padding: 0.75em;
+    }
+    
+    .calendar-large, .time-selection {
+        padding: 1em;
+    }
+    
+    .price-card {
+        padding: 1.5em;
+    }
+    
+    .buttons {
+        margin-top: 1.5em;
+        padding-top: 1.5em;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        flex: 1 1 calc(50% - 0.5em);
+        min-width: 140px;
+    }
+    
+    .paypal-container {
+        flex: 1 1 100%;
+        justify-content: center;
+        margin-top: 1em;
+    }
+    
+    #paypal-button-container {
+        min-width: 100%;
+    }
+
+    .step-right {
+        margin-left: 0;
+        margin-top: 1.5em;
+    }
+
+    .step-layout {
+        flex-direction: column-reverse;
+    }
+    
+    .step-left {
+        order: 2;
+    }
+    
+    .step-right {
+        order: 1;
+        margin-top: 0;
+        margin-bottom: 1.25em;
+    }
+
+    #step3 .step-right {
+        display: block;
+    }
+
+    .calendar-large {
+        padding: 0.75em;
+        overflow: hidden;
+    }
+    
+    .days {
+        gap: 0.0625em;
+    }
+    
+    .day {
+        min-height: 2.5em;
+        font-size: 0.875em;
+        padding: 0.25em;
+    }
+    
+    .weekdays {
+        font-size: 0.75em;
+        gap: 0.0625em;
+    }
+    
+    .calendar-header {
+        margin-bottom: 1em;
+    }
+    
+    .calendar-month {
+        font-size: 1.125em;
+    }
+    
+    .slider-container {
+        padding: 0.5em;
+    }
+    
+    .slider-value {
+        font-size: 1em;
+        margin-bottom: 0.5em;
+    }
+    
+    input[type="range"] {
+        height: 0.4em;
+        margin: 0.75em 0;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+        width: 1.5em;
+        height: 1.5em;
+    }
+    
+    .slider-labels {
+        font-size: 0.75em;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab {
+        flex: 1 1 calc(33.333% - 0.5em);
+        min-width: 0;
+        padding: 0.75em 0.5em;
+        font-size: 0.85em;
+    }
 }
 
 @media (max-width: 480px) {
-    .time-slots-compact { grid-template-columns: 1fr 1fr; }
-    .buttons { flex-direction: row; flex-wrap: wrap; }
-    .btn { flex: 1 1 calc(50% - 0.5em); min-width: 140px; }
-    .calendar-large { padding: 0.5em; }
-    .day { min-height: 2.25em; font-size: 0.8em; }
-    .weekdays { font-size: 0.7em; }
-    .tab { font-size: 0.75em; padding: 0.6em 0.4em; }
+    .time-slots-compact {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        flex: 1 1 calc(50% - 0.5em);
+        min-width: 140px;
+    }
+    
+    .calendar-large {
+        padding: 0.5em;
+    }
+    
+    .day {
+        min-height: 2.25em;
+        font-size: 0.8em;
+    }
+    
+    .weekdays {
+        font-size: 0.7em;
+    }
+    
+    .tab {
+        font-size: 0.75em;
+        padding: 0.6em 0.4em;
+    }
 }
     </style>
 </head>
 <body>
     <div class="container">
-                <!-- Step 1: Lesson Details -->
         <div class="form-section active" id="step1">
             <h2 class="subsection-title">Lesson Details</h2>
             <div class="step-layout">
                 <div class="step-left">
                     <div class="step1-controls">
                         <div class="form-group">
-                            <div class="tabs" id="sportTabs">
-                                <button class="tab active" data-sport="ski">Ski</button>
-                                <button class="tab" data-sport="snowboard">Snowboard</button>
-                                <button class="tab" data-sport="kids">Kids Ski Club</button>
+                            <div class="tabs">
+                                <div class="tab active" data-sport="ski">Ski</div>
+                                <div class="tab" data-sport="snowboard">Snowboard</div>
+                                <div class="tab" data-sport="kids">Kids Ski Club</div>
                             </div>
                         </div>
                         
@@ -733,10 +854,10 @@ input[type="range"]::-moz-range-thumb {
                         <div class="form-group" id="skiSnowboardDays">
                             <div class="slider-container">
                                 <div class="slider-value" id="daysValue">1 Day</div>
-                                <input type="range" id="days" min="1" max="8" value="1" step="1">
+                                <input type="range" id="days" min="1" max="10" value="1" step="1">
                                 <div class="slider-labels">
-                                    <span>1</span><span>2</span><span>3</span><span>4</span>
-                                    <span>5</span><span>6</span><span>7</span><span>8</span>
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
                                 </div>
                             </div>
                         </div>
@@ -744,10 +865,10 @@ input[type="range"]::-moz-range-thumb {
                         <div class="form-group" id="kidsDays" style="display: none;">
                             <div class="slider-container">
                                 <div class="slider-value" id="kidsDaysValue">1 Day</div>
-                                <input type="range" id="kidsDaysSlider" min="1" max="8" value="1" step="1">
+                                <input type="range" id="kidsDaysSlider" min="1" max="10" value="1" step="1">
                                 <div class="slider-labels">
-                                    <span>1</span><span>2</span><span>3</span><span>4</span>
-                                    <span>5</span><span>6</span><span>7</span><span>8</span>
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
                                 </div>
                             </div>
                         </div>
@@ -759,6 +880,7 @@ input[type="range"]::-moz-range-thumb {
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step1SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step1SummaryDetails">1 Person × 1 Day</div>
+                            <div class="summary-date-time" id="step1DateTimeDisplay" style="display: none;"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -783,10 +905,8 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Step 2: Multi-Schedule -->
         <div class="form-section" id="step2">
-            <h2 class="subsection-title">Select Date & Time for Each Lesson</h2>
-            
+            <h2 class="subsection-title">Select Date & Time</h2>
             <div class="step-layout">
                 <div class="step-left">
                     <div class="calendar-time-vertical">
@@ -795,7 +915,7 @@ input[type="range"]::-moz-range-thumb {
                                 <div class="calendar-nav">
                                     <button id="prevMonth">‹</button>
                                 </div>
-                                <div class="calendar-month" id="calendarMonth">December 2025</div>
+                                <div class="calendar-month">December 2025</div>
                                 <div class="calendar-nav">
                                     <button id="nextMonth">›</button>
                                 </div>
@@ -814,14 +934,6 @@ input[type="range"]::-moz-range-thumb {
                             <div class="time-slots-compact" id="timeSlots"></div>
                         </div>
                     </div>
-                    
-                    <!-- Блоки дней вынесены отдельно под календарь -->
-                    <div class="days-compact-section">
-                        <div class="days-compact-title">Select day to schedule:</div>
-                        <div class="days-compact-grid" id="daysCompactGrid">
-                            <!-- Day buttons will be generated here -->
-                        </div>
-                    </div>
                 </div>
 
                 <div class="step-right">
@@ -829,10 +941,7 @@ input[type="range"]::-moz-range-thumb {
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step2SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step2SummaryDetails">1 Person × 1 Day</div>
-                            
-                            <div class="summary-dates-list" id="step2DatesList">
-                                <!-- Selected dates will appear here -->
-                            </div>
+                            <div class="summary-date-time" id="step2DateTimeDisplay" style="display: none;"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -857,7 +966,6 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Step 3: Personal Information -->
         <div class="form-section" id="step3">
             <h2 class="subsection-title">Personal Information</h2>
             <div class="step-layout">
@@ -893,26 +1001,14 @@ input[type="range"]::-moz-range-thumb {
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
                                     <option value="advanced">Advanced</option>
-                                    <option value="expert">Expert</option>
                                 </select>
                                 <div class="error" id="skillLevelError">Please select your skill level</div>
                             </div>
-                            <div class="form-field">
-                                <select id="language" class="custom-select" required>
-                                    <option value="">Preferred Language *</option>
-                                    <option value="english">English</option>
-                                    <option value="russian">Russian</option>
-                                    <option value="georgian">Georgian</option>
-                                    <option value="spanish">Spanish</option>
-                                </select>
-                                <div class="error" id="languageError">Please select your preferred language</div>
-                            </div>
+                            <div class="form-field"></div>
                         </div>
 
-                        <div class="form-row-compact full-width">
-                            <div class="form-field">
-                                <input type="text" id="specialRequests" class="form-input" placeholder="Special Requests (Optional)">
-                            </div>
+                        <div class="full-width">
+                            <textarea id="additionalInfo" class="form-input" rows="3" placeholder="Additional Information (optional)"></textarea>
                         </div>
                     </form>
                 </div>
@@ -922,10 +1018,7 @@ input[type="range"]::-moz-range-thumb {
                         <div class="booking-summary-compact">
                             <div class="summary-title" id="step3SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step3SummaryDetails">1 Person × 1 Day</div>
-                            
-                            <div class="summary-dates-list" id="step3DatesList">
-                                <!-- Selected dates will appear here -->
-                            </div>
+                            <div class="summary-date-time" id="step3DateTimeDisplay" style="display: none;"></div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Total amount:</span>
@@ -952,839 +1045,781 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Payment Processing Screen -->
-        <div class="form-section" id="paymentProcessing">
-            <div class="payment-processing">
-                <div class="loading-spinner"></div>
-                <h2 class="success-title">Processing Payment...</h2>
-                <p class="success-message">Please wait while we process your payment.</p>
+        <div class="form-section" id="successScreen">
+            <div class="success-screen">
+                <div class="success-icon">✅</div>
+                <h1 class="success-title">Booking Confirmed!</h1>
+                <p class="success-message">Thank you for your booking! Your lesson has been scheduled! We're excited to see you on the slopes!</p>
             </div>
         </div>
 
-        <!-- Success Screen -->
-        <div class="form-section" id="successScreen">
-            <div class="success-screen">
-                <div class="success-icon">✓</div>
-                <h2 class="success-title">Booking Confirmed!</h2>
-                <p class="success-message">
-                    Thank you for your booking! Your lesson has been scheduled! We're excited to see you on the slopes!
-                </p>
+        <div class="form-section" id="paymentProcessing">
+            <div class="payment-processing">
+                <div class="loading-spinner"></div>
+                <h1 class="success-title">Processing Payment</h1>
+                <p class="success-message">Please wait while we securely process your payment...</p>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-// ============ GLOBAL STATE ============
-const state = {
-    sport: 'ski',
-    duration: '2',
-    participants: 1,
-    days: 1,
-    lessons: [],
-    currentLessonIndex: 0,
-    currentMonth: new Date().getMonth(),
-    currentYear: new Date().getFullYear(),
-    
-    // Правильная структура цен
-    prices: {
-        ski: { 
-            '2': { base: 100, additional: 40 },
-            '3': { base: 140, additional: 50 },
-            'full': { base: 250, additional: 80 }
-        },
-        snowboard: { 
-            '2': { base: 100, additional: 40 },
-            '3': { base: 140, additional: 50 },
-            'full': { base: 250, additional: 80 }
-        },
-        kids: { 
-            'full': { base: 150, perKid: 150 },
-            'half-lunch': { base: 110, perKid: 110 },
-            'half-nolunch': { base: 90, perKid: 90 }
-        }
-    },
-    
-    // Новая система скидок: применяется только на последующие дни
-    // 4-5 дней: 10%, 6-7 дней: 15%, 8 дней: 20%
-    getDiscount: function() {
-        if (this.days >= 8) return 0.20;
-        if (this.days >= 6) return 0.15;
-        if (this.days >= 4) return 0.10;
-        return 0;
-    },
-    
-    // Тайм-слоты с учетом длительности
-    getTimeSlots: function() {
-        if (this.sport === 'kids') {
-            return ['10:30']; // Только одно время для Kids Club
-        }
-        
-        if (this.duration === '2') {
-            return ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
-        } else if (this.duration === '3') {
-            return ['10:00', '11:00', '12:00', '13:00', '14:00'];
-        } else if (this.duration === 'full') {
-            return ['10:00'];
-        }
-        
-        return ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
-    },
-    
-    // Период бронирования: с 15 декабря 2025 по 30 апреля 2026
-    bookingPeriod: {
-        startDate: new Date('2025-12-15'),
-        endDate: new Date('2026-04-30')
-    }
-};
+        const CONFIG = {
+            prices: {
+                2: 100, 
+                3: 140, 
+                full: 250,
+                kids: {
+                    'full': 150,
+                    'half-lunch': 110,
+                    'half-nolunch': 90
+                }
+            },
+            minDate: new Date(2025, 11, 15),
+            maxDate: new Date(2026, 3, 30),
+            resortCloseHour: 17,
+            lessonStartHour: 10
+        };
 
-let phoneInput;
+        const State = {
+            currentMonth: new Date(Math.max(new Date(), CONFIG.minDate)),
+            selectedDate: null,
+            selectedTime: null,
+            currentStep: 1,
+            currentSport: 'ski',
+            init() { this.currentMonth.setDate(1); },
+            getBookingSummary() {
+                const sport = this.currentSport;
+                let duration, people, days;
+                
+                if (sport === 'kids') {
+                    duration = document.getElementById('kidsDurationSelect').value;
+                    people = document.getElementById('kids').value;
+                    days = document.getElementById('kidsDaysSlider').value;
+                    
+                    const durationText = {
+                        'full': 'Full Day',
+                        'half-lunch': 'Half Day With Lunch',
+                        'half-nolunch': 'Half Day No Lunch'
+                    }[duration];
+                    
+                    const peopleText = people > 1 ? `${people} Kids` : '1 Kid';
+                    const daysText = days > 1 ? `${days} Days` : '1 Day';
+                    
+                    return {
+                        title: `Kids Ski Club ${durationText}`,
+                        details: `${peopleText} × ${daysText}`
+                    };
+                } else {
+                    duration = document.getElementById('duration').value;
+                    people = document.getElementById('participants').value;
+                    days = document.getElementById('days').value;
+                    
+                    const durationText = {2: '2 Hours', 3: '3 Hours', full: 'Full Day'}[duration];
+                    const sportText = sport.charAt(0).toUpperCase() + sport.slice(1);
+                    const peopleText = people > 1 ? `${people} Persons` : '1 Person';
+                    const daysText = days > 1 ? `${days} Days` : '1 Day';
+                    
+                    return {
+                        title: `${durationText} ${sportText} Lesson`,
+                        details: `${peopleText} × ${daysText}`
+                    };
+                }
+            }
+        };
 
-// Initialize EmailJS
-emailjs.init("ys_AGGqxg83LVdmMy");
+        let paypalButtons;
 
-// ============ INITIALIZATION ============
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded');
-    
-    const phoneEl = document.querySelector("#phone");
-    if (phoneEl) {
-        phoneInput = window.intlTelInput(phoneEl, {
-            initialCountry: "ge",
-            preferredCountries: ["ge", "us", "ru"],
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        document.addEventListener('DOMContentLoaded', function() {
+            State.init();
+            initPhone();
+            setupEvents();
+            renderCalendar();
+            updateAllDisplays();
+            initPayPal();
         });
-    }
-    
-    initStep1();
-    updatePrices();
-});
 
-// ============ STEP 1: LESSON DETAILS ============
-function initStep1() {
-    console.log('Init Step 1');
-    
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Tab clicked:', this.dataset.sport);
+        function initPhone() {
+            window.phoneInput = window.intlTelInput(document.getElementById('phone'), {
+                initialCountry: "auto",
+                preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+        }
+
+        function initPayPal() {
+            paypalButtons = paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'pill',
+                    label: 'paypal',
+                    height: 55
+                },
+                createOrder: function(data, actions) {
+                    const depositAmount = document.getElementById('depositPriceStep3').textContent.replace('$', '');
+                    const bookingDetails = State.getBookingSummary();
+                    
+                    return actions.order.create({
+                        purchase_units: [{
+                            description: `Booking Deposit - ${bookingDetails.title} Reservation`,
+                            amount: {
+                                value: depositAmount,
+                                currency_code: 'USD'
+                            },
+                            custom_id: generateBookingId()
+                        }],
+                        application_context: {
+                            shipping_preference: 'NO_SHIPPING'
+                        }
+                    });
+                },
+                onApprove: function(data, actions) {
+                    showPaymentProcessing();
+                    return actions.order.capture().then(function(details) {
+                        const formData = getFormData();
+                        formData.paymentStatus = 'completed';
+                        formData.paymentId = details.id;
+                        formData.payerEmail = details.payer.email_address;
+                        
+                        // Отправка данных в бот через вебхук
+                        sendToBot(formData);
+                        
+                        sendEmail(formData, 'Booking Confirmation');
+                        setTimeout(showSuccess, 1000);
+                    });
+                },
+                onCancel: function(data) {
+                    const formData = getFormData();
+                    formData.paymentStatus = 'cancelled';
+                    sendEmail(formData, 'Booking Incomplete');
+                    alert('Payment was cancelled. Please try again to complete your booking.');
+                },
+                onError: function(err) {
+                    const formData = getFormData();
+                    formData.paymentStatus = 'failed';
+                    formData.error = err.toString();
+                    sendEmail(formData, 'Booking Incomplete');
+                    alert('An error occurred with the payment. Please try again.');
+                    showStep(3);
+                }
+            });
+
+            if (paypalButtons.isEligible()) {
+                paypalButtons.render('#paypal-button-container');
+            }
+        }
+
+        // Функция отправки данных в бот
+        function sendToBot(formData) {
+            const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
             
-            tabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
+            const bookingData = {
+                fullName: formData.fullName,
+                phone: formData.phone,
+                email: formData.email,
+                age: formData.age,
+                skillLevel: formData.skillLevel,
+                additionalInfo: formData.additionalInfo,
+                sport: State.currentSport,
+                duration: State.currentSport === 'kids' ? 
+                    document.getElementById('kidsDurationSelect').value : 
+                    document.getElementById('duration').value,
+                participants: State.currentSport === 'kids' ? 
+                    document.getElementById('kids').value : 
+                    document.getElementById('participants').value,
+                days: State.currentSport === 'kids' ? 
+                    document.getElementById('kidsDaysSlider').value : 
+                    document.getElementById('days').value,
+                date: State.selectedDate ? State.selectedDate.toISOString().split('T')[0] : '',
+                time: State.selectedTime || '',
+                total: formData.total,
+                deposit: formData.deposit,
+                remaining: formData.remaining,
+                bookingId: formData.bookingId,
+                paymentStatus: formData.paymentStatus
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookingData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Booking data sent to bot successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error sending booking data to bot:', error);
+            });
+        }
+
+        function setupEvents() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    State.currentSport = this.dataset.sport;
+                    updateSportControls();
+                    updateAllDisplays();
+                });
+            });
+
+            ['duration', 'participants', 'days'].forEach(id => {
+                document.getElementById(id).addEventListener('input', () => {
+                    if (id === 'participants') {
+                        const val = document.getElementById('participants').value;
+                        document.getElementById('participantsValue').textContent = val + ' Person' + (val > 1 ? 's' : '');
+                    }
+                    if (id === 'days') {
+                        const val = document.getElementById('days').value;
+                        document.getElementById('daysValue').textContent = val + ' Day' + (val > 1 ? 's' : '');
+                    }
+                    updateAllDisplays();
+                });
+            });
+
+            document.getElementById('kidsDurationSelect').addEventListener('change', updateAllDisplays);
             
-            state.sport = this.dataset.sport;
+            document.getElementById('kids').addEventListener('input', () => {
+                const val = document.getElementById('kids').value;
+                document.getElementById('kidsValue').textContent = val + ' Kid' + (val > 1 ? 's' : '');
+                updateAllDisplays();
+            });
             
-            if (state.sport === 'kids') {
-                document.getElementById('skiSnowboardDuration').style.display = 'none';
-                document.getElementById('kidsDuration').style.display = 'block';
-                document.getElementById('skiSnowboardParticipants').style.display = 'none';
-                document.getElementById('kidsParticipants').style.display = 'block';
-                document.getElementById('skiSnowboardDays').style.display = 'none';
-                document.getElementById('kidsDays').style.display = 'block';
-                state.duration = 'full';
+            document.getElementById('kidsDaysSlider').addEventListener('input', () => {
+                const val = document.getElementById('kidsDaysSlider').value;
+                document.getElementById('kidsDaysValue').textContent = val + ' Day' + (val > 1 ? 's' : '');
+                updateAllDisplays();
+            });
+
+            document.getElementById('nextToStep2').addEventListener('click', () => showStep(2));
+            document.getElementById('nextToStep3').addEventListener('click', () => showStep(3));
+            document.getElementById('backToStep1').addEventListener('click', () => {
+                State.selectedDate = null;
+                State.selectedTime = null;
+                showStep(1);
+            });
+            document.getElementById('backToStep2').addEventListener('click', () => showStep(2));
+            document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
+            
+            document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (validateForm()) {
+                }
+            });
+        }
+
+        function updateSportControls() {
+            const isKids = State.currentSport === 'kids';
+            
+            document.getElementById('skiSnowboardDuration').style.display = isKids ? 'none' : 'block';
+            document.getElementById('kidsDuration').style.display = isKids ? 'block' : 'none';
+            
+            document.getElementById('skiSnowboardParticipants').style.display = isKids ? 'none' : 'block';
+            document.getElementById('kidsParticipants').style.display = isKids ? 'block' : 'none';
+            
+            document.getElementById('skiSnowboardDays').style.display = isKids ? 'none' : 'block';
+            document.getElementById('kidsDays').style.display = isKids ? 'block' : 'none';
+            
+            updateAgeValidation();
+            updateSkillLevelOptions();
+        }
+
+        function updateAgeValidation() {
+            const ageInput = document.getElementById('age');
+            const ageError = document.getElementById('ageError');
+            
+            if (State.currentSport === 'kids') {
+                ageInput.min = 6;
+                ageInput.max = 12;
+                ageInput.placeholder = "Age (6-12) *";
+                ageError.textContent = "Please enter a valid age (6-12)";
             } else {
-                document.getElementById('skiSnowboardDuration').style.display = 'block';
-                document.getElementById('kidsDuration').style.display = 'none';
-                document.getElementById('skiSnowboardParticipants').style.display = 'block';
-                document.getElementById('kidsParticipants').style.display = 'none';
-                document.getElementById('skiSnowboardDays').style.display = 'block';
-                document.getElementById('kidsDays').style.display = 'none';
-                state.duration = '2';
+                ageInput.min = 5;
+                ageInput.max = 80;
+                ageInput.placeholder = "Age *";
+                ageError.textContent = "Please enter a valid age (5-80)";
+            }
+        }
+
+        function updateSkillLevelOptions() {
+            const skillLevelSelect = document.getElementById('skillLevel');
+            const currentValue = skillLevelSelect.value;
+            
+            skillLevelSelect.innerHTML = '<option value="">Skill Level *</option>';
+            
+            if (State.currentSport === 'kids') {
+                skillLevelSelect.innerHTML += `
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                `;
+            } else {
+                skillLevelSelect.innerHTML += `
+                    <option value="first-time">First Time</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                `;
+            }
+            
+            if (currentValue && skillLevelSelect.querySelector(`option[value="${currentValue}"]`)) {
+                skillLevelSelect.value = currentValue;
+            }
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            State.currentStep = step;
+            
+            if (step === 2 || step === 3) {
+                updateDateTimeDisplay(step);
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateAllDisplays() {
+            const summary = State.getBookingSummary();
+            
+            for (let i = 1; i <= 3; i++) {
+                const titleElement = document.getElementById(`step${i}SummaryTitle`);
+                const detailsElement = document.getElementById(`step${i}SummaryDetails`);
+                if (titleElement) titleElement.textContent = summary.title;
+                if (detailsElement) detailsElement.textContent = summary.details;
             }
             
             updatePrices();
-        });
-    });
-    
-    document.getElementById('duration').addEventListener('change', function() {
-        state.duration = this.value;
-        updatePrices();
-    });
-    
-    document.getElementById('kidsDurationSelect').addEventListener('change', function() {
-        state.duration = this.value;
-        updatePrices();
-    });
-    
-    document.getElementById('participants').addEventListener('input', function() {
-        state.participants = parseInt(this.value);
-        document.getElementById('participantsValue').textContent = 
-            `${state.participants} ${state.participants === 1 ? 'Person' : 'People'}`;
-        updatePrices();
-    });
-    
-    document.getElementById('kids').addEventListener('input', function() {
-        state.participants = parseInt(this.value);
-        document.getElementById('kidsValue').textContent = 
-            `${state.participants} ${state.participants === 1 ? 'Kid' : 'Kids'}`;
-        updatePrices();
-    });
-    
-    document.getElementById('days').addEventListener('input', function() {
-        state.days = parseInt(this.value);
-        document.getElementById('daysValue').textContent = 
-            `${state.days} ${state.days === 1 ? 'Day' : 'Days'}`;
-        updatePrices();
-    });
-    
-    document.getElementById('kidsDaysSlider').addEventListener('input', function() {
-        state.days = parseInt(this.value);
-        document.getElementById('kidsDaysValue').textContent = 
-            `${state.days} ${state.days === 1 ? 'Day' : 'Days'}`;
-        updatePrices();
-    });
-    
-    document.getElementById('nextToStep2').addEventListener('click', function() {
-        console.log('Next to Step 2');
-        initStep2();
-        showStep('step2');
-    });
-}
+            updateDateTimeDisplay(1);
+            updateDateTimeDisplay(2);
+            updateDateTimeDisplay(3);
+        }
 
-function calculatePrice() {
-    const priceConfig = state.prices[state.sport][state.duration];
-    let totalPrice = 0;
-    
-    if (state.sport === 'kids') {
-        // Для Kids Club: цена просто умножается на количество детей и дней
-        totalPrice = priceConfig.perKid * state.participants * state.days;
-    } else {
-        // Для Ski/Snowboard: первый участник базовая цена, остальные дополнительные
-        let pricePerDay = priceConfig.base;
-        if (state.participants > 1) {
-            pricePerDay += (state.participants - 1) * priceConfig.additional;
-        }
-        
-        // Первые 3 дня по полной цене
-        const fullPriceDays = Math.min(3, state.days);
-        totalPrice = pricePerDay * fullPriceDays;
-        
-        // Последующие дни со скидкой
-        if (state.days > 3) {
-            const discountRate = state.getDiscount();
-            const discountedDays = state.days - 3;
-            const discountedPrice = pricePerDay * (1 - discountRate);
-            totalPrice += discountedPrice * discountedDays;
-        }
-    }
-    
-    totalPrice = Math.round(totalPrice);
-    const depositPrice = Math.round(totalPrice * 0.2);
-    const remainingPrice = totalPrice - depositPrice;
-    
-    const discountRate = state.getDiscount();
-    const discountAmount = state.days > 3 ? Math.round(priceConfig.base * state.participants * discountRate * (state.days - 3)) : 0;
-    
-    return { totalPrice, depositPrice, remainingPrice, discountAmount, discountRate };
-}
-
-function updatePrices() {
-    const prices = calculatePrice();
-    
-    ['', 'Step2', 'Step3'].forEach(suffix => {
-        document.getElementById(`totalPrice${suffix}`).textContent = `$${prices.totalPrice}`;
-        document.getElementById(`depositPrice${suffix}`).textContent = `$${prices.depositPrice}`;
-        document.getElementById(`remainingPrice${suffix}`).textContent = `$${prices.remainingPrice}`;
-    });
-    
-    updateSummary();
-    
-    const discountEls = ['discountInfo', 'discountInfoStep2', 'discountInfoStep3'];
-    if (prices.discountRate > 0 && state.days > 3) {
-        const text = `${(prices.discountRate * 100).toFixed(0)}% discount on days 4-${state.days}! You save $${prices.discountAmount}`;
-        discountEls.forEach(id => {
-            const el = document.getElementById(id);
-            el.textContent = text;
-            el.classList.add('show');
-        });
-    } else {
-        discountEls.forEach(id => {
-            document.getElementById(id).classList.remove('show');
-        });
-    }
-}
-
-function updateSummary() {
-    const sportName = state.sport === 'kids' ? 'Kids Ski Club' : 
-                    (state.sport.charAt(0).toUpperCase() + state.sport.slice(1));
-    
-    let durationText = '';
-    if (state.sport === 'kids') {
-        const kidsDurations = {
-            'full': 'Full Day (10:30 - 16:30)',
-            'half-lunch': 'Half Day With Lunch (10:30 - 14:30)',
-            'half-nolunch': 'Half Day No Lunch (10:30 - 13:30)'
-        };
-        durationText = kidsDurations[state.duration];
-    } else {
-        const durations = { '2': '2 Hours', '3': '3 Hours', 'full': 'Full Day' };
-        durationText = `${durations[state.duration]} ${sportName} Lesson`;
-    }
-    
-    const participantText = state.sport === 'kids' ? 
-        `${state.participants} ${state.participants === 1 ? 'Kid' : 'Kids'}` :
-        `${state.participants} ${state.participants === 1 ? 'Person' : 'People'}`;
-    
-    const detailsText = `${participantText} × ${state.days} ${state.days === 1 ? 'Day' : 'Days'}`;
-    
-    ['step1', 'step2', 'step3'].forEach(step => {
-        const titleEl = document.getElementById(`${step}SummaryTitle`);
-        const detailsEl = document.getElementById(`${step}SummaryDetails`);
-        if (titleEl) titleEl.textContent = durationText;
-        if (detailsEl) detailsEl.textContent = detailsText;
-    });
-}
-// ============ STEP 2: MULTI-SCHEDULE ============
-function initStep2() {
-    console.log('Init Step 2, days:', state.days);
-    
-    // Create lessons array
-    state.lessons = [];
-    for (let i = 0; i < state.days; i++) {
-        state.lessons.push({
-            number: i + 1,
-            date: null,
-            time: null
-        });
-    }
-    
-    state.currentLessonIndex = 0;
-    
-    renderDaysCompactGrid();
-    renderCalendar();
-    renderTimeSlots();
-    
-    document.getElementById('backToStep1').addEventListener('click', function() {
-        showStep('step1');
-    });
-    
-    document.getElementById('nextToStep3').addEventListener('click', function() {
-        updateStep3DatesList();
-        initStep3();
-        showStep('step3');
-    });
-    
-    document.getElementById('prevMonth').addEventListener('click', function() {
-        state.currentMonth--;
-        if (state.currentMonth < 0) {
-            state.currentMonth = 11;
-            state.currentYear--;
-        }
-        renderCalendar();
-    });
-    
-    document.getElementById('nextMonth').addEventListener('click', function() {
-        state.currentMonth++;
-        if (state.currentMonth > 11) {
-            state.currentMonth = 0;
-            state.currentYear++;
-        }
-        renderCalendar();
-    });
-}
-
-function renderDaysCompactGrid() {
-    const grid = document.getElementById('daysCompactGrid');
-    grid.innerHTML = '';
-    
-    state.lessons.forEach((lesson, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'day-compact-btn';
-        btn.type = 'button';
-        
-        if (state.currentLessonIndex === index) {
-            btn.classList.add('selected');
-        }
-        
-        if (lesson.date && lesson.time) {
-            btn.classList.add('completed');
-        }
-        
-        const statusText = lesson.date && lesson.time ? '✓' : '○';
-        
-        btn.innerHTML = `
-            <span class="day-compact-number">Day ${lesson.number}</span>
-            <span class="day-compact-status">${statusText}</span>
-        `;
-        
-        btn.addEventListener('click', function() {
-            selectLessonDay(index);
-        });
-        
-        grid.appendChild(btn);
-    });
-}
-
-function selectLessonDay(index) {
-    console.log('Select lesson day:', index);
-    state.currentLessonIndex = index;
-    renderDaysCompactGrid();
-    renderCalendar();
-    renderTimeSlots();
-}
-
-function renderCalendar() {
-    const calendarDays = document.getElementById('calendarDays');
-    const calendarMonth = document.getElementById('calendarMonth');
-    
-    calendarDays.innerHTML = '';
-    
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                        'July', 'August', 'September', 'October', 'November', 'December'];
-    
-    calendarMonth.textContent = `${monthNames[state.currentMonth]} ${state.currentYear}`;
-    
-    const firstDay = new Date(state.currentYear, state.currentMonth, 1);
-    const lastDay = new Date(state.currentYear, state.currentMonth + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    
-    let startDay = firstDay.getDay();
-    startDay = startDay === 0 ? 6 : startDay - 1;
-    
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    // Empty cells
-    for (let i = 0; i < startDay; i++) {
-        const emptyDay = document.createElement('button');
-        emptyDay.className = 'day disabled other-month';
-        emptyDay.disabled = true;
-        calendarDays.appendChild(emptyDay);
-    }
-    
-    // Days
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayButton = document.createElement('button');
-        dayButton.className = 'day';
-        dayButton.type = 'button';
-        dayButton.textContent = day;
-        
-        const currentDate = new Date(state.currentYear, state.currentMonth, day);
-        currentDate.setHours(0, 0, 0, 0);
-        
-        // Проверка периода бронирования: 15 декабря 2025 - 30 апреля 2026
-        const bookingStart = new Date(state.bookingPeriod.startDate);
-        bookingStart.setHours(0, 0, 0, 0);
-        const bookingEnd = new Date(state.bookingPeriod.endDate);
-        bookingEnd.setHours(0, 0, 0, 0);
-        
-        // Запрет бронирования задним числом и вне периода
-        if (currentDate < today || currentDate < bookingStart || currentDate > bookingEnd) {
-            dayButton.classList.add('disabled');
-            dayButton.disabled = true;
-        }
-        
-        // Mark today
-        if (currentDate.getTime() === today.getTime()) {
-            dayButton.classList.add('today');
-        }
-        
-        // Mark selected
-        const lesson = state.lessons[state.currentLessonIndex];
-        if (lesson && lesson.date) {
-            const lessonDate = new Date(lesson.date + 'T00:00:00');
-            if (lessonDate.getFullYear() === state.currentYear &&
-                lessonDate.getMonth() === state.currentMonth &&
-                lessonDate.getDate() === day) {
-                dayButton.classList.add('selected');
+        function updateDateTimeDisplay(step) {
+            const dateTimeElement = document.getElementById(`step${step}DateTimeDisplay`);
+            
+            if (State.selectedDate && State.selectedTime) {
+                const dateStr = State.selectedDate.toLocaleDateString('en-US', {
+                    month: 'long', day: 'numeric', year: 'numeric'
+                });
+                dateTimeElement.textContent = `${dateStr} at ${State.selectedTime}`;
+                dateTimeElement.style.display = 'block';
+            } else {
+                dateTimeElement.style.display = 'none';
             }
         }
-        
-        // Click handler
-        if (!dayButton.disabled) {
-            dayButton.addEventListener('click', function() {
-                selectDate(state.currentYear, state.currentMonth, day);
+
+        function showPaymentProcessing() {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('paymentProcessing').classList.add('active');
+        }
+
+        function showSuccess() {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('successScreen').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updatePrices() {
+            const data = calculatePrice();
+            ['', 'Step2', 'Step3'].forEach(suffix => {
+                const totalElement = document.getElementById(`totalPrice${suffix}`);
+                const depositElement = document.getElementById(`depositPrice${suffix}`);
+                const remainingElement = document.getElementById(`remainingPrice${suffix}`);
+                const discountElement = document.getElementById(`discountInfo${suffix}`);
+                
+                if (totalElement) totalElement.textContent = `$${data.total}`;
+                if (depositElement) depositElement.textContent = `$${data.deposit}`;
+                if (remainingElement) remainingElement.textContent = `$${data.remaining}`;
+                
+                if (discountElement) {
+                    if (data.discountText) {
+                        discountElement.textContent = data.discountText;
+                        discountElement.classList.add('show');
+                    } else {
+                        discountElement.classList.remove('show');
+                    }
+                }
             });
         }
-        
-        calendarDays.appendChild(dayButton);
-    }
-}
 
-function selectDate(year, month, day) {
-    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    state.lessons[state.currentLessonIndex].date = dateStr;
-    
-    console.log('Date selected:', dateStr);
-    
-    renderCalendar();
-    renderTimeSlots();
-    renderDaysCompactGrid();
-    updateStep2DatesList();
-    checkStep2Complete();
-}
-
-function isTimeSlotAvailable(time, currentLessonIndex) {
-    const currentLesson = state.lessons[currentLessonIndex];
-    if (!currentLesson.date) return true;
-    
-    // Проверяем все другие занятия на ту же дату
-    for (let i = 0; i < state.lessons.length; i++) {
-        if (i === currentLessonIndex) continue;
-        
-        const otherLesson = state.lessons[i];
-        if (!otherLesson.date || !otherLesson.time) continue;
-        if (otherLesson.date !== currentLesson.date) continue;
-        
-        // Занятия в тот же день - проверяем конфликты времени
-        const otherStartTime = parseInt(otherLesson.time.split(':')[0]);
-        const currentStartTime = parseInt(time.split(':')[0]);
-        
-        let otherDuration = 1;
-        if (state.duration === '2') otherDuration = 2;
-        else if (state.duration === '3') otherDuration = 3;
-        else if (state.duration === 'full') otherDuration = 7; // Full day
-        
-        let currentDuration = 1;
-        if (state.duration === '2') currentDuration = 2;
-        else if (state.duration === '3') currentDuration = 3;
-        else if (state.duration === 'full') currentDuration = 7;
-        
-        const otherEndTime = otherStartTime + otherDuration;
-        const currentEndTime = currentStartTime + currentDuration;
-        
-        // Проверка пересечения
-        if (currentStartTime < otherEndTime && currentEndTime > otherStartTime) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
-function renderTimeSlots() {
-    const container = document.getElementById('timeSlots');
-    container.innerHTML = '';
-    
-    // Получаем тайм-слоты с учетом типа занятия и длительности
-    const timeSlots = state.getTimeSlots();
-    
-    const lesson = state.lessons[state.currentLessonIndex];
-    const dateSelected = lesson && lesson.date;
-    
-    timeSlots.forEach(time => {
-        const btn = document.createElement('button');
-        btn.className = 'time-slot';
-        btn.type = 'button';
-        btn.textContent = time;
-        
-        if (!dateSelected) {
-            btn.classList.add('disabled');
-            btn.disabled = true;
-        } else {
-            // Проверяем доступность с учетом уже забронированных слотов
-            if (!isTimeSlotAvailable(time, state.currentLessonIndex)) {
-                btn.classList.add('disabled');
-                btn.disabled = true;
-            }
-        }
-        
-        if (lesson && lesson.time === time) {
-            btn.classList.add('selected');
-        }
-        
-        if (!btn.disabled) {
-            btn.addEventListener('click', function() {
-                selectTime(time);
-            });
-        }
-        
-        container.appendChild(btn);
-    });
-}
-
-function selectTime(time) {
-    state.lessons[state.currentLessonIndex].time = time;
-    
-    console.log('Time selected:', time);
-    
-    renderTimeSlots();
-    renderDaysCompactGrid();
-    updateStep2DatesList();
-    checkStep2Complete();
-    
-    // Auto-select next incomplete lesson
-    const nextIncomplete = state.lessons.findIndex((l, i) => 
-        i > state.currentLessonIndex && (!l.date || !l.time)
-    );
-    
-    if (nextIncomplete !== -1) {
-        setTimeout(() => selectLessonDay(nextIncomplete), 300);
-    }
-}
-
-function updateStep2DatesList() {
-    const datesList = document.getElementById('step2DatesList');
-    datesList.innerHTML = '';
-    
-    state.lessons.forEach(lesson => {
-        if (lesson.date && lesson.time) {
-            const item = document.createElement('div');
-            item.className = 'summary-date-item';
-            item.textContent = `${formatDateShort(lesson.date)} ${lesson.time}`;
-            datesList.appendChild(item);
-        }
-    });
-}
-
-function updateStep3DatesList() {
-    const datesList = document.getElementById('step3DatesList');
-    datesList.innerHTML = '';
-    
-    state.lessons.forEach(lesson => {
-        if (lesson.date && lesson.time) {
-            const item = document.createElement('div');
-            item.className = 'summary-date-item';
-            item.textContent = `${formatDateShort(lesson.date)} ${lesson.time}`;
-            datesList.appendChild(item);
-        }
-    });
-}
-
-function checkStep2Complete() {
-    const allComplete = state.lessons.every(l => l.date && l.time);
-    document.getElementById('nextToStep3').disabled = !allComplete;
-}
-
-function formatDateShort(dateStr) {
-    const date = new Date(dateStr + 'T00:00:00');
-    const day = date.getDate();
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return `${day} ${monthNames[date.getMonth()]}`;
-}
-
-function formatDate(dateStr) {
-    const date = new Date(dateStr + 'T00:00:00');
-    const options = { month: 'short', day: 'numeric', year: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-}
-
-// ============ STEP 3: PERSONAL INFO ============
-function initStep3() {
-    document.getElementById('backToStep2').addEventListener('click', function() {
-        showStep('step2');
-    });
-    
-    const paypalContainer = document.getElementById('paypal-button-container');
-    paypalContainer.innerHTML = '';
-    initPayPal();
-}
-
-function validateForm() {
-    let isValid = true;
-    
-    const fullName = document.getElementById('fullName').value.trim();
-    if (fullName === '') {
-        document.getElementById('fullNameError').classList.add('show');
-        isValid = false;
-    } else {
-        document.getElementById('fullNameError').classList.remove('show');
-    }
-    
-    if (!phoneInput || !phoneInput.isValidNumber()) {
-        document.getElementById('phoneError').classList.add('show');
-        isValid = false;
-    } else {
-        document.getElementById('phoneError').classList.remove('show');
-    }
-    
-    const email = document.getElementById('email').value.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        document.getElementById('emailError').classList.add('show');
-        isValid = false;
-    } else {
-        document.getElementById('emailError').classList.remove('show');
-    }
-    
-    const age = parseInt(document.getElementById('age').value);
-    if (isNaN(age) || age < 5 || age > 80) {
-        document.getElementById('ageError').classList.add('show');
-        isValid = false;
-    } else {
-        document.getElementById('ageError').classList.remove('show');
-    }
-    
-    const skillLevel = document.getElementById('skillLevel').value;
-    if (skillLevel === '') {
-        document.getElementById('skillLevelError').classList.add('show');
-        isValid = false;
-    } else {
-        document.getElementById('skillLevelError').classList.remove('show');
-    }
-    
-    const language = document.getElementById('language').value;
-    if (language === '') {
-        document.getElementById('languageError').classList.add('show');
-        isValid = false;
-    } else {
-        document.getElementById('languageError').classList.remove('show');
-    }
-    
-    return isValid;
-}
-
-function initPayPal() {
-    const prices = calculatePrice();
-    
-    paypal.Buttons({
-        createOrder: function(data, actions) {
-            if (!validateForm()) {
-                alert('Please fill in all required fields');
-                return actions.reject();
+        function calculatePrice() {
+            let basePrice, people, days;
+            
+            if (State.currentSport === 'kids') {
+                const duration = document.getElementById('kidsDurationSelect').value;
+                people = parseInt(document.getElementById('kids').value);
+                days = parseInt(document.getElementById('kidsDaysSlider').value);
+                basePrice = CONFIG.prices.kids[duration];
+            } else {
+                const duration = document.getElementById('duration').value;
+                people = parseInt(document.getElementById('participants').value);
+                days = parseInt(document.getElementById('days').value);
+                basePrice = CONFIG.prices[duration];
             }
             
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: prices.depositPrice.toFixed(2)
-                    }
-                }]
-            });
-        },
-        onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                console.log('Payment successful:', details);
-                showStep('paymentProcessing');
+            const pricePerDay = State.currentSport === 'kids' ? 
+                basePrice * people : 
+                basePrice + (people - 1) * 40;
+            
+            let total = 0;
+            let maxDiscount = 0;
+            
+            // Новая логика скидок для Kids Ski Club
+            for (let day = 1; day <= days; day++) {
+                let discount = 0;
                 
-                // Send data
-                sendBookingNotifications(details);
-            });
-        },
-        onError: function(err) {
-            console.error('PayPal Error:', err);
-            alert('An error occurred with your payment. Please try again.');
+                if (State.currentSport === 'kids') {
+                    // Kids Ski Club скидки: 10% с 5 дня, 15% с 7 дня, 20% с 9 дня
+                    if (day >= 9) discount = 0.20;
+                    else if (day >= 7) discount = 0.15;
+                    else if (day >= 5) discount = 0.10;
+                } else {
+                    // Старые скидки для взрослых
+                    discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
+                }
+                
+                total += pricePerDay * (1 - discount);
+                if (discount > maxDiscount) maxDiscount = discount;
+            }
+            
+            total = Math.round(total);
+            const deposit = Math.round(total * 0.20);
+            const remaining = total - deposit;
+            
+            let discountText = '';
+            if (maxDiscount > 0) {
+                if (State.currentSport === 'kids') {
+                    if (maxDiscount === 0.20) {
+                        discountText = '🎉 You save 20% on days 9+';
+                    } else if (maxDiscount === 0.15) {
+                        discountText = '🎉 You save 15% on days 7-8';
+                    } else if (maxDiscount === 0.10) {
+                        discountText = '🎉 You save 10% on days 5-6';
+                    }
+                } else {
+                    discountText = `🎉 You save ${maxDiscount * 100}% on days ${maxDiscount === 0.20 ? '8+' : maxDiscount === 0.15 ? '6-7' : '4-5'}`;
+                }
+            }
+            
+            return { total, deposit, remaining, discountText };
         }
-    }).render('#paypal-button-container');
-}
 
-function sendBookingNotifications(paypalDetails) {
-    const prices = calculatePrice();
-    
-    // Prepare booking data
-    const bookingData = {
-        fullName: document.getElementById('fullName').value,
-        phone: phoneInput.getNumber(),
-        email: document.getElementById('email').value,
-        age: document.getElementById('age').value,
-        skillLevel: document.getElementById('skillLevel').value,
-        language: document.getElementById('language').value,
-        specialRequests: document.getElementById('specialRequests').value || 'None',
-        sport: state.sport,
-        duration: state.duration,
-        participants: state.participants,
-        days: state.days,
-        lessons: state.lessons,
-        totalAmount: prices.totalPrice,
-        depositAmount: prices.depositPrice,
-        remainingAmount: prices.remainingPrice,
-        paymentId: paypalDetails.id
-    };
-    
-    // Send Telegram notification
-    sendTelegramNotification(bookingData);
-    
-    // Send Email notification
-    sendEmailNotification(bookingData);
-    
-    // Show success screen after short delay
-    setTimeout(() => {
-        showStep('successScreen');
-    }, 2000);
-}
+        function generateBookingId() {
+            return 'BK' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
+        }
 
-function sendTelegramNotification(data) {
-    const botToken = '7870726273:AAFJYdVDORc6Y3P-_57cqIzWZ5OqJXu8oLE';
-    const chatId = '878419211';
-    
-    let message = `🎿 NEW BOOKING - MULTI-SCHEDULE\n\n`;
-    message += `👤 Customer:\n`;
-    message += `Name: ${data.fullName}\n`;
-    message += `Phone: ${data.phone}\n`;
-    message += `Email: ${data.email}\n`;
-    message += `Age: ${data.age}\n`;
-    message += `Skill: ${data.skillLevel}\n`;
-    message += `Language: ${data.language}\n\n`;
-    
-    message += `📋 Details:\n`;
-    message += `Sport: ${data.sport.toUpperCase()}\n`;
-    message += `Duration: ${data.duration}\n`;
-    message += `Participants: ${data.participants}\n`;
-    message += `Days: ${data.days}\n\n`;
-    
-    message += `📅 Schedule:\n`;
-    data.lessons.forEach(lesson => {
-        message += `Lesson ${lesson.number}: ${formatDate(lesson.date)} at ${lesson.time}\n`;
-    });
-    
-    message += `\n💰 Payment:\n`;
-    message += `Total: $${data.totalAmount}\n`;
-    message += `Deposit: $${data.depositAmount}\n`;
-    message += `Remaining: $${data.remainingAmount}\n`;
-    
-    if (data.specialRequests && data.specialRequests !== 'None') {
-        message += `\n📝 Requests:\n${data.specialRequests}\n`;
-    }
-    
-    message += `\n💳 Transaction: ${data.paymentId}`;
-    
-    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: message
-        })
-    })
-    .then(response => response.json())
-    .then(result => console.log('Telegram sent:', result))
-    .catch(error => console.error('Telegram error:', error));
-}
+        function renderCalendar() {
+            const year = State.currentMonth.getFullYear();
+            const month = State.currentMonth.getMonth();
+            
+            document.querySelector('.calendar-month').textContent = 
+                State.currentMonth.toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            
+            document.getElementById('calendarDays').innerHTML = '';
+            
+            for (let i = 0; i < startDay; i++) {
+                createDay('', 'day other-month', true);
+            }
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                let className = 'day';
+                
+                if (date.toDateString() === today.toDateString()) className += ' today';
+                
+                if (date < CONFIG.minDate || date > CONFIG.maxDate || date < today) {
+                    createDay(day, className + ' disabled', true);
+                } else {
+                    if (State.selectedDate && State.selectedDate.toDateString() === date.toDateString()) {
+                        className += ' selected';
+                    }
+                    createDay(day, className, false, date);
+                }
+            }
+            
+            updateTimeSlots();
+        }
 
-function sendEmailNotification(data) {
-    let scheduleHtml = '';
-    data.lessons.forEach(lesson => {
-        scheduleHtml += `<li>Lesson ${lesson.number}: ${formatDate(lesson.date)} at ${lesson.time}</li>`;
-    });
-    
-    const emailParams = {
-        to_email: data.email,
-        customer_name: data.fullName,
-        sport: data.sport.toUpperCase(),
-        duration: data.duration,
-        participants: data.participants,
-        days: data.days,
-        schedule: scheduleHtml,
-        skill_level: data.skillLevel,
-        language: data.language,
-        phone: data.phone,
-        age: data.age,
-        special_requests: data.specialRequests,
-        total_amount: `$${data.totalAmount}`,
-        deposit_amount: `$${data.depositAmount}`,
-        remaining_amount: `$${data.remainingAmount}`,
-        payment_id: data.paymentId
-    };
-    
-    emailjs.send('service_hzs7xni', 'template_5idzppr', emailParams)
-        .then(function(response) {
-            console.log('Email sent successfully:', response);
-        }, function(error) {
-            console.error('Email sending failed:', error);
-        });
-}
+        function createDay(day, className, disabled, date = null) {
+            const button = document.createElement('button');
+            button.className = className;
+            button.textContent = day;
+            button.disabled = disabled;
+            
+            if (!disabled && date) {
+                button.addEventListener('click', () => {
+                    State.selectedDate = date;
+                    renderCalendar();
+                    updateTimeSlots();
+                    updateAllDisplays();
+                    document.getElementById('nextToStep3').disabled = !State.selectedTime;
+                });
+            }
+            
+            document.getElementById('calendarDays').appendChild(button);
+        }
 
-// ============ UTILITIES ============
-function showStep(stepId) {
-    console.log('Show step:', stepId);
-    document.querySelectorAll('.form-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    document.getElementById(stepId).classList.add('active');
-}
+        function navigateMonth(direction) {
+            State.currentMonth.setMonth(State.currentMonth.getMonth() + direction);
+            renderCalendar();
+        }
 
+        function updateTimeSlots() {
+            const timeSlots = document.getElementById('timeSlots');
+            timeSlots.innerHTML = '';
+            
+            if (!State.selectedDate) {
+                timeSlots.innerHTML = '<div class="time-slot disabled">Select date first</div>';
+                document.getElementById('nextToStep3').disabled = true;
+                return;
+            }
+
+            if (State.currentSport === 'kids') {
+                createTimeSlot('10:30', '10:30');
+            } else {
+                const duration = document.getElementById('duration').value;
+                
+                if (duration === 'full') {
+                    createTimeSlot('10:00', '10:00 (Full day)');
+                } else {
+                    const hours = parseInt(duration);
+                    for (let hour = CONFIG.lessonStartHour; hour <= CONFIG.resortCloseHour - hours; hour++) {
+                        createTimeSlot(`${hour}:00`);
+                    }
+                }
+            }
+        }
+
+        function createTimeSlot(time, display = null) {
+            const slot = document.createElement('button');
+            slot.className = 'time-slot';
+            slot.textContent = display || time;
+            
+            if (State.selectedTime === time) slot.classList.add('selected');
+            
+            slot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                State.selectedTime = time;
+                this.classList.add('selected');
+                updateAllDisplays();
+                document.getElementById('nextToStep3').disabled = false;
+            });
+            
+            document.getElementById('timeSlots').appendChild(slot);
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            if (!document.getElementById('fullName').value.trim()) {
+                showError('fullNameError', 'Please enter your full name');
+                isValid = false;
+            } else {
+                hideError('fullNameError');
+            }
+            
+            if (!window.phoneInput.isValidNumber()) {
+                showError('phoneError', 'Please enter a valid phone number');
+                isValid = false;
+            } else {
+                hideError('phoneError');
+            }
+            
+            if (!document.getElementById('email').value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError('emailError', 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                hideError('emailError');
+            }
+            
+            const age = parseInt(document.getElementById('age').value);
+            const minAge = State.currentSport === 'kids' ? 6 : 5;
+            const maxAge = State.currentSport === 'kids' ? 12 : 80;
+            
+            if (!age || age < minAge || age > maxAge) {
+                showError('ageError', `Please enter a valid age (${minAge}-${maxAge})`);
+                isValid = false;
+            } else {
+                hideError('ageError');
+            }
+            
+            const skillLevel = document.getElementById('skillLevel');
+            if (!skillLevel.value) {
+                showError('skillLevelError', 'Please select your skill level');
+                isValid = false;
+            } else if (State.currentSport === 'kids' && 
+                      (skillLevel.value === 'first-time' || skillLevel.value === 'advanced')) {
+                showError('skillLevelError', 'For Kids Ski Club, please select Beginner or Intermediate');
+                isValid = false;
+            } else {
+                hideError('skillLevelError');
+            }
+            
+            return isValid;
+        }
+
+        function getFormData() {
+            const summary = State.getBookingSummary();
+            let duration, people, days;
+            
+            if (State.currentSport === 'kids') {
+                duration = document.getElementById('kidsDurationSelect').value;
+                people = document.getElementById('kids').value;
+                days = document.getElementById('kidsDaysSlider').value;
+            } else {
+                duration = document.getElementById('duration').value;
+                people = document.getElementById('participants').value;
+                days = document.getElementById('days').value;
+            }
+            
+            const price = calculatePrice();
+            
+            return {
+                subject: `Booking: ${summary.title} with ${summary.details}`,
+                title: summary.title,
+                details: summary.details,
+                dateTime: State.selectedDate && State.selectedTime ? 
+                    `${State.selectedDate.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})} at ${State.selectedTime}` : 
+                    'Not selected',
+                fullName: document.getElementById('fullName').value,
+                phone: window.phoneInput.getNumber(),
+                email: document.getElementById('email').value,
+                age: document.getElementById('age').value,
+                skillLevel: document.getElementById('skillLevel').options[document.getElementById('skillLevel').selectedIndex].text,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                total: price.total,
+                deposit: price.deposit,
+                remaining: price.remaining,
+                bookingId: generateBookingId()
+            };
+        }
+
+        function sendEmail(formData, emailType) {
+            const paymentStatus = formData.paymentStatus || 'unknown';
+            const paymentInfo = paymentStatus === 'completed' ? 
+                `Payment Status: ✅ COMPLETED\nPayment ID: ${formData.paymentId}\nPayer Email: ${formData.payerEmail}` :
+                `Payment Status: ❌ ${paymentStatus.toUpperCase()}\nError: ${formData.error || 'N/A'}`;
+
+            const body = `
+${formData.title} with ${formData.details}
+${formData.dateTime}
+
+${paymentInfo}
+
+Booking ID: ${formData.bookingId}
+Full Name: ${formData.fullName}
+Phone (WhatsApp): https://wa.me/${formData.phone.replace('+', '')}
+Email: ${formData.email}
+Age: ${formData.age}
+Skill level: ${formData.skillLevel}
+Additional information: ${formData.additionalInfo || 'None'}
+
+Total amount: $${formData.total}
+20% deposit: $${formData.deposit}
+Remaining balance: $${formData.remaining}
+
+Google Calendar Link: ${generateCalendarLink(formData)}
+            `.trim();
+
+            const toEmail = 'info@skischool.ge';
+            
+            emailjs.init('gb9ZTULk6-ghDtZuV');
+            emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
+                to_email: toEmail,
+                subject: `${emailType}: ${formData.title}`,
+                message: body,
+                from_name: formData.fullName,
+                from_email: formData.email,
+                phone: formData.phone
+            }).catch(() => {
+                const mailto = `mailto:${toEmail}?subject=${encodeURIComponent(emailType + ': ' + formData.subject)}&body=${encodeURIComponent(body)}`;
+                window.open(mailto, '_blank');
+            });
+        }
+
+        function generateCalendarLink(data) {
+            if (!State.selectedDate || !State.selectedTime) return '';
+            
+            const start = new Date(State.selectedDate);
+            const [hours] = State.selectedTime.split(':');
+            start.setHours(parseInt(hours), 0, 0);
+            
+            const end = new Date(start);
+            let duration;
+            let days;
+            
+            if (State.currentSport === 'kids') {
+                duration = document.getElementById('kidsDurationSelect').value;
+                days = parseInt(document.getElementById('kidsDaysSlider').value);
+                
+                if (duration === 'full') {
+                    end.setHours(start.getHours() + 6);
+                } else if (duration === 'half-lunch') {
+                    end.setHours(start.getHours() + 4);
+                } else {
+                    end.setHours(start.getHours() + 3);
+                }
+            } else {
+                duration = document.getElementById('duration').value;
+                days = parseInt(document.getElementById('days').value);
+                
+                end.setHours(start.getHours() + (duration === 'full' ? 8 : parseInt(duration)));
+            }
+            
+            const details = `
+Full Name: ${data.fullName}
+Phone: ${data.phone}
+Email: ${data.email}
+Age: ${data.age}
+Skill level: ${data.skillLevel}
+Additional info: ${data.additionalInfo || 'None'}
+
+Total: $${data.total}
+Deposit: $${data.deposit}
+Balance: $${data.remaining}
+            `.trim();
+
+            const params = new URLSearchParams({
+                action: 'TEMPLATE',
+                text: data.subject,
+                dates: `${formatDate(start)}/${formatDate(end)}`,
+                details: details,
+                location: 'Gudauri Ski Resort'
+            });
+
+            if (days > 1) {
+                params.append('recur', `RRULE:FREQ=DAILY;COUNT=${days}`);
+            }
+
+            return `https://calendar.google.com/calendar/render?${params}`;
+        }
+
+        function formatDate(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+
+        function hideError(id) {
+            document.getElementById(id).classList.remove('show');
+        }
     </script>
 </body>
 </html>
