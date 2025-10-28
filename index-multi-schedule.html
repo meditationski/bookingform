@@ -1779,31 +1779,27 @@ function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
     
     // Форматируем данные для бота
-    const botData = {
-        bookingId: bookingData.bookingId,
-        fullName: bookingData.fullName,
-        phone: bookingData.phone,
-        email: bookingData.email,
-        age: parseInt(bookingData.age),
-        skillLevel: bookingData.skillLevel,
-        language: bookingData.language, // ← Добавляем язык
-        additionalInfo: bookingData.additionalInfo || '',
-        sport: bookingData.sport,
-        duration: bookingData.duration,
-        participants: parseInt(bookingData.participants),
-        days: parseInt(bookingData.days),
-        // Для совместимости оставляем первую дату как основную
-        date: bookingData.selectedDates[0].date,
-        time: bookingData.selectedDates[0].time,
-        total: parseInt(bookingData.total),
-        deposit: parseInt(bookingData.deposit),
-        remaining: parseInt(bookingData.remaining),
-        paymentStatus: 'COMPLETED',
-        paymentId: bookingData.paymentId,
-        payerEmail: bookingData.payerEmail,
-        // Передаем ВСЕ выбранные даты
-        selectedDates: bookingData.selectedDates
-    };
+const orderData = {
+    bookingId: generateBookingId(),
+    fullName: document.getElementById('fullName').value,
+    phone: phoneInput.value,
+    email: document.getElementById('email').value,
+    age: parseInt(document.getElementById('age').value),
+    skillLevel: document.getElementById('skillLevel').value,
+    preferredLanguage: document.getElementById('language').value,  // ← ИСПРАВЛЕНО: language → preferredLanguage
+    additionalInfo: document.getElementById('specialRequests').value,
+    sport: state.sport,
+    duration: state.sport === 'kids' ? document.getElementById('kidsDurationSelect').value : state.duration,
+    participants: state.sport === 'kids' ? state.kidsCount : state.participants,
+    days: state.days,
+    selectedDates: state.lessons,
+    total: state.totalPrice,
+    deposit: state.depositPrice,
+    remaining: state.remainingPrice,
+    paymentStatus: 'COMPLETED',
+    paymentId: orderID,
+    payerEmail: details.payer.email_address
+};
     
     console.log('📦 Sending to bot:', JSON.stringify(botData, null, 2));
     
