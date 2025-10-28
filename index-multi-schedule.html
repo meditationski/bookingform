@@ -1778,30 +1778,30 @@ function sendBookingNotifications(paypalDetails) {
 function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
     
-    // Форматируем данные для бота
-    const orderData = {
+    // Форматируем данные ТОЧНО как в старой рабочей версии
+    const botData = {
         bookingId: bookingData.bookingId,
         fullName: bookingData.fullName,
         phone: bookingData.phone,
         email: bookingData.email,
-        age: parseInt(bookingData.age),
+        age: bookingData.age,
         skillLevel: bookingData.skillLevel,
-        preferredLanguage: bookingData.language,  // ← ИСПРАВЛЕНО: используем данные из bookingData
         additionalInfo: bookingData.additionalInfo,
         sport: bookingData.sport,
         duration: bookingData.duration,
         participants: bookingData.participants,
         days: bookingData.days,
-        selectedDates: bookingData.selectedDates,
+        date: bookingData.date,
+        time: bookingData.time,
         total: bookingData.total,
         deposit: bookingData.deposit,
         remaining: bookingData.remaining,
-        paymentStatus: bookingData.paymentStatus,
-        paymentId: bookingData.paymentId,  // ← ИСПРАВЛЕНО: из bookingData вместо orderID
-        payerEmail: bookingData.payerEmail  // ← ИСПРАВЛЕНО: из bookingData вместо details
+        paymentStatus: 'completed', // ← lowercase как в старой версии!
+        paymentId: bookingData.paymentId,
+        payerEmail: bookingData.payerEmail
     };
     
-    console.log('📦 Sending to bot:', JSON.stringify(botData, null, 2));
+    console.log('📦 Sending to bot:', botData);
     
     fetch(webhookUrl, {
         method: 'POST',
@@ -1812,13 +1812,13 @@ function sendToBot(bookingData) {
     })
     .then(response => {
         console.log('📨 Bot response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         return response.json();
     })
     .then(data => {
         console.log('✅ Bot response:', data);
-        if (!data.success) {
-            console.error('❌ Bot rejected booking:', data.error);
-        }
     })
     .catch(error => {
         console.error('❌ Bot error:', error);
