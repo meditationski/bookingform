@@ -1778,7 +1778,7 @@ function sendBookingNotifications(paypalDetails) {
 function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgeobot-production.up.railway.app/webhook/booking';
     
-    // Форматируем данные для совместимости с ботом
+    // Форматируем данные ТОЧНО как в старой рабочей версии
     const botData = {
         bookingId: bookingData.bookingId,
         fullName: bookingData.fullName,
@@ -1796,12 +1796,12 @@ function sendToBot(bookingData) {
         total: bookingData.total,
         deposit: bookingData.deposit,
         remaining: bookingData.remaining,
-        paymentStatus: 'COMPLETED',
+        paymentStatus: 'completed', // ← lowercase как в старой версии!
         paymentId: bookingData.paymentId,
         payerEmail: bookingData.payerEmail
     };
     
-    console.log('Sending to bot:', botData);
+    console.log('📦 Sending to bot:', botData);
     
     fetch(webhookUrl, {
         method: 'POST',
@@ -1811,16 +1811,17 @@ function sendToBot(bookingData) {
         body: JSON.stringify(botData)
     })
     .then(response => {
+        console.log('📨 Bot response status:', response.status);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
-        console.log('✅ Booking data sent to bot successfully:', data);
+        console.log('✅ Bot response:', data);
     })
     .catch(error => {
-        console.error('❌ Error sending booking data to bot:', error);
+        console.error('❌ Bot error:', error);
     });
 }
 
@@ -1843,6 +1844,9 @@ function sendEmailNotification(data) {
          'Half Day No Lunch (10:30-13:30)') :
         (data.duration === '2' ? '2 Hours' : 
          data.duration === '3' ? '3 Hours' : 'Full Day');
+
+    // Генерируем календарные ссылки как в старой версии
+    const calendarLinks = generateCalendarLinksOld(data);
     
     const body = `
 ${durationText} ${sportName} Lesson with ${data.participants} ${data.participants > 1 ? 'people' : 'person'} for ${data.days} ${data.days > 1 ? 'days' : 'day'}
@@ -1866,6 +1870,9 @@ Additional information: ${data.additionalInfo || 'None'}
 Total amount: $${data.total}
 20% deposit: $${data.deposit}
 Remaining balance: $${data.remaining}
+
+Google Calendar Links: 
+${calendarLinks}
     `.trim();
 
     const toEmail = 'info@skischool.ge';
@@ -1884,6 +1891,56 @@ Remaining balance: $${data.remaining}
         const mailto = `mailto:${toEmail}?subject=${encodeURIComponent('Booking Confirmation: ' + durationText + ' ' + sportName + ' Lesson')}&body=${encodeURIComponent(body)}`;
         window.open(mailto, '_blank');
     });
+}
+
+// Старая функция генерации календарных ссылок (как в рабочей версии)
+function generateCalendarLinksOld(data) {
+    if (!data.selectedDates || data.selectedDates.length === 0) return 'N/A';
+    
+    return data.selectedDates.map((lesson, index) => {
+        const start = new Date(lesson.date + 'T' + lesson.time + ':00');
+        const end = new Date(start);
+        
+        // Calculate end time based on duration (как в старой версии)
+        let durationHours = 2;
+        if (data.duration === '3') durationHours = 3;
+        else if (data.duration === 'full') durationHours = 8;
+        else if (data.duration.includes('half')) durationHours = 4;
+        
+        end.setHours(start.getHours() + durationHours);
+        
+        const sportName = data.sport === 'kids' ? 'Kids Ski Club' : 
+                         (data.sport.charAt(0).toUpperCase() + data.sport.slice(1));
+        
+        const title = `${sportName} Lesson - ${data.fullName}`;
+        
+        const description = `Client: ${data.fullName}
+Phone: ${data.phone}
+Email: ${data.email}
+Participants: ${data.participants}
+Level: ${data.skillLevel}
+Days: ${data.days}
+
+Additional info: ${data.additionalInfo || 'None'}
+
+Meeting point: TBD`;
+        
+        const location = 'Gudauri Ski Resort';
+        
+        const params = new URLSearchParams({
+            action: 'TEMPLATE',
+            text: title,
+            dates: `${formatGoogleDate(start)}/${formatGoogleDate(end)}`,
+            details: description,
+            location: location
+        });
+
+        return `Day ${index + 1}: https://calendar.google.com/calendar/render?${params}`;
+    }).join('\n');
+}
+
+function formatGoogleDate(date) {
+    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 }
 
 // ============ UTILITIES ============
