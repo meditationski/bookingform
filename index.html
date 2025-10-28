@@ -1089,7 +1089,7 @@ input[type="range"]::-webkit-slider-thumb {
             currentStep: 1,
             currentSport: 'ski',
             init() { this.currentMonth.setDate(1); },
-            getBookingSummary() {
+           getBookingSummary() {
                 const sport = this.currentSport;
                 let duration, people, days;
                 
@@ -1143,11 +1143,10 @@ input[type="range"]::-webkit-slider-thumb {
         function initPhone() {
             window.phoneInput = window.intlTelInput(document.getElementById('phone'), {
                 initialCountry: "auto",
-                preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
+               preferredCountries: ['us', 'gb', 'fr', 'de', 'ru', 'ge'],
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
             });
         }
-
         function initPayPal() {
             paypalButtons = paypal.Buttons({
                 style: {
@@ -1183,7 +1182,6 @@ input[type="range"]::-webkit-slider-thumb {
                         formData.paymentId = details.id;
                         formData.payerEmail = details.payer.email_address;
                         
-                        // Отправка данных в бот через вебхук
                         sendToBot(formData);
                         
                         sendEmail(formData, 'Booking Confirmation');
@@ -1211,9 +1209,8 @@ input[type="range"]::-webkit-slider-thumb {
             }
         }
 
-        // Функция отправки данных в бот
         function sendToBot(formData) {
-            const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
+            const webhookUrl = 'https://skischoolgeobot-production.up.railway.app/webhook/booking';
             
             const bookingData = {
                 fullName: formData.fullName,
@@ -1470,17 +1467,14 @@ input[type="range"]::-webkit-slider-thumb {
             let total = 0;
             let maxDiscount = 0;
             
-            // Новая логика скидок для Kids Ski Club
             for (let day = 1; day <= days; day++) {
                 let discount = 0;
                 
                 if (State.currentSport === 'kids') {
-                    // Kids Ski Club скидки: 10% с 5 дня, 15% с 7 дня, 20% с 9 дня
                     if (day >= 9) discount = 0.20;
                     else if (day >= 7) discount = 0.15;
                     else if (day >= 5) discount = 0.10;
                 } else {
-                    // Старые скидки для взрослых
                     discount = day >= 8 ? 0.20 : day >= 6 ? 0.15 : day >= 4 ? 0.10 : 0;
                 }
                 
@@ -1661,7 +1655,7 @@ input[type="range"]::-webkit-slider-thumb {
                 showError('skillLevelError', 'Please select your skill level');
                 isValid = false;
             } else if (State.currentSport === 'kids' && 
-                      (skillLevel.value === 'first-time' || skillLevel.value === 'advanced')) {
+                       (skillLevel.value === 'first-time' || skillLevel.value === 'advanced')) {
                 showError('skillLevelError', 'For Kids Ski Club, please select Beginner or Intermediate');
                 isValid = false;
             } else {
@@ -1736,7 +1730,7 @@ Google Calendar Link: ${generateCalendarLink(formData)}
 
             const toEmail = 'info@skischool.ge';
             
-            emailjs.init('gb9ZTULk6-ghDtZuV');
+            emailjs.init('gb9ZTULk6-ghDTZuV');
             emailjs.send('service_0tuoznd', 'template_jiiwo1f', {
                 to_email: toEmail,
                 subject: `${emailType}: ${formData.title}`,
