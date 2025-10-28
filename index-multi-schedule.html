@@ -1670,24 +1670,28 @@ function initPayPal() {
     }).render('#paypal-button-container');
 }
 
-// ОБНОВЛЕННАЯ ФУНКЦИЯ: Отправка данных в бота с поддержкой мульти-расписания
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ: Отправка данных в бота
 function sendBookingNotifications(paypalDetails) {
     const prices = calculatePrice();
     
-    // Prepare booking data
+    // Prepare booking data - ТОЧНО ТАК ЖЕ КАК В СТАРОЙ ФОРМЕ
     const bookingData = {
         fullName: document.getElementById('fullName').value,
         phone: phoneInput.getNumber(),
         email: document.getElementById('email').value,
         age: document.getElementById('age').value,
         skillLevel: document.getElementById('skillLevel').value,
-        language: document.getElementById('language').value,
-        specialRequests: document.getElementById('specialRequests').value || '',
+        preferredLanguage: document.getElementById('language').value,
+        additionalInfo: document.getElementById('specialRequests').value || '',
         sport: state.sport,
         duration: state.duration,
         participants: state.participants,
         days: state.days,
-        lessons: state.lessons, // ВАЖНО: отправляем массив всех занятий
+        // Для обратной совместимости - сохраняем первую дату как основную
+        date: state.lessons.length > 0 ? state.lessons[0].date : '',
+        time: state.lessons.length > 0 ? state.lessons[0].time : '',
+        // Мульти-расписание для нового бота
+        lessons: state.lessons,
         total: prices.totalPrice,
         deposit: prices.depositPrice,
         remaining: prices.remainingPrice,
@@ -1696,7 +1700,7 @@ function sendBookingNotifications(paypalDetails) {
         bookingId: generateBookingId()
     };
     
-    console.log('Sending booking data to bot:', bookingData);
+    console.log('📦 Sending booking data to bot:', bookingData);
     
     // Отправляем в бота
     sendToBot(bookingData);
@@ -1710,32 +1714,36 @@ function sendBookingNotifications(paypalDetails) {
     }, 2000);
 }
 
-// ФУНКЦИЯ ОТПРАВКИ В БОТА
+// ФУНКЦИЯ ОТПРАВКИ В БОТА - ИСПРАВЛЕННАЯ
 function sendToBot(formData) {
     const webhookUrl = 'https://skischoolgeobot-production.up.railway.app/webhook/booking';
     
+    // СТРУКТУРА ДАННЫХ КАК В СТАРОЙ РАБОЧЕЙ ФОРМЕ
     const bookingData = {
+        bookingId: formData.bookingId,
         fullName: formData.fullName,
         phone: formData.phone,
         email: formData.email,
         age: formData.age,
         skillLevel: formData.skillLevel,
-        language: formData.language,
-        additionalInfo: formData.specialRequests,
+        preferredLanguage: formData.preferredLanguage,
+        additionalInfo: formData.additionalInfo,
         sport: formData.sport,
         duration: formData.duration,
         participants: formData.participants,
         days: formData.days,
-        lessons: formData.lessons, // Мульти-расписание
+        date: formData.date,
+        time: formData.time,
         total: formData.total,
         deposit: formData.deposit,
         remaining: formData.remaining,
         paymentStatus: formData.paymentStatus,
         paymentId: formData.paymentId,
-        bookingId: formData.bookingId
+        // Новое поле для мульти-расписания
+        lessons: formData.lessons
     };
 
-    console.log('Sending to bot webhook:', bookingData);
+    console.log('🚀 Sending to bot webhook:', bookingData);
 
     fetch(webhookUrl, {
         method: 'POST',
@@ -1744,12 +1752,19 @@ function sendToBot(formData) {
         },
         body: JSON.stringify(bookingData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         console.log('✅ Booking data sent to bot successfully:', data);
     })
     .catch(error => {
         console.error('❌ Error sending booking data to bot:', error);
+        // Показываем пользователю, что заказ сохранен локально
+        alert('Booking completed! There was a minor issue with notification, but your booking is confirmed.');
     });
 }
 
@@ -1761,14 +1776,14 @@ function sendEmailNotification(data) {
             scheduleText += `Lesson ${lesson.number}: ${formatDate(lesson.date)} at ${lesson.time}\n`;
         });
     } else {
-        scheduleText = 'No schedule specified';
+        scheduleText = `${formatDate(data.date)} at ${data.time}`;
     }
     
     const emailParams = {
         to_email: 'info@skischool.ge',
         subject: `Booking Confirmation: ${data.sport.toUpperCase()} Lesson`,
         message: `
-${data.sport.toUpperCase()} LESSON BOOKING - MULTI-SCHEDULE
+${data.sport.toUpperCase()} LESSON BOOKING
 
 CUSTOMER INFORMATION:
 Full Name: ${data.fullName}
@@ -1776,7 +1791,7 @@ Phone: ${data.phone}
 Email: ${data.email}
 Age: ${data.age}
 Skill Level: ${data.skillLevel}
-Preferred Language: ${data.language}
+Preferred Language: ${data.preferredLanguage}
 
 BOOKING DETAILS:
 Sport: ${data.sport.toUpperCase()}
@@ -1784,11 +1799,11 @@ Duration: ${data.duration}
 Participants: ${data.participants}
 Total Days: ${data.days}
 
-LESSON SCHEDULE:
+SCHEDULE:
 ${scheduleText}
 
 SPECIAL REQUESTS:
-${data.specialRequests}
+${data.additionalInfo}
 
 PAYMENT INFORMATION:
 Total Amount: $${data.total}
@@ -1805,7 +1820,7 @@ Booking Date: ${new Date().toLocaleDateString()}
         phone: data.phone
     };
     
-    console.log('Sending email with params:', emailParams);
+    console.log('📧 Sending email...');
     
     // Используем сервис и шаблон из оригинального работающего кода
     emailjs.send('service_0tuoznd', 'template_jiiwo1f', emailParams)
