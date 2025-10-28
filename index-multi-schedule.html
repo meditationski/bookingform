@@ -1779,27 +1779,27 @@ function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
     
     // Форматируем данные для бота
-const orderData = {
-    bookingId: generateBookingId(),
-    fullName: document.getElementById('fullName').value,
-    phone: phoneInput.value,
-    email: document.getElementById('email').value,
-    age: parseInt(document.getElementById('age').value),
-    skillLevel: document.getElementById('skillLevel').value,
-    preferredLanguage: document.getElementById('language').value,  // ← ИСПРАВЛЕНО: language → preferredLanguage
-    additionalInfo: document.getElementById('specialRequests').value,
-    sport: state.sport,
-    duration: state.sport === 'kids' ? document.getElementById('kidsDurationSelect').value : state.duration,
-    participants: state.sport === 'kids' ? state.kidsCount : state.participants,
-    days: state.days,
-    selectedDates: state.lessons,
-    total: state.totalPrice,
-    deposit: state.depositPrice,
-    remaining: state.remainingPrice,
-    paymentStatus: 'COMPLETED',
-    paymentId: orderID,
-    payerEmail: details.payer.email_address
-};
+    const orderData = {
+        bookingId: bookingData.bookingId,
+        fullName: bookingData.fullName,
+        phone: bookingData.phone,
+        email: bookingData.email,
+        age: parseInt(bookingData.age),
+        skillLevel: bookingData.skillLevel,
+        preferredLanguage: bookingData.language,  // ← ИСПРАВЛЕНО: используем данные из bookingData
+        additionalInfo: bookingData.additionalInfo,
+        sport: bookingData.sport,
+        duration: bookingData.duration,
+        participants: bookingData.participants,
+        days: bookingData.days,
+        selectedDates: bookingData.selectedDates,
+        total: bookingData.total,
+        deposit: bookingData.deposit,
+        remaining: bookingData.remaining,
+        paymentStatus: bookingData.paymentStatus,
+        paymentId: bookingData.paymentId,  // ← ИСПРАВЛЕНО: из bookingData вместо orderID
+        payerEmail: bookingData.payerEmail  // ← ИСПРАВЛЕНО: из bookingData вместо details
+    };
     
     console.log('📦 Sending to bot:', JSON.stringify(botData, null, 2));
     
