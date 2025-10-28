@@ -332,6 +332,12 @@ input[type="range"]::-moz-range-thumb {
 .day.disabled { opacity: 0.3; cursor: not-allowed; }
 .day.other-month { display: none; }
 
+/* Подсветка выбранных дат */
+.day.booked {
+    background: rgba(0, 163, 255, 0.2);
+    border: 0.125em solid var(--accent-blue);
+}
+
 .time-selection { 
     background: var(--bg-secondary); 
     border-radius: var(--border-radius-sm); 
@@ -1008,10 +1014,18 @@ const state = {
     },
     
     getDiscount: function() {
-        if (this.days >= 8) return 0.20;
-        if (this.days >= 6) return 0.15;
-        if (this.days >= 4) return 0.10;
-        return 0;
+        if (this.sport === 'kids') {
+            // Kids Club скидки: с 5 дня 10%, с 7 дня 15%
+            if (this.days >= 7) return 0.15;
+            if (this.days >= 5) return 0.10;
+            return 0;
+        } else {
+            // Обычные скидки
+            if (this.days >= 8) return 0.20;
+            if (this.days >= 6) return 0.15;
+            if (this.days >= 4) return 0.10;
+            return 0;
+        }
     },
     
     getTimeSlots: function() {
@@ -1146,7 +1160,19 @@ function calculatePrice() {
     
     if (state.sport === 'kids') {
         const pricePerKid = state.prices.kids[state.duration];
-        totalPrice = pricePerKid * state.participants * state.days;
+        let pricePerDay = pricePerKid * state.participants;
+        
+        // Kids Club: первые 4 дня по полной цене, затем скидки
+        const fullPriceDays = Math.min(4, state.days);
+        totalPrice = pricePerDay * fullPriceDays;
+        
+        // Последующие дни со скидкой
+        if (state.days > 4) {
+            const discountRate = state.getDiscount();
+            const discountedDays = state.days - 4;
+            const discountedPrice = pricePerDay * (1 - discountRate);
+            totalPrice += discountedPrice * discountedDays;
+        }
     } else {
         const priceConfig = state.prices[state.sport][state.duration];
         let pricePerDay = priceConfig.base;
@@ -1155,9 +1181,11 @@ function calculatePrice() {
             pricePerDay += (state.participants - 1) * priceConfig.additional;
         }
         
+        // Первые 3 дня по полной цене
         const fullPriceDays = Math.min(3, state.days);
         totalPrice = pricePerDay * fullPriceDays;
         
+        // Последующие дни со скидкой
         if (state.days > 3) {
             const discountRate = state.getDiscount();
             const discountedDays = state.days - 3;
@@ -1172,13 +1200,22 @@ function calculatePrice() {
     
     const discountRate = state.getDiscount();
     let discountAmount = 0;
-    if (state.sport !== 'kids' && state.days > 3) {
-        const priceConfig = state.prices[state.sport][state.duration];
-        let pricePerDay = priceConfig.base;
-        if (state.participants > 1) {
-            pricePerDay += (state.participants - 1) * priceConfig.additional;
+    
+    if (discountRate > 0) {
+        if (state.sport === 'kids') {
+            const pricePerKid = state.prices.kids[state.duration];
+            let pricePerDay = pricePerKid * state.participants;
+            const discountedDays = state.days - (state.days >= 7 ? 4 : (state.days >= 5 ? 4 : 0));
+            discountAmount = Math.round(pricePerDay * discountRate * discountedDays);
+        } else {
+            const priceConfig = state.prices[state.sport][state.duration];
+            let pricePerDay = priceConfig.base;
+            if (state.participants > 1) {
+                pricePerDay += (state.participants - 1) * priceConfig.additional;
+            }
+            const discountedDays = state.days - 3;
+            discountAmount = Math.round(pricePerDay * discountRate * discountedDays);
         }
-        discountAmount = Math.round(pricePerDay * discountRate * (state.days - 3));
     }
     
     return { totalPrice, depositPrice, remainingPrice, discountAmount, discountRate };
@@ -1196,8 +1233,18 @@ function updatePrices() {
     updateSummary();
     
     const discountEls = ['discountInfo', 'discountInfoStep2', 'discountInfoStep3'];
-    if (prices.discountRate > 0 && state.days > 3 && state.sport !== 'kids') {
-        const text = `${(prices.discountRate * 100).toFixed(0)}% discount on days 4-${state.days}! You save $${prices.discountAmount}`;
+    if (prices.discountRate > 0) {
+        let text = '';
+        if (state.sport === 'kids') {
+            if (prices.discountRate === 0.15) {
+                text = `🎉 You save 15% on days 7-${state.days}! You save $${prices.discountAmount}`;
+            } else if (prices.discountRate === 0.10) {
+                text = `🎉 You save 10% on days 5-6! You save $${prices.discountAmount}`;
+            }
+        } else {
+            text = `${(prices.discountRate * 100).toFixed(0)}% discount on days ${prices.discountRate === 0.20 ? '8+' : prices.discountRate === 0.15 ? '6-7' : '4-5'}! You save $${prices.discountAmount}`;
+        }
+        
         discountEls.forEach(id => {
             const el = document.getElementById(id);
             el.textContent = text;
@@ -1380,6 +1427,20 @@ function renderCalendar() {
             dayButton.classList.add('today');
         }
         
+        // Подсветка выбранных дат (всех, не только текущего урока)
+        const isBooked = state.lessons.some(lesson => {
+            if (!lesson.date) return false;
+            const lessonDate = new Date(lesson.date + 'T00:00:00');
+            return lessonDate.getFullYear() === state.currentYear &&
+                   lessonDate.getMonth() === state.currentMonth &&
+                   lessonDate.getDate() === day;
+        });
+        
+        if (isBooked) {
+            dayButton.classList.add('booked');
+        }
+        
+        // Выделение текущего выбранного дня
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1705,7 +1766,7 @@ function sendBookingNotifications(paypalDetails) {
         payerEmail: paypalDetails.payer.email_address
     };
     
-    console.log('Sending booking data:', bookingData);
+    console.log('Sending booking data to bot:', bookingData);
     
     // Send to bot
     sendToBot(bookingData);
@@ -1717,14 +1778,44 @@ function sendBookingNotifications(paypalDetails) {
 function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgeobot-production.up.railway.app/webhook/booking';
     
+    // Форматируем данные для совместимости с ботом
+    const botData = {
+        bookingId: bookingData.bookingId,
+        fullName: bookingData.fullName,
+        phone: bookingData.phone,
+        email: bookingData.email,
+        age: bookingData.age,
+        skillLevel: bookingData.skillLevel,
+        additionalInfo: bookingData.additionalInfo,
+        sport: bookingData.sport,
+        duration: bookingData.duration,
+        participants: bookingData.participants,
+        days: bookingData.days,
+        date: bookingData.date,
+        time: bookingData.time,
+        total: bookingData.total,
+        deposit: bookingData.deposit,
+        remaining: bookingData.remaining,
+        paymentStatus: 'COMPLETED',
+        paymentId: bookingData.paymentId,
+        payerEmail: bookingData.payerEmail
+    };
+    
+    console.log('Sending to bot:', botData);
+    
     fetch(webhookUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(bookingData)
+        body: JSON.stringify(botData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         console.log('✅ Booking data sent to bot successfully:', data);
     })
