@@ -1527,7 +1527,7 @@ async function sendEmailNotification(bookingData) {
 // ============ WEBHOOK INTEGRATION ============
 async function sendToWebhook(bookingData) {
     try {
-        const webhookUrl = 'https://skischoolgebotnew-production.up.railway.app/webhook/booking';
+        const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
         
         const response = await fetch(webhookUrl, {
             method: 'POST',
