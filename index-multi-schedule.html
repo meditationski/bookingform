@@ -678,7 +678,7 @@ input[type="range"]::-moz-range-thumb {
 </head>
 <body>
     <div class="container">
-                <!-- Step 1: Lesson Details -->
+        <!-- Step 1: Lesson Details -->
         <div class="form-section active" id="step1">
             <h2 class="subsection-title">Lesson Details</h2>
             <div class="step-layout">
@@ -959,7 +959,7 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Success Screen - ИСПРАВЛЕНО СООБЩЕНИЕ -->
+        <!-- Success Screen -->
         <div class="form-section" id="successScreen">
             <div class="success-screen">
                 <div class="success-icon">✓</div>
@@ -997,7 +997,7 @@ const state = {
             '3': { base: 140, additional: 50 },
             'full': { base: 250, additional: 80 }
         },
-        // ИСПРАВЛЕНО: Kids Club - цена умножается на количество детей
+        // Kids Club - цена умножается на количество детей
         kids: { 
             'full': 150,
             'half-lunch': 110,
@@ -1039,7 +1039,7 @@ const state = {
 
 let phoneInput;
 
-// Initialize EmailJS - ИСПРАВЛЕНО: используем правильный сервис из оригинального кода
+// Initialize EmailJS
 emailjs.init('gb9ZTULk6-ghDTZuV');
 
 // ============ INITIALIZATION ============
@@ -1141,7 +1141,7 @@ function initStep1() {
     });
 }
 
-// ИСПРАВЛЕНО: Калькуляция Kids Club
+// Калькуляция Kids Club
 function calculatePrice() {
     let totalPrice = 0;
     
@@ -1245,6 +1245,7 @@ function updateSummary() {
         if (detailsEl) detailsEl.textContent = detailsText;
     });
 }
+
 // ============ STEP 2: MULTI-SCHEDULE ============
 function initStep2() {
     console.log('Init Step 2, days:', state.days);
@@ -1658,7 +1659,7 @@ function initPayPal() {
                 console.log('Payment successful:', details);
                 showStep('paymentProcessing');
                 
-                // ИСПРАВЛЕНО: Отправка уведомлений
+                // Отправка уведомлений
                 sendBookingNotifications(details);
             });
         },
@@ -1669,7 +1670,7 @@ function initPayPal() {
     }).render('#paypal-button-container');
 }
 
-// ИСПРАВЛЕНО: Функция отправки уведомлений
+// ОБНОВЛЕННАЯ ФУНКЦИЯ: Отправка данных в бота с поддержкой мульти-расписания
 function sendBookingNotifications(paypalDetails) {
     const prices = calculatePrice();
     
@@ -1681,24 +1682,26 @@ function sendBookingNotifications(paypalDetails) {
         age: document.getElementById('age').value,
         skillLevel: document.getElementById('skillLevel').value,
         language: document.getElementById('language').value,
-        specialRequests: document.getElementById('specialRequests').value || 'None',
+        specialRequests: document.getElementById('specialRequests').value || '',
         sport: state.sport,
         duration: state.duration,
         participants: state.participants,
         days: state.days,
-        lessons: state.lessons,
-        totalAmount: prices.totalPrice,
-        depositAmount: prices.depositPrice,
-        remainingAmount: prices.remainingPrice,
-        paymentId: paypalDetails.id
+        lessons: state.lessons, // ВАЖНО: отправляем массив всех занятий
+        total: prices.totalPrice,
+        deposit: prices.depositPrice,
+        remaining: prices.remainingPrice,
+        paymentStatus: 'completed',
+        paymentId: paypalDetails.id,
+        bookingId: generateBookingId()
     };
     
-    console.log('Sending booking data:', bookingData);
+    console.log('Sending booking data to bot:', bookingData);
     
-    // Send Telegram notification
-    sendTelegramNotification(bookingData);
+    // Отправляем в бота
+    sendToBot(bookingData);
     
-    // Send Email notification - ИСПРАВЛЕНО: используем правильные параметры из оригинального кода
+    // Отправляем email
     sendEmailNotification(bookingData);
     
     // Show success screen after short delay
@@ -1707,62 +1710,60 @@ function sendBookingNotifications(paypalDetails) {
     }, 2000);
 }
 
-function sendTelegramNotification(data) {
-    const botToken = '7870726273:AAFJYdVDORc6Y3P-_57cqIzWZ5OqJXu8oLE';
-    const chatId = '878419211';
+// ФУНКЦИЯ ОТПРАВКИ В БОТА
+function sendToBot(formData) {
+    const webhookUrl = 'https://skischoolgeobot-production.up.railway.app/webhook/booking';
     
-    let message = `🎿 NEW BOOKING - MULTI-SCHEDULE\n\n`;
-    message += `👤 Customer:\n`;
-    message += `Name: ${data.fullName}\n`;
-    message += `Phone: ${data.phone}\n`;
-    message += `Email: ${data.email}\n`;
-    message += `Age: ${data.age}\n`;
-    message += `Skill: ${data.skillLevel}\n`;
-    message += `Language: ${data.language}\n\n`;
-    
-    message += `📋 Details:\n`;
-    message += `Sport: ${data.sport.toUpperCase()}\n`;
-    message += `Duration: ${data.duration}\n`;
-    message += `Participants: ${data.participants}\n`;
-    message += `Days: ${data.days}\n\n`;
-    
-    message += `📅 Schedule:\n`;
-    data.lessons.forEach(lesson => {
-        message += `Lesson ${lesson.number}: ${formatDate(lesson.date)} at ${lesson.time}\n`;
-    });
-    
-    message += `\n💰 Payment:\n`;
-    message += `Total: $${data.totalAmount}\n`;
-    message += `Deposit: $${data.depositAmount}\n`;
-    message += `Remaining: $${data.remainingAmount}\n`;
-    
-    if (data.specialRequests && data.specialRequests !== 'None') {
-        message += `\n📝 Requests:\n${data.specialRequests}\n`;
-    }
-    
-    message += `\n💳 Transaction: ${data.paymentId}`;
-    
-    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    const bookingData = {
+        fullName: formData.fullName,
+        phone: formData.phone,
+        email: formData.email,
+        age: formData.age,
+        skillLevel: formData.skillLevel,
+        language: formData.language,
+        additionalInfo: formData.specialRequests,
+        sport: formData.sport,
+        duration: formData.duration,
+        participants: formData.participants,
+        days: formData.days,
+        lessons: formData.lessons, // Мульти-расписание
+        total: formData.total,
+        deposit: formData.deposit,
+        remaining: formData.remaining,
+        paymentStatus: formData.paymentStatus,
+        paymentId: formData.paymentId,
+        bookingId: formData.bookingId
+    };
+
+    console.log('Sending to bot webhook:', bookingData);
+
+    fetch(webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: message
-        })
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData)
     })
     .then(response => response.json())
-    .then(result => console.log('Telegram sent:', result))
-    .catch(error => console.error('Telegram error:', error));
+    .then(data => {
+        console.log('✅ Booking data sent to bot successfully:', data);
+    })
+    .catch(error => {
+        console.error('❌ Error sending booking data to bot:', error);
+    });
 }
 
-// ИСПРАВЛЕНО: Email отправка с правильными параметрами из оригинального кода
+// ФУНКЦИЯ ОТПРАВКИ EMAIL
 function sendEmailNotification(data) {
     let scheduleText = '';
-    data.lessons.forEach(lesson => {
-        scheduleText += `Lesson ${lesson.number}: ${formatDate(lesson.date)} at ${lesson.time}\n`;
-    });
+    if (data.lessons && data.lessons.length > 0) {
+        data.lessons.forEach(lesson => {
+            scheduleText += `Lesson ${lesson.number}: ${formatDate(lesson.date)} at ${lesson.time}\n`;
+        });
+    } else {
+        scheduleText = 'No schedule specified';
+    }
     
-    // Используем параметры из оригинального работающего кода
     const emailParams = {
         to_email: 'info@skischool.ge',
         subject: `Booking Confirmation: ${data.sport.toUpperCase()} Lesson`,
@@ -1790,11 +1791,12 @@ SPECIAL REQUESTS:
 ${data.specialRequests}
 
 PAYMENT INFORMATION:
-Total Amount: $${data.totalAmount}
-Deposit Paid: $${data.depositAmount}
-Remaining Balance: $${data.remainingAmount}
+Total Amount: $${data.total}
+Deposit Paid: $${data.deposit}
+Remaining Balance: $${data.remaining}
 
 Transaction ID: ${data.paymentId}
+Booking ID: ${data.bookingId}
 
 Booking Date: ${new Date().toLocaleDateString()}
         `.trim(),
@@ -1808,9 +1810,9 @@ Booking Date: ${new Date().toLocaleDateString()}
     // Используем сервис и шаблон из оригинального работающего кода
     emailjs.send('service_0tuoznd', 'template_jiiwo1f', emailParams)
         .then(function(response) {
-            console.log('Email sent successfully:', response.status, response.text);
+            console.log('✅ Email sent successfully:', response.status, response.text);
         }, function(error) {
-            console.error('Email sending failed:', error);
+            console.error('❌ Email sending failed:', error);
             // Fallback: открыть почтовый клиент
             const mailtoLink = `mailto:info@skischool.ge?subject=${encodeURIComponent(emailParams.subject)}&body=${encodeURIComponent(emailParams.message)}`;
             window.open(mailtoLink, '_blank');
@@ -1824,6 +1826,10 @@ function showStep(stepId) {
         section.classList.remove('active');
     });
     document.getElementById(stepId).classList.add('active');
+}
+
+function generateBookingId() {
+    return 'BK' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
 }
     </script>
 </body>
