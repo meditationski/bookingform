@@ -972,7 +972,7 @@ input[type="range"]::-moz-range-thumb {
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
 // ============ GLOBAL STATE ============
 const state = {
@@ -1039,8 +1039,8 @@ const state = {
 
 let phoneInput;
 
-// Initialize EmailJS
-emailjs.init("ys_AGGqxg83LVdmMy");
+// Initialize EmailJS - ИСПРАВЛЕНО: используем правильный сервис из оригинального кода
+emailjs.init('gb9ZTULk6-ghDTZuV');
 
 // ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', function() {
@@ -1669,6 +1669,7 @@ function initPayPal() {
     }).render('#paypal-button-container');
 }
 
+// ИСПРАВЛЕНО: Функция отправки уведомлений
 function sendBookingNotifications(paypalDetails) {
     const prices = calculatePrice();
     
@@ -1697,7 +1698,7 @@ function sendBookingNotifications(paypalDetails) {
     // Send Telegram notification
     sendTelegramNotification(bookingData);
     
-    // ИСПРАВЛЕНО: Отправка Email с правильными параметрами
+    // Send Email notification - ИСПРАВЛЕНО: используем правильные параметры из оригинального кода
     sendEmailNotification(bookingData);
     
     // Show success screen after short delay
@@ -1754,41 +1755,65 @@ function sendTelegramNotification(data) {
     .catch(error => console.error('Telegram error:', error));
 }
 
-// ИСПРАВЛЕНО: Email отправка с правильными параметрами
+// ИСПРАВЛЕНО: Email отправка с правильными параметрами из оригинального кода
 function sendEmailNotification(data) {
     let scheduleText = '';
     data.lessons.forEach(lesson => {
         scheduleText += `Lesson ${lesson.number}: ${formatDate(lesson.date)} at ${lesson.time}\n`;
     });
     
+    // Используем параметры из оригинального работающего кода
     const emailParams = {
-        to_email: data.email,
-        to_name: data.fullName,
-        customer_name: data.fullName,
-        customer_email: data.email,
-        customer_phone: data.phone,
-        customer_age: data.age,
-        skill_level: data.skillLevel,
-        language: data.language,
-        sport: data.sport.toUpperCase(),
-        duration: data.duration,
-        participants: data.participants,
-        total_days: data.days,
-        lesson_schedule: scheduleText,
-        special_requests: data.specialRequests,
-        total_amount: `$${data.totalAmount}`,
-        deposit_amount: `$${data.depositAmount}`,
-        remaining_balance: `$${data.remainingAmount}`,
-        transaction_id: data.paymentId
+        to_email: 'info@skischool.ge',
+        subject: `Booking Confirmation: ${data.sport.toUpperCase()} Lesson`,
+        message: `
+${data.sport.toUpperCase()} LESSON BOOKING - MULTI-SCHEDULE
+
+CUSTOMER INFORMATION:
+Full Name: ${data.fullName}
+Phone: ${data.phone}
+Email: ${data.email}
+Age: ${data.age}
+Skill Level: ${data.skillLevel}
+Preferred Language: ${data.language}
+
+BOOKING DETAILS:
+Sport: ${data.sport.toUpperCase()}
+Duration: ${data.duration}
+Participants: ${data.participants}
+Total Days: ${data.days}
+
+LESSON SCHEDULE:
+${scheduleText}
+
+SPECIAL REQUESTS:
+${data.specialRequests}
+
+PAYMENT INFORMATION:
+Total Amount: $${data.totalAmount}
+Deposit Paid: $${data.depositAmount}
+Remaining Balance: $${data.remainingAmount}
+
+Transaction ID: ${data.paymentId}
+
+Booking Date: ${new Date().toLocaleDateString()}
+        `.trim(),
+        from_name: data.fullName,
+        from_email: data.email,
+        phone: data.phone
     };
     
     console.log('Sending email with params:', emailParams);
     
-    emailjs.send('service_hzs7xni', 'template_5idzppr', emailParams)
+    // Используем сервис и шаблон из оригинального работающего кода
+    emailjs.send('service_0tuoznd', 'template_jiiwo1f', emailParams)
         .then(function(response) {
             console.log('Email sent successfully:', response.status, response.text);
         }, function(error) {
             console.error('Email sending failed:', error);
+            // Fallback: открыть почтовый клиент
+            const mailtoLink = `mailto:info@skischool.ge?subject=${encodeURIComponent(emailParams.subject)}&body=${encodeURIComponent(emailParams.message)}`;
+            window.open(mailtoLink, '_blank');
         });
 }
 
@@ -1800,7 +1825,6 @@ function showStep(stepId) {
     });
     document.getElementById(stepId).classList.add('active');
 }
-
     </script>
 </body>
 </html>
