@@ -125,6 +125,11 @@ input[type="range"] {
     -webkit-appearance: none;
 }
 
+input[type="range"]:hover {
+    background: var(--accent-blue);
+    opacity: 0.7;
+}
+
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 2em;
@@ -179,11 +184,24 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* Компактный список дней */
+.days-compact-section {
+    margin-top: 1.5em;
+    padding-top: 1.5em;
+    border-top: 0.125em solid var(--bg-tertiary);
+}
+
+.days-compact-title {
+    font-size: 0.875em;
+    color: var(--text-muted);
+    margin-bottom: 0.75em;
+    text-align: center;
+    font-weight: 600;
+}
+
 .days-compact-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 0.5em;
-    margin-bottom: 1em;
 }
 
 .day-compact-btn {
@@ -775,7 +793,7 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Step 2: Multi-Schedule (Компактная версия) -->
+        <!-- Step 2: Multi-Schedule -->
         <div class="form-section" id="step2">
             <h2 class="subsection-title">Select Date & Time for Each Lesson</h2>
             
@@ -833,10 +851,8 @@ input[type="range"]::-moz-range-thumb {
                         <div id="discountInfoStep2" class="discount-info"></div>
                         
                         <!-- Компактный список дней под карточкой цен -->
-                        <div style="margin-top: 1.5em; padding-top: 1.5em; border-top: 0.125em solid var(--bg-tertiary);">
-                            <div style="font-size: 0.875em; color: var(--text-muted); margin-bottom: 0.75em; text-align: center; font-weight: 600;">
-                                Select day to schedule:
-                            </div>
+                        <div class="days-compact-section">
+                            <div class="days-compact-title">Select day to schedule:</div>
                             <div class="days-compact-grid" id="daysCompactGrid">
                                 <!-- Day buttons will be generated here -->
                             </div>
@@ -973,6 +989,8 @@ const state = {
     currentLessonIndex: 0,
     currentMonth: new Date().getMonth(),
     currentYear: new Date().getFullYear(),
+    
+    // Правильная структура цен
     prices: {
         ski: { 
             '2': { base: 100, additional: 40 },
@@ -990,15 +1008,57 @@ const state = {
             'half-nolunch': { base: 90, additional: 70 }
         }
     },
-    discounts: { 3: 0.05, 5: 0.10, 7: 0.15, 10: 0.20 },
-    timeSlots: {
-        ski: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00'],
-        snowboard: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00'],
-        kids: ['10:30', '11:00', '11:30']
+    
+    // Скидки по типам занятий
+    discounts: {
+        ski: {
+            3: 0.05,   // 5% на 3-4 дня
+            5: 0.10,   // 10% на 5-6 дней
+            7: 0.15,   // 15% на 7-9 дней
+            10: 0.20   // 20% на 10+ дней
+        },
+        snowboard: {
+            3: 0.05,
+            5: 0.10,
+            7: 0.15,
+            10: 0.20
+        },
+        kids: {
+            3: 0.05,
+            5: 0.10,
+            7: 0.15,
+            10: 0.20
+        }
     },
+    
+    // Тайм-слоты (часовые интервалы, с учетом длительности занятия)
+    // Курорт работает с 10:00 до 17:00
+    getTimeSlots: function() {
+        if (this.sport === 'kids') {
+            return ['10:30']; // Только одно время для Kids Club
+        }
+        
+        // Для ski и snowboard
+        const allSlots = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+        
+        if (this.duration === '2') {
+            // 2-часовое занятие: последний слот 15:00 (15:00-17:00)
+            return ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
+        } else if (this.duration === '3') {
+            // 3-часовое занятие: последний слот 14:00 (14:00-17:00)
+            return ['10:00', '11:00', '12:00', '13:00', '14:00'];
+        } else if (this.duration === 'full') {
+            // Полный день: только 10:00
+            return ['10:00'];
+        }
+        
+        return allSlots;
+    },
+    
+    // Период бронирования: с 15 декабря 2025 по 30 апреля 2026
     bookingPeriod: {
-        startDate: new Date('2024-12-15'),
-        endDate: new Date('2025-04-15')
+        startDate: new Date('2025-12-15'),
+        endDate: new Date('2026-04-30')
     }
 };
 
@@ -1118,9 +1178,11 @@ function calculatePrice() {
     // Умножаем на количество дней
     totalPrice *= state.days;
     
-    // Применяем скидку
+    // Применяем скидку для текущего типа занятий
+    const sportDiscounts = state.discounts[state.sport];
     let discountRate = 0;
-    for (const [days, rate] of Object.entries(state.discounts)) {
+    
+    for (const [days, rate] of Object.entries(sportDiscounts)) {
         if (state.days >= parseInt(days)) {
             discountRate = rate;
         }
@@ -1319,13 +1381,13 @@ function renderCalendar() {
         const currentDate = new Date(state.currentYear, state.currentMonth, day);
         currentDate.setHours(0, 0, 0, 0);
         
-        // Проверка периода бронирования
+        // Проверка периода бронирования: 15 декабря 2025 - 30 апреля 2026
         const bookingStart = new Date(state.bookingPeriod.startDate);
         bookingStart.setHours(0, 0, 0, 0);
         const bookingEnd = new Date(state.bookingPeriod.endDate);
         bookingEnd.setHours(0, 0, 0, 0);
         
-        // Disable dates outside booking period or past dates
+        // Запрет бронирования задним числом и вне периода
         if (currentDate < today || currentDate < bookingStart || currentDate > bookingEnd) {
             dayButton.classList.add('disabled');
             dayButton.disabled = true;
@@ -1375,8 +1437,8 @@ function renderTimeSlots() {
     const container = document.getElementById('timeSlots');
     container.innerHTML = '';
     
-    // Получаем тайм-слоты для текущего типа занятий
-    const timeSlots = state.timeSlots[state.sport] || [];
+    // Получаем тайм-слоты с учетом типа занятия и длительности
+    const timeSlots = state.getTimeSlots();
     
     const lesson = state.lessons[state.currentLessonIndex];
     const dateSelected = lesson && lesson.date;
