@@ -1780,12 +1780,13 @@ function sendToBot(bookingData) {
     
     // Форматируем данные ТОЧНО как в старой рабочей версии
     const botData = {
-        bookingId: bookingData.bookingId,
+     bookingId: bookingData.bookingId,
         fullName: bookingData.fullName,
         phone: bookingData.phone,
         email: bookingData.email,
         age: bookingData.age,
         skillLevel: bookingData.skillLevel,
+        preferredLanguage: bookingData.language,  // ← ИСПРАВЛЕНО!
         additionalInfo: bookingData.additionalInfo,
         sport: bookingData.sport,
         duration: bookingData.duration,
@@ -1793,10 +1794,11 @@ function sendToBot(bookingData) {
         days: bookingData.days,
         date: bookingData.date,
         time: bookingData.time,
+        selectedDates: bookingData.selectedDates,  // ← ИСПРАВЛЕНО! Добавили массив дат
         total: bookingData.total,
         deposit: bookingData.deposit,
         remaining: bookingData.remaining,
-        paymentStatus: 'COMPLETED', // ← lowercase как в старой версии!
+        paymentStatus: 'COMPLETED',
         paymentId: bookingData.paymentId,
         payerEmail: bookingData.payerEmail
     };
