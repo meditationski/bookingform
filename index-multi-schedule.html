@@ -1796,7 +1796,7 @@ function sendToBot(bookingData) {
         total: bookingData.total,
         deposit: bookingData.deposit,
         remaining: bookingData.remaining,
-        paymentStatus: 'completed', // ← lowercase как в старой версии!
+        paymentStatus: 'COMPLETED', // ← lowercase как в старой версии!
         paymentId: bookingData.paymentId,
         payerEmail: bookingData.payerEmail
     };
