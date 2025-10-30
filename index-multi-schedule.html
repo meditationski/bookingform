@@ -770,9 +770,9 @@ input[type="range"]::-moz-range-thumb {
                         
                         <div class="form-group" id="skiSnowboardDuration">
                             <select class="custom-select" id="duration">
-                                <option value="2">2 Hours Lesson - $100</option>
-                                <option value="3">3 Hours Lesson - $140</option>
-                                <option value="full">Full Day Lesson - $250</option>
+                                <option value="2">2 Hours Lesson</option>
+                                <option value="3">3 Hours Lesson</option>
+                                <option value="full">Full Day Lesson</option>
                             </select>
                         </div>
                         
@@ -836,7 +836,7 @@ input[type="range"]::-moz-range-thumb {
                             <div class="summary-details" id="step1SummaryDetails">1 Person × 1 Day</div>
                         </div>
                         <div class="price-row">
-                            <span class="price-label">Total amount:</span>
+                            <span class="price-label">Total:</span>
                             <span id="totalPrice" class="total-price">$100</span>
                         </div>
                         <div class="price-row">
@@ -902,7 +902,7 @@ input[type="range"]::-moz-range-thumb {
                             </div>
                         </div>
                         <div class="price-row">
-                            <span class="price-label">Total amount:</span>
+                            <span class="price-label">Total:</span>
                             <span id="totalPriceStep2" class="total-price">$100</span>
                         </div>
                         <div class="price-row">
@@ -1001,7 +1001,7 @@ input[type="range"]::-moz-range-thumb {
                             </div>
                         </div>
                         <div class="price-row">
-                            <span class="price-label">Total amount:</span>
+                            <span class="price-label">Total:</span>
                             <span id="totalPriceStep3" class="total-price">$100</span>
                         </div>
                         <div class="price-row">
@@ -1329,9 +1329,9 @@ function updateSummary() {
     let durationText = '';
     if (state.sport === 'kids') {
         const kidsDurations = {
-            'full': 'Kids Ski Club Full Day (10:30 - 16:30)',
-            'half-lunch': 'Kids Ski Club Half Day With Lunch (10:30 - 14:30)',
-            'half-nolunch': 'Kids Ski Club Half Day No Lunch (10:30 - 13:30)'
+            'full': 'Kids Ski Club Full Day',
+            'half-lunch': 'Kids Ski Club Half Day With Lunch',
+            'half-nolunch': 'Kids Ski Club Half Day No Lunch'
         };
         durationText = kidsDurations[state.duration];
     } else {
@@ -1505,7 +1505,7 @@ function renderCalendar() {
             dayButton.classList.add('booked');
         }
         
-        // Выделение текущего выбранного дня
+        // Выделение текущего выбранного дня - ИСПРАВЛЕНО: используем градиент
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
