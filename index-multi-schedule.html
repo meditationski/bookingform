@@ -638,6 +638,7 @@ input[type="range"]::-moz-range-thumb {
 .iti { width: 100%; }
 #phone { padding-left: 5em !important; }
 
+/* НОВЫЕ СТИЛИ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ТАБОВ */
 @media (max-width: 767px) {
     .container { padding: 0.5em; }
     body { font-size: 14px; }
@@ -669,8 +670,22 @@ input[type="range"]::-moz-range-thumb {
     input[type="range"] { height: 0.4em; margin: 0.75em 0; }
     input[type="range"]::-webkit-slider-thumb { width: 1.5em; height: 1.5em; }
     .slider-labels { font-size: 0.75em; }
-    .tabs { flex-wrap: wrap; }
-    .tab { flex: 1 1 calc(33.333% - 0.5em); min-width: 0; padding: 0.75em 0.5em; font-size: 0.85em; }
+    
+    /* УВЕЛИЧЕННЫЕ ТАБЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ */
+    .tabs { 
+        flex-wrap: wrap; 
+        padding: 0.5em;
+    }
+    .tab { 
+        flex: 1 1 calc(33.333% - 0.5em); 
+        min-width: 0; 
+        padding: 1.25em 0.75em; 
+        font-size: 0.95em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
     .time-slots-compact { grid-template-columns: repeat(2, 1fr); }
     .days-compact-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
     .summary-dates-list { grid-template-columns: repeat(2, 1fr); }
@@ -683,7 +698,57 @@ input[type="range"]::-moz-range-thumb {
     .calendar-large { padding: 0.5em; }
     .day { min-height: 2.25em; font-size: 0.8em; }
     .weekdays { font-size: 0.7em; }
-    .tab { font-size: 0.75em; padding: 0.6em 0.4em; }
+    .tab { 
+        font-size: 0.85em; 
+        padding: 1em 0.5em; 
+    }
+}
+
+/* НОВЫЕ СТИЛИ ДЛЯ ПЕРЕМЕЩЕНИЯ БЛОКА ДНЕЙ В ДЕСКТОПНОЙ ВЕРСИИ */
+@media (min-width: 768px) {
+    #step2 .step-layout {
+        display: flex;
+        flex-direction: row;
+    }
+    
+    #step2 .step-left {
+        flex: 2;
+        order: 1;
+    }
+    
+    #step2 .step-right {
+        flex: 1;
+        order: 2;
+        margin-left: 1.5em;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #step2 .days-compact-section {
+        margin-top: 1.5em;
+        order: 3;
+    }
+}
+
+/* В мобильной версии оставляем как есть */
+@media (max-width: 767px) {
+    #step2 .step-layout {
+        flex-direction: column-reverse;
+    }
+    
+    #step2 .step-left {
+        order: 2;
+    }
+    
+    #step2 .step-right {
+        order: 1;
+        margin-bottom: 1.25em;
+    }
+    
+    #step2 .days-compact-section {
+        margin-top: 1.5em;
+        order: 3;
+    }
 }
     </style>
 </head>
@@ -713,9 +778,9 @@ input[type="range"]::-moz-range-thumb {
                         
                         <div class="form-group" id="kidsDuration" style="display: none;">
                             <select class="custom-select" id="kidsDurationSelect">
-                                <option value="full">Kids Ski Club Full Day (10:30 - 16:30) - $150</option>
-                                <option value="half-lunch">Kids Ski Club Half Day With Lunch (10:30 - 14:30) - $110</option>
-                                <option value="half-nolunch">Kids Ski Club Half Day No Lunch (10:30 - 13:30) - $90</option>
+                                <option value="full">Kids Ski Club Full Day</option>
+                                <option value="half-lunch">Kids Ski Club Half Day With Lunch</option>
+                                <option value="half-nolunch">Kids Ski Club Half Day No Lunch</option>
                             </select>
                         </div>
                         
@@ -824,13 +889,6 @@ input[type="range"]::-moz-range-thumb {
                             <div class="time-slots-compact" id="timeSlots"></div>
                         </div>
                     </div>
-                    
-                    <!-- Блоки дней вынесены отдельно БЕЗ заголовка и линии -->
-                    <div class="days-compact-section">
-                        <div class="days-compact-grid" id="daysCompactGrid">
-                            <!-- Day buttons will be generated here -->
-                        </div>
-                    </div>
                 </div>
 
                 <div class="step-right">
@@ -856,6 +914,13 @@ input[type="range"]::-moz-range-thumb {
                             <span id="remainingPriceStep2" class="price-value">$80</span>
                         </div>
                         <div id="discountInfoStep2" class="discount-info"></div>
+                    </div>
+                    
+                    <!-- Блок дней перемещен под блок с калькуляцией в десктопной версии -->
+                    <div class="days-compact-section">
+                        <div class="days-compact-grid" id="daysCompactGrid">
+                            <!-- Day buttons will be generated here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1619,9 +1684,84 @@ function initStep3() {
         showStep('step2');
     });
     
+    // Обновляем поля в зависимости от типа занятия
+    updateStep3Fields();
+    
     const paypalContainer = document.getElementById('paypal-button-container');
     paypalContainer.innerHTML = '';
     initPayPal();
+}
+
+function updateStep3Fields() {
+    const ageInput = document.getElementById('age');
+    const skillSelect = document.getElementById('skillLevel');
+    const languageSelect = document.getElementById('language');
+    
+    if (state.sport === 'kids') {
+        // Для Kids Club ограничиваем возраст 5-13
+        ageInput.min = 5;
+        ageInput.max = 13;
+        
+        // Сохраняем текущее значение перед обновлением
+        const currentSkill = skillSelect.value;
+        
+        // Обновляем опции skillLevel
+        skillSelect.innerHTML = `
+            <option value="">Skill Level *</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+        `;
+        
+        // Восстанавливаем выбранное значение, если оно допустимо
+        if (currentSkill === 'beginner' || currentSkill === 'intermediate') {
+            skillSelect.value = currentSkill;
+        }
+        
+        // Сохраняем текущее значение языка
+        const currentLanguage = languageSelect.value;
+        
+        // Обновляем опции language
+        languageSelect.innerHTML = `
+            <option value="">Preferred Language *</option>
+            <option value="english">English</option>
+            <option value="russian">Russian</option>
+        `;
+        
+        // Восстанавливаем выбранное значение, если оно допустимо
+        if (currentLanguage === 'english' || currentLanguage === 'russian') {
+            languageSelect.value = currentLanguage;
+        }
+    } else {
+        // Для обычных занятий восстанавливаем стандартные настройки
+        ageInput.min = 5;
+        ageInput.max = 80;
+        
+        const currentSkill = skillSelect.value;
+        skillSelect.innerHTML = `
+            <option value="">Skill Level *</option>
+            <option value="first-time">First Time</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+        `;
+        
+        if (['first-time', 'beginner', 'intermediate', 'advanced'].includes(currentSkill)) {
+            skillSelect.value = currentSkill;
+        }
+        
+        const currentLanguage = languageSelect.value;
+        languageSelect.innerHTML = `
+            <option value="">Preferred Language *</option>
+            <option value="english">English</option>
+            <option value="russian">Russian</option>
+            <option value="georgian">Georgian</option>
+            <option value="other">Other</option>
+        `;
+        
+        if (['english', 'russian', 'georgian', 'other'].includes(currentLanguage)) {
+            languageSelect.value = currentLanguage;
+        }
+    }
 }
 
 function validateForm() {
