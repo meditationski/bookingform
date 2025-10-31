@@ -183,61 +183,6 @@ input[type="range"]::-moz-range-thumb {
     gap: 1.25em;
 }
 
-/* Компактный список дней - вынесен отдельно БЕЗ заголовка и линии */
-.days-compact-section {
-    background: var(--bg-secondary);
-    border-radius: var(--border-radius-sm);
-    padding: 1em;
-    margin-top: 1.5em;
-}
-
-.days-compact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 0.5em;
-}
-
-.day-compact-btn {
-    padding: 0.75em;
-    background: var(--bg-tertiary);
-    border: 0.125em solid var(--bg-tertiary);
-    border-radius: var(--border-radius-sm);
-    color: var(--text-secondary);
-    font-size: 0.875em;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.day-compact-btn:hover {
-    border-color: var(--accent-blue);
-}
-
-.day-compact-btn.selected {
-    border-color: var(--accent-blue);
-    background: rgba(0, 163, 255, 0.15);
-    color: var(--accent-blue);
-}
-
-.day-compact-btn.completed {
-    border-color: var(--accent-green);
-    background: rgba(0, 255, 136, 0.15);
-    color: var(--accent-green);
-}
-
-.day-compact-number {
-    font-size: 1.1em;
-    display: block;
-}
-
-.day-compact-status {
-    font-size: 0.7em;
-    margin-top: 0.25em;
-    display: block;
-    opacity: 0.8;
-}
-
 /* Календарь и время */
 .calendar-time-vertical {
     display: flex;
@@ -427,7 +372,7 @@ input[type="range"]::-moz-range-thumb {
     text-align: center;
 }
 
-/* ИСПРАВЛЕНО: По 2-3 в ряд для компактности */
+/* Новый стиль для кликабельных дней в калькуляции */
 .summary-dates-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -442,13 +387,32 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .summary-date-item {
-    padding: 0.5em;
+    padding: 0.75em;
     background: rgba(0, 163, 255, 0.08);
     border-radius: var(--border-radius-sm);
-    font-size: 0.75em;
+    font-size: 0.8em;
     text-align: center;
     color: var(--accent-blue);
     font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 0.125em solid transparent;
+}
+
+.summary-date-item:hover {
+    background: rgba(0, 163, 255, 0.15);
+    border-color: var(--accent-blue);
+}
+
+.summary-date-item.selected {
+    background: rgba(0, 163, 255, 0.2);
+    border-color: var(--accent-blue);
+}
+
+.summary-date-item.completed {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
 }
 
 .price-row { 
@@ -687,8 +651,11 @@ input[type="range"]::-moz-range-thumb {
     }
     
     .time-slots-compact { grid-template-columns: repeat(2, 1fr); }
-    .days-compact-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
     .summary-dates-list { grid-template-columns: repeat(2, 1fr); }
+    .summary-date-item { 
+        padding: 0.6em 0.4em; 
+        font-size: 0.75em; 
+    }
 }
 
 @media (max-width: 480px) {
@@ -702,53 +669,7 @@ input[type="range"]::-moz-range-thumb {
         font-size: 0.85em; 
         padding: 1em 0.5em; 
     }
-}
-
-/* НОВЫЕ СТИЛИ ДЛЯ ПЕРЕМЕЩЕНИЯ БЛОКА ДНЕЙ В ДЕСКТОПНОЙ ВЕРСИИ */
-@media (min-width: 768px) {
-    #step2 .step-layout {
-        display: flex;
-        flex-direction: row;
-    }
-    
-    #step2 .step-left {
-        flex: 2;
-        order: 1;
-    }
-    
-    #step2 .step-right {
-        flex: 1;
-        order: 2;
-        margin-left: 1.5em;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    #step2 .days-compact-section {
-        margin-top: 1.5em;
-        order: 3;
-    }
-}
-
-/* В мобильной версии оставляем как есть */
-@media (max-width: 767px) {
-    #step2 .step-layout {
-        flex-direction: column-reverse;
-    }
-    
-    #step2 .step-left {
-        order: 2;
-    }
-    
-    #step2 .step-right {
-        order: 1;
-        margin-bottom: 1.25em;
-    }
-    
-    #step2 .days-compact-section {
-        margin-top: 1.5em;
-        order: 3;
-    }
+    .summary-dates-list { grid-template-columns: repeat(2, 1fr); }
 }
     </style>
 </head>
@@ -897,8 +818,9 @@ input[type="range"]::-moz-range-thumb {
                             <div class="summary-title" id="step2SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step2SummaryDetails">1 Person × 1 Day</div>
                             
+                            <!-- Интегрированные дни для выбора -->
                             <div class="summary-dates-list" id="step2DatesList">
-                                <!-- Selected dates will appear here -->
+                                <!-- Selected dates will appear here as clickable items -->
                             </div>
                         </div>
                         <div class="price-row">
@@ -914,13 +836,6 @@ input[type="range"]::-moz-range-thumb {
                             <span id="remainingPriceStep2" class="price-value">$80</span>
                         </div>
                         <div id="discountInfoStep2" class="discount-info"></div>
-                    </div>
-                    
-                    <!-- Блок дней перемещен под блок с калькуляцией в десктопной версии -->
-                    <div class="days-compact-section">
-                        <div class="days-compact-grid" id="daysCompactGrid">
-                            <!-- Day buttons will be generated here -->
-                        </div>
                     </div>
                 </div>
             </div>
@@ -997,7 +912,7 @@ input[type="range"]::-moz-range-thumb {
                             <div class="summary-details" id="step3SummaryDetails">1 Person × 1 Day</div>
                             
                             <div class="summary-dates-list" id="step3DatesList">
-                                <!-- Selected dates will appear here -->
+                                <!-- Selected dates will appear here as read-only items -->
                             </div>
                         </div>
                         <div class="price-row">
@@ -1368,9 +1283,9 @@ function initStep2() {
     
     state.currentLessonIndex = 0;
     
-    renderDaysCompactGrid();
     renderCalendar();
     renderTimeSlots();
+    updateStep2DatesList(); // Обновляем кликабельные дни в калькуляции
     
     document.getElementById('backToStep1').addEventListener('click', function() {
         showStep('step1');
@@ -1401,42 +1316,37 @@ function initStep2() {
     });
 }
 
-function renderDaysCompactGrid() {
-    const grid = document.getElementById('daysCompactGrid');
-    grid.innerHTML = '';
+function updateStep2DatesList() {
+    const datesList = document.getElementById('step2DatesList');
+    datesList.innerHTML = '';
     
     state.lessons.forEach((lesson, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'day-compact-btn';
-        btn.type = 'button';
+        const item = document.createElement('div');
+        item.className = 'summary-date-item';
         
         if (state.currentLessonIndex === index) {
-            btn.classList.add('selected');
+            item.classList.add('selected');
         }
         
         if (lesson.date && lesson.time) {
-            btn.classList.add('completed');
+            item.classList.add('completed');
+            item.textContent = `${formatDateShort(lesson.date)} ${lesson.time}`;
+        } else {
+            item.textContent = `Day ${lesson.number}`;
         }
         
-        const statusText = lesson.date && lesson.time ? '✓' : '○';
-        
-        btn.innerHTML = `
-            <span class="day-compact-number">Day ${lesson.number}</span>
-            <span class="day-compact-status">${statusText}</span>
-        `;
-        
-        btn.addEventListener('click', function() {
+        item.addEventListener('click', function() {
             selectLessonDay(index);
         });
         
-        grid.appendChild(btn);
+        datesList.appendChild(item);
     });
 }
 
 function selectLessonDay(index) {
     console.log('Select lesson day:', index);
     state.currentLessonIndex = index;
-    renderDaysCompactGrid();
+    updateStep2DatesList(); // Обновляем выделение в калькуляции
     renderCalendar();
     renderTimeSlots();
 }
@@ -1505,7 +1415,7 @@ function renderCalendar() {
             dayButton.classList.add('booked');
         }
         
-        // Выделение текущего выбранного дня - ИСПРАВЛЕНО: используем градиент
+        // Выделение текущего выбранного дня
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1534,8 +1444,7 @@ function selectDate(year, month, day) {
     
     renderCalendar();
     renderTimeSlots();
-    renderDaysCompactGrid();
-    updateStep2DatesList();
+    updateStep2DatesList(); // Обновляем отображение в калькуляции
     checkStep2Complete();
 }
 
@@ -1619,8 +1528,7 @@ function selectTime(time) {
     console.log('Time selected:', time);
     
     renderTimeSlots();
-    renderDaysCompactGrid();
-    updateStep2DatesList();
+    updateStep2DatesList(); // Обновляем отображение в калькуляции
     checkStep2Complete();
     
     const nextIncomplete = state.lessons.findIndex((l, i) => 
@@ -1630,20 +1538,6 @@ function selectTime(time) {
     if (nextIncomplete !== -1) {
         setTimeout(() => selectLessonDay(nextIncomplete), 300);
     }
-}
-
-function updateStep2DatesList() {
-    const datesList = document.getElementById('step2DatesList');
-    datesList.innerHTML = '';
-    
-    state.lessons.forEach(lesson => {
-        if (lesson.date && lesson.time) {
-            const item = document.createElement('div');
-            item.className = 'summary-date-item';
-            item.textContent = `${formatDateShort(lesson.date)} ${lesson.time}`;
-            datesList.appendChild(item);
-        }
-    });
 }
 
 function updateStep3DatesList() {
