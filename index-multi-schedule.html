@@ -277,7 +277,7 @@ input[type="range"]::-moz-range-thumb {
 .day.disabled { opacity: 0.3; cursor: not-allowed; }
 .day.other-month { display: none; }
 
-/* Подсветка выбранных дат */
+
 .day.booked {
     background: rgba(0, 163, 255, 0.2);
     border: 0.125em solid var(--accent-blue);
@@ -372,7 +372,7 @@ input[type="range"]::-moz-range-thumb {
     text-align: center;
 }
 
-/* Новый стиль для кликабельных дней в калькуляции */
+
 .summary-dates-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -537,7 +537,7 @@ input[type="range"]::-moz-range-thumb {
     flex: 1;
 }
 
-/* PayPal кнопка полукруглая */
+
 .paypal-buttons {
     border-radius: var(--border-radius) !important;
 }
@@ -602,7 +602,7 @@ input[type="range"]::-moz-range-thumb {
 .iti { width: 100%; }
 #phone { padding-left: 5em !important; }
 
-/* НОВЫЕ СТИЛИ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ТАБОВ */
+
 @media (max-width: 767px) {
     .container { padding: 0.5em; }
     body { font-size: 14px; }
@@ -635,7 +635,7 @@ input[type="range"]::-moz-range-thumb {
     input[type="range"]::-webkit-slider-thumb { width: 1.5em; height: 1.5em; }
     .slider-labels { font-size: 0.75em; }
     
-    /* УВЕЛИЧЕННЫЕ ТАБЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ */
+
     .tabs { 
         flex-wrap: wrap; 
         padding: 0.5em;
@@ -818,7 +818,7 @@ input[type="range"]::-moz-range-thumb {
                             <div class="summary-title" id="step2SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step2SummaryDetails">1 Person × 1 Day</div>
                             
-                            <!-- Интегрированные дни для выбора -->
+
                             <div class="summary-dates-list" id="step2DatesList">
                                 <!-- Selected dates will appear here as clickable items -->
                             </div>
@@ -1142,11 +1142,11 @@ function calculatePrice() {
         const pricePerKid = state.prices.kids[state.duration];
         let pricePerDay = pricePerKid * state.participants;
         
-        // Kids Club: первые 4 дня по полной цене, затем скидки
+
         const fullPriceDays = Math.min(4, state.days);
         totalPrice = pricePerDay * fullPriceDays;
         
-        // Последующие дни со скидкой
+
         if (state.days > 4) {
             const discountRate = state.getDiscount();
             const discountedDays = state.days - 4;
@@ -1161,11 +1161,11 @@ function calculatePrice() {
             pricePerDay += (state.participants - 1) * priceConfig.additional;
         }
         
-        // Первые 3 дня по полной цене
+
         const fullPriceDays = Math.min(3, state.days);
         totalPrice = pricePerDay * fullPriceDays;
         
-        // Последующие дни со скидкой
+
         if (state.days > 3) {
             const discountRate = state.getDiscount();
             const discountedDays = state.days - 3;
@@ -1285,7 +1285,7 @@ function initStep2() {
     
     renderCalendar();
     renderTimeSlots();
-    updateStep2DatesList(); // Обновляем кликабельные дни в калькуляции
+    updateStep2DatesList(); 
     
     document.getElementById('backToStep1').addEventListener('click', function() {
         showStep('step1');
@@ -1346,7 +1346,7 @@ function updateStep2DatesList() {
 function selectLessonDay(index) {
     console.log('Select lesson day:', index);
     state.currentLessonIndex = index;
-    updateStep2DatesList(); // Обновляем выделение в калькуляции
+    updateStep2DatesList(); 
     renderCalendar();
     renderTimeSlots();
 }
@@ -1402,7 +1402,7 @@ function renderCalendar() {
             dayButton.classList.add('today');
         }
         
-        // Подсветка выбранных дат (всех, не только текущего урока)
+
         const isBooked = state.lessons.some(lesson => {
             if (!lesson.date) return false;
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1415,7 +1415,7 @@ function renderCalendar() {
             dayButton.classList.add('booked');
         }
         
-        // Выделение текущего выбранного дня
+
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1444,7 +1444,7 @@ function selectDate(year, month, day) {
     
     renderCalendar();
     renderTimeSlots();
-    updateStep2DatesList(); // Обновляем отображение в калькуляции
+    updateStep2DatesList(); 
     checkStep2Complete();
 }
 
@@ -1528,7 +1528,7 @@ function selectTime(time) {
     console.log('Time selected:', time);
     
     renderTimeSlots();
-    updateStep2DatesList(); // Обновляем отображение в калькуляции
+    updateStep2DatesList(); 
     checkStep2Complete();
     
     const nextIncomplete = state.lessons.findIndex((l, i) => 
@@ -1578,7 +1578,7 @@ function initStep3() {
         showStep('step2');
     });
     
-    // Обновляем поля в зависимости от типа занятия
+
     updateStep3Fields();
     
     const paypalContainer = document.getElementById('paypal-button-container');
@@ -1592,41 +1592,41 @@ function updateStep3Fields() {
     const languageSelect = document.getElementById('language');
     
     if (state.sport === 'kids') {
-        // Для Kids Club ограничиваем возраст 5-13
+
         ageInput.min = 5;
         ageInput.max = 13;
         
-        // Сохраняем текущее значение перед обновлением
+
         const currentSkill = skillSelect.value;
         
-        // Обновляем опции skillLevel
+
         skillSelect.innerHTML = `
             <option value="">Skill Level *</option>
             <option value="beginner">Beginner</option>
             <option value="intermediate">Intermediate</option>
         `;
         
-        // Восстанавливаем выбранное значение, если оно допустимо
+
         if (currentSkill === 'beginner' || currentSkill === 'intermediate') {
             skillSelect.value = currentSkill;
         }
         
-        // Сохраняем текущее значение языка
+
         const currentLanguage = languageSelect.value;
         
-        // Обновляем опции language
+
         languageSelect.innerHTML = `
             <option value="">Preferred Language *</option>
             <option value="english">English</option>
             <option value="russian">Russian</option>
         `;
         
-        // Восстанавливаем выбранное значение, если оно допустимо
+
         if (currentLanguage === 'english' || currentLanguage === 'russian') {
             languageSelect.value = currentLanguage;
         }
     } else {
-        // Для обычных занятий восстанавливаем стандартные настройки
+
         ageInput.min = 5;
         ageInput.max = 80;
         
@@ -1812,7 +1812,7 @@ function sendBookingNotifications(paypalDetails) {
 function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
     
-    // Форматируем данные ТОЧНО как в старой рабочей версии
+
     const botData = {
      bookingId: bookingData.bookingId,
         fullName: bookingData.fullName,
@@ -1820,7 +1820,7 @@ function sendToBot(bookingData) {
         email: bookingData.email,
         age: bookingData.age,
         skillLevel: bookingData.skillLevel,
-        preferredLanguage: bookingData.language,  // ← ИСПРАВЛЕНО!
+        preferredLanguage: bookingData.language,  
         additionalInfo: bookingData.additionalInfo,
         sport: bookingData.sport,
         duration: bookingData.duration,
@@ -1828,7 +1828,7 @@ function sendToBot(bookingData) {
         days: bookingData.days,
         date: bookingData.date,
         time: bookingData.time,
-        selectedDates: bookingData.selectedDates,  // ← ИСПРАВЛЕНО! Добавили массив дат
+        selectedDates: bookingData.selectedDates,  
         total: bookingData.total,
         deposit: bookingData.deposit,
         remaining: bookingData.remaining,
@@ -1881,7 +1881,7 @@ function sendEmailNotification(data) {
         (data.duration === '2' ? '2 Hours' : 
          data.duration === '3' ? '3 Hours' : 'Full Day');
 
-    // Генерируем календарные ссылки как в старой версии
+
     const calendarLinks = generateCalendarLinksOld(data);
     
     const body = `
@@ -1929,7 +1929,7 @@ ${calendarLinks}
     });
 }
 
-// Старая функция генерации календарных ссылок (как в рабочей версии)
+
 function generateCalendarLinksOld(data) {
     if (!data.selectedDates || data.selectedDates.length === 0) return 'N/A';
     
@@ -1937,7 +1937,7 @@ function generateCalendarLinksOld(data) {
         const start = new Date(lesson.date + 'T' + lesson.time + ':00');
         const end = new Date(start);
         
-        // Calculate end time based on duration (как в старой версии)
+
         let durationHours = 2;
         if (data.duration === '3') durationHours = 3;
         else if (data.duration === 'full') durationHours = 8;
@@ -2004,4 +2004,3 @@ function showSuccess() {
     </script>
 </body>
 </html>
-
