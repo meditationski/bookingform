@@ -11,8 +11,8 @@ app.get('/', (req, res) => {
   const paypalClientId = process.env.PAYPAL_CLIENT_ID || '';
   const emailjsPublicKey = process.env.EMAILJS_PUBLIC_KEY || '';
   
-  const formHtml = `
-<!DOCTYPE html>
+  // ЗАКРЫВАЕМ ВСЕ СТРОКИ ПРАВИЛЬНО
+  const formHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1935,8 +1935,8 @@ function showSuccess() {
 }
     </script>
 </body>
-</html>
-  `;
+</html>`;
+
   res.send(formHtml);
 });
 
