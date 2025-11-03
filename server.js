@@ -7,6 +7,10 @@ app.use(express.static('public'));
 
 // Главный маршрут - отдаем форму с подставленными ключами
 app.get('/', (req, res) => {
+  // Получаем ключи из переменных окружения
+  const paypalClientId = process.env.PAYPAL_CLIENT_ID || '';
+  const emailjsPublicKey = process.env.EMAILJS_PUBLIC_KEY || '';
+  
   const formHtml = `
 <!DOCTYPE html>
 <html lang="en">
@@ -16,10 +20,10 @@ app.get('/', (req, res) => {
     <title>Booking Form - SkiSchool.ge</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=${process.env.PAYPAL_CLIENT_ID}&currency=USD"></script>
-    <!-- ВСТАВЬТЕ СЮДА ВЕСЬ ВАШ CSS СТИЛЬ ИЗ index-multi-schedule.html -->
-
- <style>
+    <script src="https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=USD"></script>
+    
+    <!-- ВСТАВЬТЕ СЮДА ВЕСЬ ВАШ CSS СТИЛЬ -->
+    <style>
 :root {
     --bg-primary: #0f1217;
     --bg-secondary: rgba(30, 34, 40, 0.8);
@@ -684,14 +688,9 @@ input[type="range"]::-moz-range-thumb {
     .summary-dates-list { grid-template-columns: repeat(2, 1fr); }
 }
     </style>
-
-
-
 </head>
 <body>
     <!-- ВАШ ПОЛНЫЙ HTML КОД ФОРМЫ -->
-
-
     <div class="container">
         <!-- Step 1: Lesson Details -->
         <div class="form-section active" id="step1">
@@ -983,7 +982,7 @@ input[type="range"]::-moz-range-thumb {
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         // Инициализация EmailJS с переменной окружения
-        emailjs.init('${process.env.EMAILJS_PUBLIC_KEY}');
+        emailjs.init('${emailjsPublicKey}');
         
 // ============ GLOBAL STATE ============
 const state = {
@@ -1053,9 +1052,6 @@ const state = {
 
 let phoneInput;
 let paypalButtons;
-
-// Initialize EmailJS
-emailjs.init('gb9ZTULk6-ghDTZuV');
 
 // ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', function() {
@@ -1599,7 +1595,6 @@ function initStep3() {
         showStep('step2');
     });
     
-
     updateStep3Fields();
     
     const paypalContainer = document.getElementById('paypal-button-container');
@@ -1613,41 +1608,33 @@ function updateStep3Fields() {
     const languageSelect = document.getElementById('language');
     
     if (state.sport === 'kids') {
-
         ageInput.min = 5;
         ageInput.max = 13;
         
-
         const currentSkill = skillSelect.value;
         
-
         skillSelect.innerHTML = `
             <option value="">Skill Level *</option>
             <option value="beginner">Beginner</option>
             <option value="intermediate">Intermediate</option>
         `;
         
-
         if (currentSkill === 'beginner' || currentSkill === 'intermediate') {
             skillSelect.value = currentSkill;
         }
         
-
         const currentLanguage = languageSelect.value;
         
-
         languageSelect.innerHTML = `
             <option value="">Preferred Language *</option>
             <option value="english">English</option>
             <option value="russian">Russian</option>
         `;
         
-
         if (currentLanguage === 'english' || currentLanguage === 'russian') {
             languageSelect.value = currentLanguage;
         }
     } else {
-
         ageInput.min = 5;
         ageInput.max = 80;
         
@@ -1833,15 +1820,14 @@ function sendBookingNotifications(paypalDetails) {
 function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
     
-
     const botData = {
-     bookingId: bookingData.bookingId,
+        bookingId: bookingData.bookingId,
         fullName: bookingData.fullName,
         phone: bookingData.phone,
         email: bookingData.email,
         age: bookingData.age,
         skillLevel: bookingData.skillLevel,
-        preferredLanguage: bookingData.language,  
+        preferredLanguage: bookingData.language,
         additionalInfo: bookingData.additionalInfo,
         sport: bookingData.sport,
         duration: bookingData.duration,
@@ -1849,7 +1835,7 @@ function sendToBot(bookingData) {
         days: bookingData.days,
         date: bookingData.date,
         time: bookingData.time,
-        selectedDates: bookingData.selectedDates,  
+        selectedDates: bookingData.selectedDates,
         total: bookingData.total,
         deposit: bookingData.deposit,
         remaining: bookingData.remaining,
@@ -1902,7 +1888,6 @@ function sendEmailNotification(data) {
         (data.duration === '2' ? '2 Hours' : 
          data.duration === '3' ? '3 Hours' : 'Full Day');
 
-
     const calendarLinks = generateCalendarLinksOld(data);
     
     const body = `
@@ -1950,7 +1935,6 @@ ${calendarLinks}
     });
 }
 
-
 function generateCalendarLinksOld(data) {
     if (!data.selectedDates || data.selectedDates.length === 0) return 'N/A';
     
@@ -1958,7 +1942,6 @@ function generateCalendarLinksOld(data) {
         const start = new Date(lesson.date + 'T' + lesson.time + ':00');
         const end = new Date(start);
         
-
         let durationHours = 2;
         if (data.duration === '3') durationHours = 3;
         else if (data.duration === 'full') durationHours = 8;
@@ -2022,8 +2005,6 @@ function showSuccess() {
     });
     document.getElementById('successScreen').classList.add('active');
 }
-
-
     </script>
 </body>
 </html>
