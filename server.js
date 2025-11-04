@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
   const paypalClientId = process.env.PAYPAL_CLIENT_ID || '';
   const emailjsPublicKey = process.env.EMAILJS_PUBLIC_KEY || '';
   
-  // ЗАКРЫВАЕМ ВСЕ СТРОКИ ПРАВИЛЬНО
+  // Используем здесь-документ для избежания проблем с экранированием
   const formHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
