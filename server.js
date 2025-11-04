@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
   const paypalClientId = process.env.PAYPAL_CLIENT_ID || '';
   const emailjsPublicKey = process.env.EMAILJS_PUBLIC_KEY || '';
   
-  // Используем здесь-документ для избежания проблем с экранированием
+  // Экранируем обратные кавычки в шаблонной строке
   const formHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
     <script src="https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=USD"></script>
     
     <style>
+/* Все стили остаются без изменений */
 :root {
     --bg-primary: #0f1217;
     --bg-secondary: rgba(30, 34, 40, 0.8);
@@ -1835,7 +1836,7 @@ function sendEmailNotification(data) {
     if (data.selectedDates && data.selectedDates.length > 0) {
         datesText = data.selectedDates.map((dt, index) => 
             'Lesson ' + (index + 1) + ': ' + formatDate(dt.date) + ' at ' + dt.time
-        ).join('\n');
+        ).join('\\n');
     } else {
         datesText = formatDate(data.date) + ' at ' + data.time;
     }
@@ -1852,7 +1853,7 @@ function sendEmailNotification(data) {
 
     const calendarLinks = generateCalendarLinksOld(data);
     
-    const body = durationText + ' ' + sportName + ' Lesson with ' + data.participants + ' ' + (data.participants > 1 ? 'people' : 'person') + ' for ' + data.days + ' ' + (data.days > 1 ? 'days' : 'day') + '\n\n📅 SCHEDULE:\n' + datesText + '\n\nPayment Status: ✅ COMPLETED\nPayment ID: ' + data.paymentId + '\nPayer Email: ' + data.payerEmail + '\n\nBooking ID: ' + data.bookingId + '\nFull Name: ' + data.fullName + '\nPhone (WhatsApp): ' + data.phone + '\nEmail: ' + data.email + '\nAge: ' + data.age + '\nSkill level: ' + data.skillLevel + '\nPreferred language: ' + data.language + '\nAdditional information: ' + (data.additionalInfo || 'None') + '\n\nTotal amount: $' + data.total + '\n20% deposit: $' + data.deposit + '\nRemaining balance: $' + data.remaining + '\n\nGoogle Calendar Links: \n' + calendarLinks;
+    const body = durationText + ' ' + sportName + ' Lesson with ' + data.participants + ' ' + (data.participants > 1 ? 'people' : 'person') + ' for ' + data.days + ' ' + (data.days > 1 ? 'days' : 'day') + '\\n\\n📅 SCHEDULE:\\n' + datesText + '\\n\\nPayment Status: ✅ COMPLETED\\nPayment ID: ' + data.paymentId + '\\nPayer Email: ' + data.payerEmail + '\\n\\nBooking ID: ' + data.bookingId + '\\nFull Name: ' + data.fullName + '\\nPhone (WhatsApp): ' + data.phone + '\\nEmail: ' + data.email + '\\nAge: ' + data.age + '\\nSkill level: ' + data.skillLevel + '\\nPreferred language: ' + data.language + '\\nAdditional information: ' + (data.additionalInfo || 'None') + '\\n\\nTotal amount: $' + data.total + '\\n20% deposit: $' + data.deposit + '\\nRemaining balance: $' + data.remaining + '\\n\\nGoogle Calendar Links: \\n' + calendarLinks;
 
     const toEmail = 'info@skischool.ge';
     
@@ -1891,7 +1892,7 @@ function generateCalendarLinksOld(data) {
         
         const title = sportName + ' Lesson - ' + data.fullName;
         
-        const description = 'Client: ' + data.fullName + '\nPhone: ' + data.phone + '\nEmail: ' + data.email + '\nParticipants: ' + data.participants + '\nLevel: ' + data.skillLevel + '\nDays: ' + data.days + '\n\nAdditional info: ' + (data.additionalInfo || 'None') + '\n\nMeeting point: TBD';
+        const description = 'Client: ' + data.fullName + '\\nPhone: ' + data.phone + '\\nEmail: ' + data.email + '\\nParticipants: ' + data.participants + '\\nLevel: ' + data.skillLevel + '\\nDays: ' + data.days + '\\n\\nAdditional info: ' + (data.additionalInfo || 'None') + '\\n\\nMeeting point: TBD';
         
         const location = 'Gudauri Ski Resort';
         
@@ -1904,7 +1905,7 @@ function generateCalendarLinksOld(data) {
         });
 
         return 'Day ' + (index + 1) + ': https://calendar.google.com/calendar/render?' + params;
-    }).join('\n');
+    }).join('\\n');
 }
 
 function formatGoogleDate(date) {
