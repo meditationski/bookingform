@@ -1650,7 +1650,7 @@ function validateForm() {
     }
     
     const email = document.getElementById('email').value.trim();
-    // Исправленное регулярное выражение для email
+    // Простое регулярное выражение для email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         document.getElementById('emailError').classList.add('show');
@@ -1700,7 +1700,8 @@ function initPayPal() {
         createOrder: function(data, actions) {
             if (!validateForm()) {
                 alert('Please fill in all required fields');
-                return actions.reject();
+                // Вместо actions.reject() бросаем ошибку
+                throw new Error('Form validation failed');
             }
             
             return actions.order.create({
