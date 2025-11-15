@@ -697,6 +697,25 @@ input[type="range"]::-moz-range-thumb {
     }
     .summary-dates-list { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* НОВЫЕ СТИЛИ ДЛЯ ИНДИКАТОРА ЗАГРУЗКИ ТАЙМСЛОТОВ */
+.loading-message {
+    text-align: center;
+    padding: 2em;
+    color: var(--text-secondary);
+    font-size: 1.1em;
+    grid-column: 1 / -1;
+}
+
+.loading-spinner-small {
+    border: 0.2em solid var(--bg-tertiary);
+    border-top: 0.2em solid var(--accent-blue);
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1em;
+}
     </style>
 </head>
 <body>
@@ -989,7 +1008,7 @@ input[type="range"]::-moz-range-thumb {
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script>
+        <script>
 // ============ GLOBAL STATE ============
 const state = {
     sport: 'ski',
@@ -1093,25 +1112,61 @@ async function checkTimeSlotAvailability(dateStr, sport, duration, time) {
 
 // Получение всех доступных слотов для даты
 async function getAvailableTimeSlots(dateStr, sport, duration) {
+  const cacheKey = `${dateStr}_${sport}_${duration}`;
+  
+  // Проверяем кэш
+  if (availabilityCache.has(cacheKey)) {
+    return availabilityCache.get(cacheKey);
+  }
+  
   try {
-    const timeSlots = state.getTimeSlots();
-    const availableSlots = [];
+    // Используем новый endpoint для пакетной проверки
+    const url = `${AVAILABILITY_API_URL}?action=getAvailableSlots&date=${dateStr}&sport=${sport}&duration=${duration}`;
+    console.log('🔍 Checking all time slots at once:', url);
     
-    // Проверяем каждый слот отдельно
-    for (const time of timeSlots) {
-      const isAvailable = await checkTimeSlotAvailability(dateStr, sport, duration, time);
-      if (isAvailable) {
-        availableSlots.push(time);
-      }
+    // Добавляем таймаут 10 секунд
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    console.log(`📅 Available slots for ${dateStr}:`, availableSlots);
-    return availableSlots;
+    const data = await response.json();
+    console.log('📋 Batch time slots response:', data);
+    
+    // Сохраняем в кэш
+    availabilityCache.set(cacheKey, data.availableSlots);
+    return data.availableSlots;
     
   } catch (error) {
-    console.error('❌ Getting available slots failed:', error);
-    // В случае ошибки возвращаем все возможные слоты
-    return state.getTimeSlots();
+    console.error('❌ Batch time slots check failed:', error);
+    
+    // Fallback к индивидуальной проверке
+    try {
+      const timeSlots = state.getTimeSlots();
+      const availableSlots = [];
+      
+      // Проверяем каждый слот отдельно
+      for (const time of timeSlots) {
+        const isAvailable = await checkTimeSlotAvailability(dateStr, sport, duration, time);
+        if (isAvailable) {
+          availableSlots.push(time);
+        }
+      }
+      
+      availabilityCache.set(cacheKey, availableSlots);
+      return availableSlots;
+    } catch (error2) {
+      console.error('❌ Individual checks also failed, returning all slots as available', error2);
+      // В случае ошибки возвращаем все возможные слоты
+      const fallbackSlots = state.getTimeSlots();
+      availabilityCache.set(cacheKey, fallbackSlots);
+      return fallbackSlots;
+    }
   }
 }
 
@@ -1573,10 +1628,17 @@ function isTimeSlotAvailable(time, currentLessonIndex) {
     return true;
 }
 
-// Обновленная функция renderTimeSlots с проверкой доступности
+// Обновленная функция renderTimeSlots с индикатором загрузки
 async function renderTimeSlots() {
     const container = document.getElementById('timeSlots');
-    container.innerHTML = '';
+    
+    // Показываем индикатор загрузки
+    container.innerHTML = `
+        <div class="loading-message">
+            <div class="loading-spinner-small"></div>
+            <div>Checking available time slots...</div>
+        </div>
+    `;
     
     const timeSlots = state.getTimeSlots();
     const lesson = state.lessons[state.currentLessonIndex];
@@ -1584,6 +1646,7 @@ async function renderTimeSlots() {
     
     if (!dateSelected) {
         // Если дата не выбрана, показываем все слоты как disabled
+        container.innerHTML = '';
         timeSlots.forEach(time => {
             const btn = document.createElement('button');
             btn.className = 'time-slot disabled';
@@ -1595,37 +1658,62 @@ async function renderTimeSlots() {
         return;
     }
     
-    // Получаем доступные слоты для выбранной даты
-    const availableSlots = await getAvailableTimeSlots(lesson.date, state.sport, state.duration);
-    
-    // Создаем кнопки для каждого слота
-    for (const time of timeSlots) {
-        const btn = document.createElement('button');
-        btn.className = 'time-slot';
-        btn.type = 'button';
-        btn.textContent = time;
+    try {
+        // Получаем ВСЕ доступные слоты для выбранной даты одним запросом
+        const availableSlots = await getAvailableTimeSlots(lesson.date, state.sport, state.duration);
         
-        // Проверяем доступность слота
-        const isAvailable = availableSlots.includes(time);
-        const isConflict = !isTimeSlotAvailable(time, state.currentLessonIndex);
+        // Очищаем контейнер и создаем кнопки
+        container.innerHTML = '';
         
-        if (!isAvailable || isConflict) {
-            btn.classList.add('disabled');
-            btn.disabled = true;
-            btn.title = 'Not available';
+        for (const time of timeSlots) {
+            const btn = document.createElement('button');
+            btn.className = 'time-slot';
+            btn.type = 'button';
+            btn.textContent = time;
+            
+            // Проверяем доступность слота
+            const isAvailable = availableSlots.includes(time);
+            const isConflict = !isTimeSlotAvailable(time, state.currentLessonIndex);
+            
+            if (!isAvailable || isConflict) {
+                btn.classList.add('disabled');
+                btn.disabled = true;
+                btn.title = 'Not available';
+            }
+            
+            if (lesson && lesson.time === time) {
+                btn.classList.add('selected');
+            }
+            
+            if (!btn.disabled) {
+                btn.addEventListener('click', function() {
+                    selectTime(time);
+                });
+            }
+            
+            container.appendChild(btn);
         }
         
-        if (lesson && lesson.time === time) {
-            btn.classList.add('selected');
-        }
-        
-        if (!btn.disabled) {
+    } catch (error) {
+        console.error('Error loading time slots:', error);
+        // В случае ошибки показываем все слоты как доступные
+        container.innerHTML = '';
+        timeSlots.forEach(time => {
+            const btn = document.createElement('button');
+            btn.className = 'time-slot';
+            btn.type = 'button';
+            btn.textContent = time;
+            
+            if (lesson && lesson.time === time) {
+                btn.classList.add('selected');
+            }
+            
             btn.addEventListener('click', function() {
                 selectTime(time);
             });
-        }
-        
-        container.appendChild(btn);
+            
+            container.appendChild(btn);
+        });
     }
 }
 
