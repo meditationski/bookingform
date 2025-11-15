@@ -1055,56 +1055,64 @@ const state = {
 };
 
 // ============ AVAILABILITY CHECK ============
-const AVAILABILITY_API_URL = 'https://script.google.com/macros/s/AKfycbwIZFkFUIeqcMT0uw9PYB0VBIebqu_0upfd9gJSFONrf15btUNIUi38FXiF7lwvXL3TBg/exec';
+const AVAILABILITY_API_URL = 'https://script.google.com/macros/s/AKfycbzsaYggOz79v_tdl1RshXik0JyiaCqwyAvKBYgEWOg_QlY2m1RSIqUBbsCHSiwp0seawA/exec';
 
 // Кэш для хранения результатов проверки доступности
 const availabilityCache = new Map();
 
-async function checkDateAvailability(dateStr, sport, duration) {
-    // Проверяем кэш
-    const cacheKey = `${dateStr}_${sport}_${duration}`;
-    if (availabilityCache.has(cacheKey)) {
-        return availabilityCache.get(cacheKey);
+// Проверка доступности конкретного временного слота
+async function checkTimeSlotAvailability(dateStr, sport, duration, time) {
+  const cacheKey = `${dateStr}_${sport}_${duration}_${time}`;
+  if (availabilityCache.has(cacheKey)) {
+    return availabilityCache.get(cacheKey);
+  }
+  
+  try {
+    const url = `${AVAILABILITY_API_URL}?date=${dateStr}&sport=${sport}&duration=${duration}&time=${time}`;
+    console.log('🔍 Checking time slot availability:', url);
+    
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    try {
-        const url = `${AVAILABILITY_API_URL}?date=${dateStr}&sport=${sport}&duration=${duration}`;
-        console.log('Checking availability:', url);
-        
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('Availability response:', data);
-        
-        // Сохраняем в кэш
-        availabilityCache.set(cacheKey, data.available);
-        return data.available;
-    } catch (error) {
-        console.error('Availability check failed:', error);
-        // Если API недоступно, считаем дату доступной
-        availabilityCache.set(cacheKey, true);
-        return true;
-    }
+    const data = await response.json();
+    console.log('📋 Time slot availability response:', data);
+    
+    // Сохраняем в кэш
+    availabilityCache.set(cacheKey, data.available);
+    return data.available;
+    
+  } catch (error) {
+    console.error('❌ Time slot availability check failed:', error);
+    // Если API недоступно, считаем слот доступным
+    availabilityCache.set(cacheKey, true);
+    return true;
+  }
 }
 
-async function checkMultipleDatesAvailability(dates, sport, duration) {
-    const availability = {};
-    const promises = [];
+// Получение всех доступных слотов для даты
+async function getAvailableTimeSlots(dateStr, sport, duration) {
+  try {
+    const timeSlots = state.getTimeSlots();
+    const availableSlots = [];
     
-    for (const dateStr of dates) {
-        promises.push(
-            checkDateAvailability(dateStr, sport, duration)
-                .then(isAvailable => {
-                    availability[dateStr] = isAvailable;
-                })
-        );
+    // Проверяем каждый слот отдельно
+    for (const time of timeSlots) {
+      const isAvailable = await checkTimeSlotAvailability(dateStr, sport, duration, time);
+      if (isAvailable) {
+        availableSlots.push(time);
+      }
     }
     
-    await Promise.all(promises);
-    return availability;
+    console.log(`📅 Available slots for ${dateStr}:`, availableSlots);
+    return availableSlots;
+    
+  } catch (error) {
+    console.error('❌ Getting available slots failed:', error);
+    // В случае ошибки возвращаем все возможные слоты
+    return state.getTimeSlots();
+  }
 }
 
 let phoneInput;
@@ -1430,7 +1438,7 @@ function selectLessonDay(index) {
     renderTimeSlots();
 }
 
-async function renderCalendar() {
+function renderCalendar() {
     const calendarDays = document.getElementById('calendarDays');
     const calendarMonth = document.getElementById('calendarMonth');
     
@@ -1515,63 +1523,17 @@ async function renderCalendar() {
         
         calendarDays.appendChild(dayButton);
     }
-    
-    // Затем асинхронно проверяем доступность и обновляем календарь
-    checkAndUpdateAvailability();
-}
-
-async function checkAndUpdateAvailability() {
-    const daysInMonth = new Date(state.currentYear, state.currentMonth + 1, 0).getDate();
-    const datesToCheck = [];
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        datesToCheck.push(dateStr);
-    }
-    
-    try {
-        const availabilityMap = await checkMultipleDatesAvailability(datesToCheck, state.sport, state.duration);
-        
-        // Обновляем календарь с учетом доступности
-        const dayElements = document.querySelectorAll('.day:not(.other-month)');
-        dayElements.forEach((dayElement, index) => {
-            if (index < datesToCheck.length) {
-                const dateStr = datesToCheck[index];
-                const isAvailable = availabilityMap[dateStr];
-                
-                if (!isAvailable && !dayElement.classList.contains('disabled')) {
-                    dayElement.classList.add('unavailable');
-                    dayElement.classList.add('disabled');
-                    dayElement.disabled = true;
-                    
-                    // Удаляем обработчик клика
-                    const newDayElement = dayElement.cloneNode(true);
-                    dayElement.parentNode.replaceChild(newDayElement, dayElement);
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Error updating availability:', error);
-    }
 }
 
 async function selectDate(year, month, day) {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    
-    // Проверяем доступность перед выбором
-    const isAvailable = await checkDateAvailability(dateStr, state.sport, state.duration);
-    
-    if (!isAvailable) {
-        alert('This date is not available for booking. Please choose another date.');
-        return;
-    }
     
     state.lessons[state.currentLessonIndex].date = dateStr;
     
     console.log('Date selected:', dateStr);
     
     renderCalendar();
-    renderTimeSlots();
+    await renderTimeSlots();
     updateStep2DatesList();
     checkStep2Complete();
 }
@@ -1611,29 +1573,46 @@ function isTimeSlotAvailable(time, currentLessonIndex) {
     return true;
 }
 
-function renderTimeSlots() {
+// Обновленная функция renderTimeSlots с проверкой доступности
+async function renderTimeSlots() {
     const container = document.getElementById('timeSlots');
     container.innerHTML = '';
     
     const timeSlots = state.getTimeSlots();
-    
     const lesson = state.lessons[state.currentLessonIndex];
     const dateSelected = lesson && lesson.date;
     
-    timeSlots.forEach(time => {
+    if (!dateSelected) {
+        // Если дата не выбрана, показываем все слоты как disabled
+        timeSlots.forEach(time => {
+            const btn = document.createElement('button');
+            btn.className = 'time-slot disabled';
+            btn.type = 'button';
+            btn.textContent = time;
+            btn.disabled = true;
+            container.appendChild(btn);
+        });
+        return;
+    }
+    
+    // Получаем доступные слоты для выбранной даты
+    const availableSlots = await getAvailableTimeSlots(lesson.date, state.sport, state.duration);
+    
+    // Создаем кнопки для каждого слота
+    for (const time of timeSlots) {
         const btn = document.createElement('button');
         btn.className = 'time-slot';
         btn.type = 'button';
         btn.textContent = time;
         
-        if (!dateSelected) {
+        // Проверяем доступность слота
+        const isAvailable = availableSlots.includes(time);
+        const isConflict = !isTimeSlotAvailable(time, state.currentLessonIndex);
+        
+        if (!isAvailable || isConflict) {
             btn.classList.add('disabled');
             btn.disabled = true;
-        } else {
-            if (!isTimeSlotAvailable(time, state.currentLessonIndex)) {
-                btn.classList.add('disabled');
-                btn.disabled = true;
-            }
+            btn.title = 'Not available';
         }
         
         if (lesson && lesson.time === time) {
@@ -1647,10 +1626,26 @@ function renderTimeSlots() {
         }
         
         container.appendChild(btn);
-    });
+    }
 }
 
-function selectTime(time) {
+// Обновленная функция selectTime с проверкой доступности
+async function selectTime(time) {
+    const lesson = state.lessons[state.currentLessonIndex];
+    
+    if (!lesson.date) {
+        alert('Please select a date first');
+        return;
+    }
+    
+    // Проверяем доступность выбранного времени
+    const isAvailable = await checkTimeSlotAvailability(lesson.date, state.sport, state.duration, time);
+    
+    if (!isAvailable) {
+        alert('This time slot is no longer available. Please choose another time.');
+        return;
+    }
+    
     state.lessons[state.currentLessonIndex].time = time;
     
     console.log('Time selected:', time);
@@ -1927,6 +1922,7 @@ function sendBookingNotifications(paypalDetails) {
     // Send email
     sendEmailNotification(bookingData);
 }
+
 function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
     
