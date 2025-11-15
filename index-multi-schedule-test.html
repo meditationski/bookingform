@@ -804,7 +804,8 @@ input[type="range"]::-moz-range-thumb {
                 <button class="btn btn-next" id="nextToStep2">Continue</button>
             </div>
         </div>
-                <!-- Step 2: Multi-Schedule -->
+
+        <!-- Step 2: Multi-Schedule -->
         <div class="form-section" id="step2">
             <h2 class="subsection-title">Select Date & Time for Each Lesson</h2>
             
@@ -1020,12 +1021,10 @@ const state = {
     
     getDiscount: function() {
         if (this.sport === 'kids') {
-            // Kids Club скидки: с 5 дня 10%, с 7 дня 15%
             if (this.days >= 7) return 0.15;
             if (this.days >= 5) return 0.10;
             return 0;
         } else {
-            // Обычные скидки
             if (this.days >= 8) return 0.20;
             if (this.days >= 6) return 0.15;
             if (this.days >= 4) return 0.10;
@@ -1058,7 +1057,16 @@ const state = {
 // ============ AVAILABILITY CHECK ============
 const AVAILABILITY_API_URL = 'https://script.google.com/macros/s/AKfycbx0TOf68KOmqFX2JKMZ7ioa02cIIZZfa7uZ9bOxh7i5aC6XCZC-Rj98VhnaRYXn55ciNw/exec';
 
+// Кэш для хранения результатов проверки доступности
+const availabilityCache = new Map();
+
 async function checkDateAvailability(dateStr, sport, duration) {
+    // Проверяем кэш
+    const cacheKey = `${dateStr}_${sport}_${duration}`;
+    if (availabilityCache.has(cacheKey)) {
+        return availabilityCache.get(cacheKey);
+    }
+    
     try {
         const url = `${AVAILABILITY_API_URL}?date=${dateStr}&sport=${sport}&duration=${duration}`;
         console.log('Checking availability:', url);
@@ -1070,10 +1078,15 @@ async function checkDateAvailability(dateStr, sport, duration) {
         
         const data = await response.json();
         console.log('Availability response:', data);
-        return data.available !== false; // Default to true if API fails
+        
+        // Сохраняем в кэш
+        availabilityCache.set(cacheKey, data.available);
+        return data.available;
     } catch (error) {
         console.error('Availability check failed:', error);
-        return true; // If API is unavailable, consider date as available
+        // Если API недоступно, считаем дату доступной
+        availabilityCache.set(cacheKey, true);
+        return true;
     }
 }
 
@@ -1150,17 +1163,23 @@ function initStep1() {
                 state.duration = '2';
             }
             
+            // Очищаем кэш при смене типа спорта
+            availabilityCache.clear();
             updatePrices();
         });
     });
     
     document.getElementById('duration').addEventListener('change', function() {
         state.duration = this.value;
+        // Очищаем кэш при смене продолжительности
+        availabilityCache.clear();
         updatePrices();
     });
     
     document.getElementById('kidsDurationSelect').addEventListener('change', function() {
         state.duration = this.value;
+        // Очищаем кэш при смене продолжительности
+        availabilityCache.clear();
         updatePrices();
     });
     
@@ -1206,11 +1225,9 @@ function calculatePrice() {
         const pricePerKid = state.prices.kids[state.duration];
         let pricePerDay = pricePerKid * state.participants;
         
-        // Kids Club: первые 4 дня по полной цене, затем скидки
         const fullPriceDays = Math.min(4, state.days);
         totalPrice = pricePerDay * fullPriceDays;
         
-        // Последующие дни со скидкой
         if (state.days > 4) {
             const discountRate = state.getDiscount();
             const discountedDays = state.days - 4;
@@ -1225,11 +1242,9 @@ function calculatePrice() {
             pricePerDay += (state.participants - 1) * priceConfig.additional;
         }
         
-        // Первые 3 дня по полной цене
         const fullPriceDays = Math.min(3, state.days);
         totalPrice = pricePerDay * fullPriceDays;
         
-        // Последующие дни со скидкой
         if (state.days > 3) {
             const discountRate = state.getDiscount();
             const discountedDays = state.days - 3;
@@ -1333,7 +1348,7 @@ function updateSummary() {
 }
 
 // ============ STEP 2: MULTI-SCHEDULE ============
-async function initStep2() {
+function initStep2() {
     console.log('Init Step 2, days:', state.days);
     
     state.lessons = [];
@@ -1347,7 +1362,7 @@ async function initStep2() {
     
     state.currentLessonIndex = 0;
     
-    await renderCalendar();
+    renderCalendar();
     renderTimeSlots();
     updateStep2DatesList();
     
@@ -1361,22 +1376,22 @@ async function initStep2() {
         showStep('step3');
     });
     
-    document.getElementById('prevMonth').addEventListener('click', async function() {
+    document.getElementById('prevMonth').addEventListener('click', function() {
         state.currentMonth--;
         if (state.currentMonth < 0) {
             state.currentMonth = 11;
             state.currentYear--;
         }
-        await renderCalendar();
+        renderCalendar();
     });
     
-    document.getElementById('nextMonth').addEventListener('click', async function() {
+    document.getElementById('nextMonth').addEventListener('click', function() {
         state.currentMonth++;
         if (state.currentMonth > 11) {
             state.currentMonth = 0;
             state.currentYear++;
         }
-        await renderCalendar();
+        renderCalendar();
     });
 }
 
@@ -1436,16 +1451,7 @@ async function renderCalendar() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    // Собираем все даты месяца для проверки доступности
-    const datesToCheck = [];
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        datesToCheck.push(dateStr);
-    }
-    
-    // Получаем информацию о доступности для всех дат месяца
-    const availabilityMap = await checkMultipleDatesAvailability(datesToCheck, state.sport, state.duration);
-    
+    // Сначала отрисовываем календарь без проверки доступности для быстрого отображения
     for (let i = 0; i < startDay; i++) {
         const emptyDay = document.createElement('button');
         emptyDay.className = 'day disabled other-month';
@@ -1467,24 +1473,17 @@ async function renderCalendar() {
         const bookingEnd = new Date(state.bookingPeriod.endDate);
         bookingEnd.setHours(0, 0, 0, 0);
         
-        const dateStr = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const isAvailable = availabilityMap[dateStr];
-        
-        // Проверяем доступность даты
-        if (currentDate < today || currentDate < bookingStart || currentDate > bookingEnd || !isAvailable) {
+        // Временно отключаем даты вне периода бронирования
+        if (currentDate < today || currentDate < bookingStart || currentDate > bookingEnd) {
             dayButton.classList.add('disabled');
             dayButton.disabled = true;
-            
-            if (!isAvailable) {
-                dayButton.classList.add('unavailable');
-            }
         }
         
         if (currentDate.getTime() === today.getTime()) {
             dayButton.classList.add('today');
         }
         
-        // Подсветка выбранных дат (всех, не только текущего урока)
+        // Подсветка выбранных дат
         const isBooked = state.lessons.some(lesson => {
             if (!lesson.date) return false;
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1516,6 +1515,44 @@ async function renderCalendar() {
         
         calendarDays.appendChild(dayButton);
     }
+    
+    // Затем асинхронно проверяем доступность и обновляем календарь
+    checkAndUpdateAvailability();
+}
+
+async function checkAndUpdateAvailability() {
+    const daysInMonth = new Date(state.currentYear, state.currentMonth + 1, 0).getDate();
+    const datesToCheck = [];
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        datesToCheck.push(dateStr);
+    }
+    
+    try {
+        const availabilityMap = await checkMultipleDatesAvailability(datesToCheck, state.sport, state.duration);
+        
+        // Обновляем календарь с учетом доступности
+        const dayElements = document.querySelectorAll('.day:not(.other-month)');
+        dayElements.forEach((dayElement, index) => {
+            if (index < datesToCheck.length) {
+                const dateStr = datesToCheck[index];
+                const isAvailable = availabilityMap[dateStr];
+                
+                if (!isAvailable && !dayElement.classList.contains('disabled')) {
+                    dayElement.classList.add('unavailable');
+                    dayElement.classList.add('disabled');
+                    dayElement.disabled = true;
+                    
+                    // Удаляем обработчик клика
+                    const newDayElement = dayElement.cloneNode(true);
+                    dayElement.parentNode.replaceChild(newDayElement, dayElement);
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error updating availability:', error);
+    }
 }
 
 async function selectDate(year, month, day) {
@@ -1533,7 +1570,7 @@ async function selectDate(year, month, day) {
     
     console.log('Date selected:', dateStr);
     
-    await renderCalendar();
+    renderCalendar();
     renderTimeSlots();
     updateStep2DatesList();
     checkStep2Complete();
@@ -1890,12 +1927,11 @@ function sendBookingNotifications(paypalDetails) {
     // Send email
     sendEmailNotification(bookingData);
 }
-
 function sendToBot(bookingData) {
     const webhookUrl = 'https://skischoolgebot-production.up.railway.app/webhook/booking';
     
     const botData = {
-     bookingId: bookingData.bookingId,
+        bookingId: bookingData.bookingId,
         fullName: bookingData.fullName,
         phone: bookingData.phone,
         email: bookingData.email,
