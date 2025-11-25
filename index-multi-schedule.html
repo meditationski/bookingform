@@ -279,7 +279,6 @@ input[type="range"]::-moz-range-thumb {
 .day.disabled { opacity: 0.3; cursor: not-allowed; }
 .day.other-month { display: none; }
 
-/* Новые стили для недоступных дат */
 .day.unavailable { 
     background: rgba(255, 71, 87, 0.1); 
     color: var(--accent-red);
@@ -303,7 +302,7 @@ input[type="range"]::-moz-range-thumb {
     white-space: nowrap;
 }
 
-/* Подсветка выбранных дат */
+
 .day.booked {
     background: rgba(0, 163, 255, 0.2);
     border: 0.125em solid var(--accent-blue);
@@ -398,7 +397,7 @@ input[type="range"]::-moz-range-thumb {
     text-align: center;
 }
 
-/* Новый стиль для кликабельных дней в калькуляции */
+
 .summary-dates-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -563,7 +562,7 @@ input[type="range"]::-moz-range-thumb {
     flex: 1;
 }
 
-/* PayPal кнопка полукруглая */
+
 .paypal-buttons {
     border-radius: var(--border-radius) !important;
 }
@@ -628,7 +627,7 @@ input[type="range"]::-moz-range-thumb {
 .iti { width: 100%; }
 #phone { padding-left: 5em !important; }
 
-/* НОВЫЕ СТИЛИ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ТАБОВ */
+
 @media (max-width: 767px) {
     .container { padding: 0.5em; }
     body { font-size: 14px; }
@@ -661,7 +660,7 @@ input[type="range"]::-moz-range-thumb {
     input[type="range"]::-webkit-slider-thumb { width: 1.5em; height: 1.5em; }
     .slider-labels { font-size: 0.75em; }
     
-    /* УВЕЛИЧЕННЫЕ ТАБЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ */
+
     .tabs { 
         flex-wrap: wrap; 
         padding: 0.5em;
@@ -698,7 +697,6 @@ input[type="range"]::-moz-range-thumb {
     .summary-dates-list { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* НОВЫЕ СТИЛИ ДЛЯ ИНДИКАТОРА ЗАГРУЗКИ ТАЙМСЛОТОВ */
 .loading-message {
     text-align: center;
     padding: 2em;
@@ -1076,10 +1074,9 @@ const state = {
 // ============ AVAILABILITY CHECK ============
 const AVAILABILITY_API_URL = 'https://script.google.com/macros/s/AKfycbyhzcehIgLfbT-VITI2VKAGblPTUgRkh3VMDd6ASFX3QIYO8Q1UlbcbFjqVfDafQCPHFg/exec';
 
-// Кэш для хранения результатов проверки доступности
+
 const availabilityCache = new Map();
 
-// Проверка доступности конкретного временного слота
 async function checkTimeSlotAvailability(dateStr, sport, duration, time) {
   const cacheKey = `${dateStr}_${sport}_${duration}_${time}`;
   if (availabilityCache.has(cacheKey)) {
@@ -1098,33 +1095,28 @@ async function checkTimeSlotAvailability(dateStr, sport, duration, time) {
     const data = await response.json();
     console.log('📋 Time slot availability response:', data);
     
-    // Сохраняем в кэш
     availabilityCache.set(cacheKey, data.available);
     return data.available;
     
   } catch (error) {
     console.error('❌ Time slot availability check failed:', error);
-    // Если API недоступно, считаем слот доступным
     availabilityCache.set(cacheKey, true);
     return true;
   }
 }
 
-// Получение всех доступных слотов для даты
 async function getAvailableTimeSlots(dateStr, sport, duration) {
   const cacheKey = `${dateStr}_${sport}_${duration}`;
   
-  // Проверяем кэш
   if (availabilityCache.has(cacheKey)) {
     return availabilityCache.get(cacheKey);
   }
   
   try {
-    // Используем новый endpoint для пакетной проверки
+
     const url = `${AVAILABILITY_API_URL}?action=getAvailableSlots&date=${dateStr}&sport=${sport}&duration=${duration}`;
     console.log('🔍 Checking all time slots at once:', url);
     
-    // Добавляем таймаут 10 секунд
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     
@@ -1145,12 +1137,11 @@ async function getAvailableTimeSlots(dateStr, sport, duration) {
   } catch (error) {
     console.error('❌ Batch time slots check failed:', error);
     
-    // Fallback к индивидуальной проверке
+
     try {
       const timeSlots = state.getTimeSlots();
       const availableSlots = [];
       
-      // Проверяем каждый слот отдельно
       for (const time of timeSlots) {
         const isAvailable = await checkTimeSlotAvailability(dateStr, sport, duration, time);
         if (isAvailable) {
@@ -1162,7 +1153,6 @@ async function getAvailableTimeSlots(dateStr, sport, duration) {
       return availableSlots;
     } catch (error2) {
       console.error('❌ Individual checks also failed, returning all slots as available', error2);
-      // В случае ошибки возвращаем все возможные слоты
       const fallbackSlots = state.getTimeSlots();
       availabilityCache.set(cacheKey, fallbackSlots);
       return fallbackSlots;
@@ -1226,7 +1216,6 @@ function initStep1() {
                 state.duration = '2';
             }
             
-            // Очищаем кэш при смене типа спорта
             availabilityCache.clear();
             updatePrices();
         });
@@ -1234,14 +1223,12 @@ function initStep1() {
     
     document.getElementById('duration').addEventListener('change', function() {
         state.duration = this.value;
-        // Очищаем кэш при смене продолжительности
         availabilityCache.clear();
         updatePrices();
     });
     
     document.getElementById('kidsDurationSelect').addEventListener('change', function() {
         state.duration = this.value;
-        // Очищаем кэш при смене продолжительности
         availabilityCache.clear();
         updatePrices();
     });
@@ -1514,7 +1501,7 @@ function renderCalendar() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    // Сначала отрисовываем календарь без проверки доступности для быстрого отображения
+
     for (let i = 0; i < startDay; i++) {
         const emptyDay = document.createElement('button');
         emptyDay.className = 'day disabled other-month';
@@ -1536,7 +1523,7 @@ function renderCalendar() {
         const bookingEnd = new Date(state.bookingPeriod.endDate);
         bookingEnd.setHours(0, 0, 0, 0);
         
-        // Временно отключаем даты вне периода бронирования
+
         if (currentDate < today || currentDate < bookingStart || currentDate > bookingEnd) {
             dayButton.classList.add('disabled');
             dayButton.disabled = true;
@@ -1546,7 +1533,7 @@ function renderCalendar() {
             dayButton.classList.add('today');
         }
         
-        // Подсветка выбранных дат
+
         const isBooked = state.lessons.some(lesson => {
             if (!lesson.date) return false;
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1559,7 +1546,7 @@ function renderCalendar() {
             dayButton.classList.add('booked');
         }
         
-        // Выделение текущего выбранного дня
+
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1628,11 +1615,11 @@ function isTimeSlotAvailable(time, currentLessonIndex) {
     return true;
 }
 
-// Обновленная функция renderTimeSlots с индикатором загрузки
+
 async function renderTimeSlots() {
     const container = document.getElementById('timeSlots');
     
-    // Показываем индикатор загрузки
+
     container.innerHTML = `
         <div class="loading-message">
             <div class="loading-spinner-small"></div>
@@ -1645,7 +1632,7 @@ async function renderTimeSlots() {
     const dateSelected = lesson && lesson.date;
     
     if (!dateSelected) {
-        // Если дата не выбрана, показываем все слоты как disabled
+
         container.innerHTML = '';
         timeSlots.forEach(time => {
             const btn = document.createElement('button');
@@ -1659,10 +1646,10 @@ async function renderTimeSlots() {
     }
     
     try {
-        // Получаем ВСЕ доступные слоты для выбранной даты одним запросом
+
         const availableSlots = await getAvailableTimeSlots(lesson.date, state.sport, state.duration);
         
-        // Очищаем контейнер и создаем кнопки
+
         container.innerHTML = '';
         
         for (const time of timeSlots) {
@@ -1671,7 +1658,7 @@ async function renderTimeSlots() {
             btn.type = 'button';
             btn.textContent = time;
             
-            // Проверяем доступность слота
+
             const isAvailable = availableSlots.includes(time);
             const isConflict = !isTimeSlotAvailable(time, state.currentLessonIndex);
             
@@ -1696,7 +1683,7 @@ async function renderTimeSlots() {
         
     } catch (error) {
         console.error('Error loading time slots:', error);
-        // В случае ошибки показываем все слоты как доступные
+
         container.innerHTML = '';
         timeSlots.forEach(time => {
             const btn = document.createElement('button');
@@ -1717,7 +1704,7 @@ async function renderTimeSlots() {
     }
 }
 
-// Обновленная функция selectTime с проверкой доступности
+
 async function selectTime(time) {
     const lesson = state.lessons[state.currentLessonIndex];
     
@@ -1726,7 +1713,6 @@ async function selectTime(time) {
         return;
     }
     
-    // Проверяем доступность выбранного времени
     const isAvailable = await checkTimeSlotAvailability(lesson.date, state.sport, state.duration, time);
     
     if (!isAvailable) {
@@ -2129,7 +2115,6 @@ ${calendarLinks}
     });
 }
 
-// Старая функция генерации календарных ссылок (как в рабочей версии)
 function generateCalendarLinksOld(data) {
     if (!data.selectedDates || data.selectedDates.length === 0) return 'N/A';
     
