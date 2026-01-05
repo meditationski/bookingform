@@ -1495,7 +1495,9 @@ function renderCalendar() {
     const lastDay = new Date(state.currentYear, state.currentMonth + 1, 0);
     const daysInMonth = lastDay.getDate();
     
+
     let startDay = firstDay.getDay();
+    
     startDay = startDay === 0 ? 6 : startDay - 1;
     
     const today = new Date();
@@ -1509,6 +1511,7 @@ function renderCalendar() {
         calendarDays.appendChild(emptyDay);
     }
     
+
     for (let day = 1; day <= daysInMonth; day++) {
         const dayButton = document.createElement('button');
         dayButton.className = 'day';
@@ -1529,6 +1532,7 @@ function renderCalendar() {
             dayButton.disabled = true;
         }
         
+
         if (currentDate.getTime() === today.getTime()) {
             dayButton.classList.add('today');
         }
@@ -1537,9 +1541,8 @@ function renderCalendar() {
         const isBooked = state.lessons.some(lesson => {
             if (!lesson.date) return false;
             const lessonDate = new Date(lesson.date + 'T00:00:00');
-            return lessonDate.getFullYear() === state.currentYear &&
-                   lessonDate.getMonth() === state.currentMonth &&
-                   lessonDate.getDate() === day;
+            lessonDate.setHours(0, 0, 0, 0);
+            return lessonDate.getTime() === currentDate.getTime();
         });
         
         if (isBooked) {
@@ -1550,13 +1553,13 @@ function renderCalendar() {
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
-            if (lessonDate.getFullYear() === state.currentYear &&
-                lessonDate.getMonth() === state.currentMonth &&
-                lessonDate.getDate() === day) {
+            lessonDate.setHours(0, 0, 0, 0);
+            if (lessonDate.getTime() === currentDate.getTime()) {
                 dayButton.classList.add('selected');
             }
         }
         
+
         if (!dayButton.disabled) {
             dayButton.addEventListener('click', function() {
                 selectDate(state.currentYear, state.currentMonth, day);
@@ -1566,7 +1569,6 @@ function renderCalendar() {
         calendarDays.appendChild(dayButton);
     }
 }
-
 async function selectDate(year, month, day) {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
