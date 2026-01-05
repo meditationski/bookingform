@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,7 +185,6 @@ input[type="range"]::-moz-range-thumb {
     gap: 1.25em;
 }
 
-/* Календарь и время */
 .calendar-time-vertical {
     display: flex;
     flex-direction: column;
@@ -277,7 +277,7 @@ input[type="range"]::-moz-range-thumb {
 
 .day.today { border: 0.125em solid var(--accent-blue); }
 .day.disabled { opacity: 0.3; cursor: not-allowed; }
-.day.other-month { display: none; }
+.day.other-month { display: none !important; }
 
 .day.unavailable { 
     background: rgba(255, 71, 87, 0.1); 
@@ -861,9 +861,7 @@ input[type="range"]::-moz-range-thumb {
                             <div class="summary-title" id="step2SummaryTitle">2 Hours Ski Lesson</div>
                             <div class="summary-details" id="step2SummaryDetails">1 Person × 1 Day</div>
                             
-                            <!-- Интегрированные дни для выбора -->
                             <div class="summary-dates-list" id="step2DatesList">
-                                <!-- Selected dates will appear here as clickable items -->
                             </div>
                         </div>
                         <div class="price-row">
@@ -955,7 +953,6 @@ input[type="range"]::-moz-range-thumb {
                             <div class="summary-details" id="step3SummaryDetails">1 Person × 1 Day</div>
                             
                             <div class="summary-dates-list" id="step3DatesList">
-                                <!-- Selected dates will appear here as read-only items -->
                             </div>
                         </div>
                         <div class="price-row">
@@ -1007,7 +1004,6 @@ input[type="range"]::-moz-range-thumb {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
         <script>
-// ============ GLOBAL STATE ============
 const state = {
     sport: 'ski',
     duration: '2',
@@ -1071,9 +1067,7 @@ const state = {
     }
 };
 
-// ============ AVAILABILITY CHECK ============
 const AVAILABILITY_API_URL = 'https://script.google.com/macros/s/AKfycbyzf3hmuOVckf_3Td9ca-zD-Ruov_gK0JpDYK3L2fH882eNG_4YJczTfkmiHrOnojyVwQ/exec';
-
 
 const availabilityCache = new Map();
 
@@ -1085,7 +1079,6 @@ async function checkTimeSlotAvailability(dateStr, sport, duration, time) {
   
   try {
     const url = `${AVAILABILITY_API_URL}?date=${dateStr}&sport=${sport}&duration=${duration}&time=${time}`;
-    console.log('🔍 Checking time slot availability:', url);
     
     const response = await fetch(url);
     if (!response.ok) {
@@ -1093,13 +1086,12 @@ async function checkTimeSlotAvailability(dateStr, sport, duration, time) {
     }
     
     const data = await response.json();
-    console.log('📋 Time slot availability response:', data);
     
     availabilityCache.set(cacheKey, data.available);
     return data.available;
     
   } catch (error) {
-    console.error('❌ Time slot availability check failed:', error);
+    console.error('Time slot availability check failed:', error);
     availabilityCache.set(cacheKey, true);
     return true;
   }
@@ -1113,9 +1105,7 @@ async function getAvailableTimeSlots(dateStr, sport, duration) {
   }
   
   try {
-
     const url = `${AVAILABILITY_API_URL}?action=getAvailableSlots&date=${dateStr}&sport=${sport}&duration=${duration}`;
-    console.log('🔍 Checking all time slots at once:', url);
     
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -1128,16 +1118,13 @@ async function getAvailableTimeSlots(dateStr, sport, duration) {
     }
     
     const data = await response.json();
-    console.log('📋 Batch time slots response:', data);
     
-    // Сохраняем в кэш
     availabilityCache.set(cacheKey, data.availableSlots);
     return data.availableSlots;
     
   } catch (error) {
-    console.error('❌ Batch time slots check failed:', error);
+    console.error('Batch time slots check failed:', error);
     
-
     try {
       const timeSlots = state.getTimeSlots();
       const availableSlots = [];
@@ -1152,7 +1139,7 @@ async function getAvailableTimeSlots(dateStr, sport, duration) {
       availabilityCache.set(cacheKey, availableSlots);
       return availableSlots;
     } catch (error2) {
-      console.error('❌ Individual checks also failed, returning all slots as available', error2);
+      console.error('Individual checks also failed, returning all slots as available', error2);
       const fallbackSlots = state.getTimeSlots();
       availabilityCache.set(cacheKey, fallbackSlots);
       return fallbackSlots;
@@ -1163,13 +1150,9 @@ async function getAvailableTimeSlots(dateStr, sport, duration) {
 let phoneInput;
 let paypalButtons;
 
-// Initialize EmailJS
 emailjs.init('gb9ZTULk6-ghDTZuV');
 
-// ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded');
-    
     const phoneEl = document.querySelector("#phone");
     if (phoneEl) {
         phoneInput = window.intlTelInput(phoneEl, {
@@ -1183,15 +1166,11 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePrices();
 });
 
-// ============ STEP 1: LESSON DETAILS ============
 function initStep1() {
-    console.log('Init Step 1');
-    
     const tabs = document.querySelectorAll('.tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Tab clicked:', this.dataset.sport);
             
             tabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
@@ -1262,7 +1241,6 @@ function initStep1() {
     });
     
     document.getElementById('nextToStep2').addEventListener('click', function() {
-        console.log('Next to Step 2');
         initStep2();
         showStep('step2');
     });
@@ -1397,10 +1375,7 @@ function updateSummary() {
     });
 }
 
-// ============ STEP 2: MULTI-SCHEDULE ============
 function initStep2() {
-    console.log('Init Step 2, days:', state.days);
-    
     state.lessons = [];
     for (let i = 0; i < state.days; i++) {
         state.lessons.push({
@@ -1473,7 +1448,6 @@ function updateStep2DatesList() {
 }
 
 function selectLessonDay(index) {
-    console.log('Select lesson day:', index);
     state.currentLessonIndex = index;
     updateStep2DatesList();
     renderCalendar();
@@ -1495,15 +1469,12 @@ function renderCalendar() {
     const lastDay = new Date(state.currentYear, state.currentMonth + 1, 0);
     const daysInMonth = lastDay.getDate();
     
-
     let startDay = firstDay.getDay();
-    
     startDay = startDay === 0 ? 6 : startDay - 1;
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-
     for (let i = 0; i < startDay; i++) {
         const emptyDay = document.createElement('button');
         emptyDay.className = 'day disabled other-month';
@@ -1511,7 +1482,6 @@ function renderCalendar() {
         calendarDays.appendChild(emptyDay);
     }
     
-
     for (let day = 1; day <= daysInMonth; day++) {
         const dayButton = document.createElement('button');
         dayButton.className = 'day';
@@ -1526,18 +1496,15 @@ function renderCalendar() {
         const bookingEnd = new Date(state.bookingPeriod.endDate);
         bookingEnd.setHours(0, 0, 0, 0);
         
-
         if (currentDate < today || currentDate < bookingStart || currentDate > bookingEnd) {
             dayButton.classList.add('disabled');
             dayButton.disabled = true;
         }
         
-
         if (currentDate.getTime() === today.getTime()) {
             dayButton.classList.add('today');
         }
         
-
         const isBooked = state.lessons.some(lesson => {
             if (!lesson.date) return false;
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1549,7 +1516,6 @@ function renderCalendar() {
             dayButton.classList.add('booked');
         }
         
-
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
@@ -1559,7 +1525,6 @@ function renderCalendar() {
             }
         }
         
-
         if (!dayButton.disabled) {
             dayButton.addEventListener('click', function() {
                 selectDate(state.currentYear, state.currentMonth, day);
@@ -1569,16 +1534,14 @@ function renderCalendar() {
         calendarDays.appendChild(dayButton);
     }
 }
+
 async function selectDate(year, month, day) {
-    // Создаем строку даты в формате YYYY-MM-DD
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
     state.lessons[state.currentLessonIndex].date = dateStr;
     
-    console.log('Date selected:', dateStr);
-    
     renderCalendar();
-    renderTimeSlots();
+    await renderTimeSlots();
     updateStep2DatesList();
     checkStep2Complete();
 }
@@ -1618,11 +1581,9 @@ function isTimeSlotAvailable(time, currentLessonIndex) {
     return true;
 }
 
-
 async function renderTimeSlots() {
     const container = document.getElementById('timeSlots');
     
-
     container.innerHTML = `
         <div class="loading-message">
             <div class="loading-spinner-small"></div>
@@ -1635,7 +1596,6 @@ async function renderTimeSlots() {
     const dateSelected = lesson && lesson.date;
     
     if (!dateSelected) {
-
         container.innerHTML = '';
         timeSlots.forEach(time => {
             const btn = document.createElement('button');
@@ -1649,10 +1609,8 @@ async function renderTimeSlots() {
     }
     
     try {
-
         const availableSlots = await getAvailableTimeSlots(lesson.date, state.sport, state.duration);
         
-
         container.innerHTML = '';
         
         for (const time of timeSlots) {
@@ -1661,7 +1619,6 @@ async function renderTimeSlots() {
             btn.type = 'button';
             btn.textContent = time;
             
-
             const isAvailable = availableSlots.includes(time);
             const isConflict = !isTimeSlotAvailable(time, state.currentLessonIndex);
             
@@ -1686,7 +1643,7 @@ async function renderTimeSlots() {
         
     } catch (error) {
         console.error('Error loading time slots:', error);
-
+        
         container.innerHTML = '';
         timeSlots.forEach(time => {
             const btn = document.createElement('button');
@@ -1707,7 +1664,6 @@ async function renderTimeSlots() {
     }
 }
 
-
 async function selectTime(time) {
     const lesson = state.lessons[state.currentLessonIndex];
     
@@ -1724,8 +1680,6 @@ async function selectTime(time) {
     }
     
     state.lessons[state.currentLessonIndex].time = time;
-    
-    console.log('Time selected:', time);
     
     renderTimeSlots();
     updateStep2DatesList();
@@ -1772,7 +1726,6 @@ function formatDate(dateStr) {
     return date.toLocaleDateString('en-US', options);
 }
 
-// ============ STEP 3: PERSONAL INFO ============
 function initStep3() {
     document.getElementById('backToStep2').addEventListener('click', function() {
         showStep('step2');
@@ -1955,8 +1908,6 @@ function initPayPal() {
     }
 }
 
-// ============ NOTIFICATION FUNCTIONS ============
-
 function generateBookingId() {
     return 'BK' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
 }
@@ -1993,10 +1944,8 @@ function sendBookingNotifications(paypalDetails) {
     
     console.log('Sending booking data to bot:', bookingData);
     
-    // Send to bot
     sendToBot(bookingData);
     
-    // Send email
     sendEmailNotification(bookingData);
 }
 
@@ -2027,8 +1976,6 @@ function sendToBot(bookingData) {
         payerEmail: bookingData.payerEmail
     };
     
-    console.log('📦 Sending to bot:', botData);
-    
     fetch(webhookUrl, {
         method: 'POST',
         headers: {
@@ -2037,17 +1984,13 @@ function sendToBot(bookingData) {
         body: JSON.stringify(botData)
     })
     .then(response => {
-        console.log('📨 Bot response status:', response.status);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
-    .then(data => {
-        console.log('✅ Bot response:', data);
-    })
     .catch(error => {
-        console.error('❌ Bot error:', error);
+        console.error('Bot error:', error);
     });
 }
 
@@ -2110,9 +2053,9 @@ ${calendarLinks}
         from_email: data.email,
         phone: data.phone
     }).then(function(response) {
-        console.log('✅ Email sent successfully:', response.status, response.text);
+        console.log('Email sent successfully:', response.status, response.text);
     }).catch(function(error) {
-        console.error('❌ Email sending failed:', error);
+        console.error('Email sending failed:', error);
         const mailto = `mailto:${toEmail}?subject=${encodeURIComponent('Booking Confirmation: ' + durationText + ' ' + sportName + ' Lesson')}&body=${encodeURIComponent(body)}`;
         window.open(mailto, '_blank');
     });
@@ -2166,9 +2109,7 @@ function formatGoogleDate(date) {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 }
 
-// ============ UTILITIES ============
 function showStep(stepId) {
-    console.log('Show step:', stepId);
     document.querySelectorAll('.form-section').forEach(section => {
         section.classList.remove('active');
     });
@@ -2191,3 +2132,4 @@ function showSuccess() {
     </script>
 </body>
 </html>
+```
