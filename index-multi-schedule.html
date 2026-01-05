@@ -276,7 +276,7 @@ input[type="range"]::-moz-range-thumb {
 
 .day.today { border: 0.125em solid var(--accent-blue); }
 .day.disabled { opacity: 0.3; cursor: not-allowed; }
-.day.other-month { display: none !important; }
+.day.other-month { display: none; }
 
 .day.unavailable { 
     background: rgba(255, 71, 87, 0.1); 
@@ -1507,8 +1507,9 @@ function renderCalendar() {
         const isBooked = state.lessons.some(lesson => {
             if (!lesson.date) return false;
             const lessonDate = new Date(lesson.date + 'T00:00:00');
-            lessonDate.setHours(0, 0, 0, 0);
-            return lessonDate.getTime() === currentDate.getTime();
+            return lessonDate.getFullYear() === state.currentYear &&
+                   lessonDate.getMonth() === state.currentMonth &&
+                   lessonDate.getDate() === day;
         });
         
         if (isBooked) {
@@ -1518,8 +1519,9 @@ function renderCalendar() {
         const lesson = state.lessons[state.currentLessonIndex];
         if (lesson && lesson.date) {
             const lessonDate = new Date(lesson.date + 'T00:00:00');
-            lessonDate.setHours(0, 0, 0, 0);
-            if (lessonDate.getTime() === currentDate.getTime()) {
+            if (lessonDate.getFullYear() === state.currentYear &&
+                lessonDate.getMonth() === state.currentMonth &&
+                lessonDate.getDate() === day) {
                 dayButton.classList.add('selected');
             }
         }
