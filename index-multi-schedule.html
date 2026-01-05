@@ -1570,6 +1570,7 @@ function renderCalendar() {
     }
 }
 async function selectDate(year, month, day) {
+    // Создаем строку даты в формате YYYY-MM-DD
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
     state.lessons[state.currentLessonIndex].date = dateStr;
@@ -1577,7 +1578,7 @@ async function selectDate(year, month, day) {
     console.log('Date selected:', dateStr);
     
     renderCalendar();
-    await renderTimeSlots();
+    renderTimeSlots();
     updateStep2DatesList();
     checkStep2Complete();
 }
