@@ -276,7 +276,7 @@ input[type="range"]::-moz-range-thumb {
 
 .day.today { border: 0.125em solid var(--accent-blue); }
 .day.disabled { opacity: 0.3; cursor: not-allowed; }
-.day.other-month { display: none; }
+.day.other-month { visibility: hidden; }
 
 .day.unavailable { 
     background: rgba(255, 71, 87, 0.1); 
@@ -717,7 +717,6 @@ input[type="range"]::-moz-range-thumb {
 </head>
 <body>
     <div class="container">
-        <!-- Step 1: Lesson Details -->
         <div class="form-section active" id="step1">
             <h2 class="subsection-title">Lesson Details</h2>
             <div class="step-layout">
@@ -821,7 +820,6 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Step 2: Multi-Schedule -->
         <div class="form-section" id="step2">
             <h2 class="subsection-title">Select Date & Time for Each Lesson</h2>
             
@@ -840,9 +838,9 @@ input[type="range"]::-moz-range-thumb {
                             </div>
                             
                             <div class="weekdays">
-                                <div>Mon</div><div>Tue</div><div>Wed</div>
-                                <div>Thu</div><div>Fri</div><div>Sat</div>
-                                <div>Sun</div>
+                                <div>Sun</div><div>Mon</div><div>Tue</div>
+                                <div>Wed</div><div>Thu</div><div>Fri</div>
+                                <div>Sat</div>
                             </div>
                             
                             <div class="days" id="calendarDays"></div>
@@ -886,7 +884,6 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Step 3: Personal Information -->
         <div class="form-section" id="step3">
             <h2 class="subsection-title">Personal Information</h2>
             <div class="step-layout">
@@ -979,7 +976,6 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Payment Processing Screen -->
         <div class="form-section" id="paymentProcessing">
             <div class="payment-processing">
                 <div class="loading-spinner"></div>
@@ -988,7 +984,6 @@ input[type="range"]::-moz-range-thumb {
             </div>
         </div>
 
-        <!-- Success Screen -->
         <div class="form-section" id="successScreen">
             <div class="success-screen">
                 <div class="success-icon">✓</div>
@@ -1469,10 +1464,14 @@ function renderCalendar() {
     const daysInMonth = lastDay.getDate();
     
     let startDay = firstDay.getDay();
-    startDay = startDay === 0 ? 6 : startDay - 1;
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    
+    const bookingStart = new Date(state.bookingPeriod.startDate);
+    bookingStart.setHours(0, 0, 0, 0);
+    const bookingEnd = new Date(state.bookingPeriod.endDate);
+    bookingEnd.setHours(0, 0, 0, 0);
     
     for (let i = 0; i < startDay; i++) {
         const emptyDay = document.createElement('button');
@@ -1489,11 +1488,6 @@ function renderCalendar() {
         
         const currentDate = new Date(state.currentYear, state.currentMonth, day);
         currentDate.setHours(0, 0, 0, 0);
-        
-        const bookingStart = new Date(state.bookingPeriod.startDate);
-        bookingStart.setHours(0, 0, 0, 0);
-        const bookingEnd = new Date(state.bookingPeriod.endDate);
-        bookingEnd.setHours(0, 0, 0, 0);
         
         if (currentDate < today || currentDate < bookingStart || currentDate > bookingEnd) {
             dayButton.classList.add('disabled');
