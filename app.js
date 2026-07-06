@@ -129,6 +129,15 @@ const state = {
 // ============ AVAILABILITY CHECK ============
 const AVAILABILITY_API_URL = 'https://script.google.com/macros/s/AKfycbyzf3hmuOVckf_3Td9ca-zD-Ruov_gK0JpDYK3L2fH882eNG_4YJczTfkmiHrOnojyVwQ/exec';
 
+// Sent with the booking webhook so the bot can reject requests that didn't
+// come from this form. NOTE: since this file runs in the browser, anyone
+// can view-source and read this value — it only stops casual/opportunistic
+// abuse of the URL, not a deliberate attacker. The real protection against
+// fake "paid" bookings is the server verifying the payment directly with
+// PayPal (see the bot's index.js) — set this to the SAME value as the
+// bot's BOOKING_WEBHOOK_SECRET environment variable.
+const BOOKING_WEBHOOK_SECRET = 'REPLACE_WITH_SAME_VALUE_AS_BOT_ENV';
+
 const availabilityCache = new Map();
 
 async function checkTimeSlotAvailability(dateStr, sport, duration, time) {
@@ -1001,6 +1010,7 @@ function sendToBot(bookingData) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-Booking-Secret': BOOKING_WEBHOOK_SECRET
         },
         body: JSON.stringify(botData)
     })
