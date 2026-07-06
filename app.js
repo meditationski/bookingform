@@ -136,7 +136,7 @@ const AVAILABILITY_API_URL = 'https://script.google.com/macros/s/AKfycbyzf3hmuOV
 // fake "paid" bookings is the server verifying the payment directly with
 // PayPal (see the bot's index.js) — set this to the SAME value as the
 // bot's BOOKING_WEBHOOK_SECRET environment variable.
-const BOOKING_WEBHOOK_SECRET = 'REPLACE_WITH_SAME_VALUE_AS_BOT_ENV';
+const BOOKING_WEBHOOK_SECRET = '034f9ba3335b35e8f7eba1d58b7d2be93762e36d415e5396cc20aa962b3401f5';
 
 const availabilityCache = new Map();
 
