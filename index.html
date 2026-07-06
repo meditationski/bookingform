@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--
+  SkiSchool.ge booking form — single bilingual (RU/EN) build.
+
+  This file only contains structure. All text lives in i18n.js.
+  All behavior lives in app.js. Editing wording or adding a language
+  never requires touching this file — see i18n.js for instructions.
+
+  Language is chosen automatically:
+    1. ?lang=ru or ?lang=en in the URL (use this to force a language,
+       e.g. when embedding on a specific-language page in Carrd)
+    2. otherwise, the visitor's browser language
+    3. otherwise, falls back to English (DEFAULT_LANG in i18n.js)
+-->
+<html style="visibility:hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkiSchool.ge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=AU4zecGO1bRrKhM4A7KdydeT3iyAakWWh49YtUdeUukLIEz0BPcHyGpYdCRlauljJusXoHTv13ziC8Jl&currency=USD"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Step 1: Lesson Details -->
+        <div class="form-section active" id="step1">
+            <h2 class="subsection-title" data-i18n="step1.title"></h2>
+            <div class="step-layout">
+                <div class="step-left">
+                    <div class="step1-controls">
+                        <div class="form-group">
+                            <div class="tabs" id="sportTabs">
+                                <button class="tab active" data-sport="ski" data-i18n="tab.ski"></button>
+                                <button class="tab" data-sport="snowboard" data-i18n="tab.snowboard"></button>
+                                <button class="tab" data-sport="kids" data-i18n="tab.kids"></button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="skiSnowboardDuration">
+                            <select class="custom-select" id="duration"></select>
+                        </div>
+
+                        <div class="form-group" id="kidsDuration" style="display: none;">
+                            <select class="custom-select" id="kidsDurationSelect"></select>
+                        </div>
+
+                        <div class="form-group" id="skiSnowboardParticipants">
+                            <div class="slider-container">
+                                <div class="slider-value" id="participantsValue"></div>
+                                <input type="range" id="participants" min="1" max="5" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="kidsParticipants" style="display: none;">
+                            <div class="slider-container">
+                                <div class="slider-value" id="kidsValue"></div>
+                                <input type="range" id="kids" min="1" max="6" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span>
+                                    <span>5</span><span>6</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="skiSnowboardDays">
+                            <div class="slider-container">
+                                <div class="slider-value" id="daysValue"></div>
+                                <input type="range" id="days" min="1" max="8" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span>
+                                    <span>5</span><span>6</span><span>7</span><span>8</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="kidsDays" style="display: none;">
+                            <div class="slider-container">
+                                <div class="slider-value" id="kidsDaysValue"></div>
+                                <input type="range" id="kidsDaysSlider" min="1" max="8" value="1" step="1">
+                                <div class="slider-labels">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span>
+                                    <span>5</span><span>6</span><span>7</span><span>8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-right">
+                    <div class="price-card">
+                        <div class="booking-summary-compact">
+                            <div class="summary-title" id="step1SummaryTitle"></div>
+                            <div class="summary-details" id="step1SummaryDetails"></div>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.total"></span>
+                            <span id="totalPrice" class="total-price">$100</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.deposit"></span>
+                            <span id="depositPrice" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.remaining"></span>
+                            <span id="remainingPrice" class="price-value">$80</span>
+                        </div>
+                        <div id="discountInfo" class="discount-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <div></div>
+                <button class="btn btn-next" id="nextToStep2" data-i18n="btn.continue"></button>
+            </div>
+        </div>
+
+        <!-- Step 2: Schedule (multiple selection) -->
+        <div class="form-section" id="step2">
+            <h2 class="subsection-title" data-i18n="step2.title"></h2>
+
+            <div class="step-layout">
+                <div class="step-left">
+                    <div class="calendar-time-vertical">
+                        <div class="calendar-large">
+                            <div class="calendar-header">
+                                <div class="calendar-nav">
+                                    <button id="prevMonth">‹</button>
+                                </div>
+                                <div class="calendar-month" id="calendarMonth"></div>
+                                <div class="calendar-nav">
+                                    <button id="nextMonth">›</button>
+                                </div>
+                            </div>
+
+                            <div class="weekdays" id="weekdaysHeader"></div>
+
+                            <div class="days" id="calendarDays"></div>
+                        </div>
+
+                        <div class="time-selection">
+                            <div class="time-slots-compact" id="timeSlots"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-right">
+                    <div class="price-card">
+                        <div class="booking-summary-compact">
+                            <div class="summary-title" id="step2SummaryTitle"></div>
+                            <div class="summary-details" id="step2SummaryDetails"></div>
+
+                            <div class="summary-dates-list" id="step2DatesList">
+                                <!-- Selected dates are rendered here as clickable items -->
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.total"></span>
+                            <span id="totalPriceStep2" class="total-price">$100</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.deposit"></span>
+                            <span id="depositPriceStep2" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.remaining"></span>
+                            <span id="remainingPriceStep2" class="price-value">$80</span>
+                        </div>
+                        <div id="discountInfoStep2" class="discount-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn btn-back" id="backToStep1" data-i18n="btn.back"></button>
+                <button class="btn btn-next" id="nextToStep3" disabled data-i18n="btn.continue"></button>
+            </div>
+        </div>
+
+        <!-- Step 3: Personal Information -->
+        <div class="form-section" id="step3">
+            <h2 class="subsection-title" data-i18n="step3.title"></h2>
+            <div class="step-layout">
+                <div class="step-left">
+                    <form id="personalInfoForm" class="step3-form">
+                        <div class="form-row-compact">
+                            <div class="form-field">
+                                <input type="text" id="fullName" class="form-input" data-i18n-placeholder="field.fullName.placeholder" required>
+                                <div class="error" id="fullNameError" data-i18n="field.fullName.error"></div>
+                            </div>
+                            <div class="form-field">
+                                <input type="tel" id="phone" class="form-input" data-i18n-placeholder="field.phone.placeholder" required>
+                                <div class="error" id="phoneError" data-i18n="field.phone.error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-row-compact">
+                            <div class="form-field">
+                                <input type="email" id="email" class="form-input" data-i18n-placeholder="field.email.placeholder" required>
+                                <div class="error" id="emailError" data-i18n="field.email.error"></div>
+                            </div>
+                            <div class="form-field">
+                                <input type="number" id="age" class="form-input" data-i18n-placeholder="field.age.placeholder" min="5" max="80" required>
+                                <div class="error" id="ageError" data-i18n="field.age.error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-row-compact">
+                            <div class="form-field">
+                                <select id="skillLevel" class="custom-select" required></select>
+                                <div class="error" id="skillLevelError" data-i18n="field.skillLevel.error"></div>
+                            </div>
+                            <div class="form-field">
+                                <select id="language" class="custom-select" required></select>
+                                <div class="error" id="languageError" data-i18n="field.language.error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-row-compact full-width">
+                            <div class="form-field">
+                                <input type="text" id="specialRequests" class="form-input" data-i18n-placeholder="field.specialRequests.placeholder">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="step-right">
+                    <div class="price-card">
+                        <div class="booking-summary-compact">
+                            <div class="summary-title" id="step3SummaryTitle"></div>
+                            <div class="summary-details" id="step3SummaryDetails"></div>
+
+                            <div class="summary-dates-list" id="step3DatesList">
+                                <!-- Selected dates are rendered here, read-only -->
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.total"></span>
+                            <span id="totalPriceStep3" class="total-price">$100</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.deposit"></span>
+                            <span id="depositPriceStep3" class="deposit-price">$20</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label" data-i18n="price.remaining"></span>
+                            <span id="remainingPriceStep3" class="price-value">$80</span>
+                        </div>
+                        <div id="discountInfoStep3" class="discount-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn btn-back" id="backToStep2" data-i18n="btn.back"></button>
+                <div class="paypal-container">
+                    <div id="paypal-button-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment processing screen -->
+        <div class="form-section" id="paymentProcessing">
+            <div class="payment-processing">
+                <div class="loading-spinner"></div>
+                <h2 class="success-title" data-i18n="payment.processing.title"></h2>
+                <p class="success-message" data-i18n="payment.processing.message"></p>
+            </div>
+        </div>
+
+        <!-- Success screen -->
+        <div class="form-section" id="successScreen">
+            <div class="success-screen">
+                <div class="success-icon">✓</div>
+                <h2 class="success-title" data-i18n="success.title"></h2>
+                <p class="success-message" data-i18n="success.message"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <script src="i18n.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
