@@ -121,8 +121,8 @@ const state = {
     },
 
     bookingPeriod: {
-        startDate: new Date('2025-12-27'),
-        endDate: new Date('2026-02-28')
+        startDate: new Date('2026-12-27'),
+        endDate: new Date('2027-04-10')
     }
 };
 
